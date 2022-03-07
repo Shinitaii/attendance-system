@@ -15,7 +15,7 @@ public class panelSettings extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	panelGeneralSetting panelGeneralSetting;
+	panelAccountSetting panelAccountSetting;
 	panelChangePassSetting panelChangePassSetting;	
 	AdminMenu AdminMenu;
 	
@@ -38,7 +38,7 @@ public class panelSettings extends JPanel {
 		panelGeneral.addMouseListener(new PropertiesListener(panelGeneral) {
 
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelGeneralSetting);
+				menuClicked(panelAccountSetting);
 			}
 		});
 		
@@ -77,21 +77,21 @@ public class panelSettings extends JPanel {
 		add(panelMain);
 		panelMain.setLayout(null);
 		
-		panelGeneralSetting = new panelGeneralSetting();
-		panelGeneralSetting.setBounds(0, 0, 539, 450);
-		panelMain.add(panelGeneralSetting);
-		panelGeneralSetting.setLayout(null);
+		panelAccountSetting = new panelAccountSetting();
+		panelAccountSetting.setBounds(0, 0, 539, 450);
+		panelMain.add(panelAccountSetting);
+		panelAccountSetting.setLayout(null);
 		
 		panelChangePassSetting = new panelChangePassSetting();
 		panelChangePassSetting.setBounds(0,0,539,450);
 		panelMain.add(panelChangePassSetting);
 		panelChangePassSetting.setLayout(null);
 		
-		menuClicked(panelGeneralSetting);
+		menuClicked(panelAccountSetting);
 	}
 	
 	public void menuClicked(JPanel panel) {
-		panelGeneralSetting.setVisible(false);
+		panelAccountSetting.setVisible(false);
 		panelChangePassSetting.setVisible(false);
 		
 		panel.setVisible(true);

@@ -10,6 +10,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import java.awt.Font;
 
@@ -20,7 +21,6 @@ public class AdminMenu extends JFrame {
 	
 	private panelHome panelHome;
 	private panelDashboard panelDashboard;
-	private panelAccount panelAccount;
 	private panelSettings panelSettings;
 	private JPanel contentPane;
 	private String username = Login.pubUsername, uid = Login.pubUID;
@@ -28,6 +28,7 @@ public class AdminMenu extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					AdminMenu frame = new AdminMenu();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -53,8 +54,6 @@ public class AdminMenu extends JFrame {
 		panelHome.setBounds(0, 0, 559, 539);
 		panelDashboard = new panelDashboard();
 		panelDashboard.setBounds(0, 0, 559, 539);
-		panelAccount = new panelAccount();
-		panelAccount.setBounds(0, 0, 559, 539);
 		panelSettings = new panelSettings();
 		panelSettings.setBounds(0, 0, 559, 539);
 		
@@ -114,7 +113,7 @@ public class AdminMenu extends JFrame {
 		panelViewU.addMouseListener(new PropertiesListener(panelViewU) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelAccount);
+
 			}
 		});
 		panelViewU.setBackground(new Color(65, 105, 225));
@@ -219,7 +218,6 @@ public class AdminMenu extends JFrame {
 		
 		panelMainContent.add(panelHome);
 		panelMainContent.add(panelDashboard);
-		panelMainContent.add(panelAccount);
 		panelMainContent.add(panelSettings);
 		
 		menuClicked(panelHome);
@@ -230,7 +228,6 @@ public class AdminMenu extends JFrame {
 	public void menuClicked(JPanel panel) {
 		panelHome.setVisible(false);
 		panelDashboard.setVisible(false);
-		panelAccount.setVisible(false);
 		panelSettings.setVisible(false);
 		
 		panel.setVisible(true);
