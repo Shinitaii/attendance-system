@@ -112,7 +112,7 @@ public class panelChangePassSetting extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
-					PreparedStatement changePass = 
+					//PreparedStatement changePass =
 				} catch (SQLException sql) {
 					sql.printStackTrace();
 				}
