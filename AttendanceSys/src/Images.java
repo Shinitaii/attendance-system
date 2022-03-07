@@ -18,5 +18,5 @@ public class Images {
 	public static Image doNotShowPass = new ImageIcon(Images.class.getResource("res/doNotShowPass.png")).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
 	public static Image question = new ImageIcon(Images.class.getResource("res/question.png")).getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
 	public static Image courses = new ImageIcon(Images.class.getResource("res/course.png")).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-	
+	public static Image signoutred = new ImageIcon(Images.class.getResource("res/signoutred.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 }

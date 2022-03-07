@@ -206,7 +206,7 @@ public class AdminMenu extends JFrame {
 		lblSignOut.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblSignOut.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSignOut.setBounds(10, 11, 30, 42);
-		lblSignOut.setIcon(new ImageIcon(Images.signout));
+		lblSignOut.setIcon(new ImageIcon(Images.signoutred));
 		panelSignOut.add(lblSignOut);
 		
 		JPanel panelMainContent = new JPanel();

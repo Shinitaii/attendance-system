@@ -4,14 +4,22 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.JTextField;
 
 public class panelAccountSetting extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
+	private JTextField txtUser;
+	private JTextField txtFN;
+	private JTextField txtLN;
+	private JTextField txtMN;
 
 	public panelAccountSetting() {
 		setBackground(new Color(255, 255, 255));
-		setBounds(0, 0, 559, 539);
+		setBounds(0, 0, 540, 539);
 		setBorder(new LineBorder(new Color(65, 105, 225)));
 		setLayout(null);
 		
@@ -22,13 +30,133 @@ public class panelAccountSetting extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(0, 0, 150, 150);
-		panel.add(lblNewLabel);
+		JLabel lblpfp = new JLabel("");
+		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpfp.setBounds(0, 0, 150, 150);
+		panel.add(lblpfp);
 		
 		JButton browseButton = new JButton("Browse Image");
-		browseButton.setBounds(170, 138, 110, 23);
+		browseButton.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+		browseButton.setBorder(null);
+		browseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		browseButton.setForeground(new Color(255, 255, 255));
+		browseButton.setBackground(new Color(65, 105, 225));
+		browseButton.setBounds(170, 11, 160, 30);
 		add(browseButton);
+		
+		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 800k");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setForeground(new Color(0, 255, 255));
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblNewLabel_1.setBounds(170, 46, 175, 14);
+		add(lblNewLabel_1);
+		
+		JPanel panelFN = new JPanel();
+		panelFN.setBackground(new Color(255, 255, 255));
+		panelFN.setBorder(new LineBorder(new Color(65, 105, 225)));
+		panelFN.setBounds(306, 210, 223, 40);
+		add(panelFN);
+		panelFN.setLayout(null);
+		
+		txtFN = new JTextField();
+		txtFN.setBorder(null);
+		txtFN.setSelectionColor(new Color(65, 105, 225));
+		txtFN.setColumns(10);
+		txtFN.setBounds(10, 7, 203, 25);
+		panelFN.add(txtFN);
+		
+		JPanel panelLN = new JPanel();
+		panelLN.setBorder(new LineBorder(new Color(65, 105, 225)));
+		panelLN.setBackground(Color.WHITE);
+		panelLN.setBounds(306, 291, 223, 40);
+		add(panelLN);
+		panelLN.setLayout(null);
+		
+		txtLN = new JTextField();
+		txtLN.setBorder(null);
+		txtLN.setSelectionColor(new Color(65, 105, 225));
+		txtLN.setColumns(10);
+		txtLN.setBounds(10, 7, 203, 25);
+		panelLN.add(txtLN);
+		
+		JPanel panelMN = new JPanel();
+		panelMN.setBorder(new LineBorder(new Color(65, 105, 225)));
+		panelMN.setBackground(Color.WHITE);
+		panelMN.setBounds(306, 370, 223, 40);
+		add(panelMN);
+		panelMN.setLayout(null);
+		
+		txtMN = new JTextField();
+		txtMN.setBorder(null);
+		txtMN.setSelectionColor(new Color(65, 105, 225));
+		txtMN.setColumns(10);
+		txtMN.setBounds(10, 7, 203, 25);
+		panelMN.add(txtMN);
+		
+		JLabel lblFname = new JLabel("First Name :");
+		lblFname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblFname.setForeground(new Color(65, 105, 225));
+		lblFname.setBounds(306, 183, 150, 29);
+		add(lblFname);
+		
+		JLabel lblLname = new JLabel("Last Name :");
+		lblLname.setForeground(new Color(65, 105, 225));
+		lblLname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblLname.setBounds(306, 263, 150, 29);
+		add(lblLname);
+		
+		JLabel lblMname = new JLabel("Middle Name :");
+		lblMname.setForeground(new Color(65, 105, 225));
+		lblMname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblMname.setBounds(306, 342, 150, 29);
+		add(lblMname);
+		
+		JLabel lblNewLabel_3 = new JLabel("UID : 100000");
+		lblNewLabel_3.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
+		lblNewLabel_3.setBounds(170, 121, 379, 40);
+		add(lblNewLabel_3);
+		
+		JPanel panelUserN = new JPanel();
+		panelUserN.setBorder(new LineBorder(new Color(65, 105, 225)));
+		panelUserN.setBackground(Color.WHITE);
+		panelUserN.setBounds(10, 210, 240, 40);
+		add(panelUserN);
+		panelUserN.setLayout(null);
+		
+		txtUser = new JTextField();
+		txtUser.setBorder(null);
+		txtUser.setSelectionColor(new Color(65, 105, 225));
+		txtUser.setForeground(new Color(65, 105, 225));
+		txtUser.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		txtUser.setBounds(10, 7, 220, 25);
+		panelUserN.add(txtUser);
+		txtUser.setColumns(10);
+		
+		JLabel lblUsername = new JLabel("Username :");
+		lblUsername.setForeground(new Color(65, 105, 225));
+		lblUsername.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblUsername.setBounds(10, 183, 150, 29);
+		add(lblUsername);
+		
+		JButton btnReset = new JButton("Reset");
+		btnReset.setForeground(new Color(255, 0, 0));
+		btnReset.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+		btnReset.setBorder(null);
+		btnReset.setBackground(new Color(65, 105, 225));
+		btnReset.setBounds(340, 11, 90, 30);
+		btnReset.addMouseListener(new PropertiesListener(btnReset));
+		add(btnReset);
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.setForeground(new Color(255, 255, 255));
+		btnSave.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+		btnSave.setBorder(null);
+		btnSave.setBackground(new Color(65, 105, 225));
+		btnSave.setBounds(439, 11, 90, 30);
+		btnSave.addMouseListener(new PropertiesListener(btnSave));
+		add(btnSave);
 	}
 }
