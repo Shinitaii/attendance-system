@@ -2,6 +2,7 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -11,14 +12,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class panelChangePassSetting extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPasswordField currentPass;
-	private JPasswordField newPass;
-	private JPasswordField confirmNewPass;
+	private int uid = Integer.valueOf(Login.pubUID);
+	private JPasswordField pwdCurrentPass;
+	private JPasswordField pwdNewPass;
+	private JPasswordField pwdConfirmNewPass;
 
 	public panelChangePassSetting() {
 		setBounds(0,0, 539, 450);
@@ -45,15 +49,15 @@ public class panelChangePassSetting extends JPanel {
 		lblCurrentPass.setBounds(10, 11, 90, 28);
 		panelCurrentPass.add(lblCurrentPass);
 		
-		currentPass = new JPasswordField();
-		currentPass.setBorder(null);
-		currentPass.setBounds(110, 11, 186, 24);
-		panelCurrentPass.add(currentPass);
+		pwdCurrentPass = new JPasswordField();
+		pwdCurrentPass.setBorder(null);
+		pwdCurrentPass.setBounds(110, 11, 186, 24);
+		panelCurrentPass.add(pwdCurrentPass);
 		
 		JLabel logoShowCurrentPass = new JLabel("");
 		logoShowCurrentPass.setBounds(301, 11, 24, 24);
 		logoShowCurrentPass.setIcon(new ImageIcon(Images.showPass));
-		logoShowCurrentPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, currentPass));
+		logoShowCurrentPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, pwdCurrentPass));
 		panelCurrentPass.add(logoShowCurrentPass);
 		
 		JPanel panelNewPass = new JPanel();
@@ -68,15 +72,15 @@ public class panelChangePassSetting extends JPanel {
 		lblNewPass.setBounds(10, 11, 74, 28);
 		panelNewPass.add(lblNewPass);
 		
-		newPass = new JPasswordField();
-		newPass.setBorder(null);
-		newPass.setBounds(94, 11, 202, 24);
-		panelNewPass.add(newPass);
+		pwdNewPass = new JPasswordField();
+		pwdNewPass.setBorder(null);
+		pwdNewPass.setBounds(94, 11, 202, 24);
+		panelNewPass.add(pwdNewPass);
 		
 		JLabel logoShowNewPass = new JLabel("");
 		logoShowNewPass.setBounds(301, 11, 24, 24);
 		logoShowNewPass.setIcon(new ImageIcon(Images.showPass));
-		logoShowNewPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, currentPass));
+		logoShowNewPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, pwdCurrentPass));
 		panelNewPass.add(logoShowNewPass);
 		
 		JPanel panelConfirmNewPass = new JPanel();
@@ -91,15 +95,15 @@ public class panelChangePassSetting extends JPanel {
 		lblConfirmNewPass.setBounds(10, 11, 115, 28);
 		panelConfirmNewPass.add(lblConfirmNewPass);
 		
-		confirmNewPass = new JPasswordField();
-		confirmNewPass.setBorder(null);
-		confirmNewPass.setBounds(135, 11, 161, 24);
-		panelConfirmNewPass.add(confirmNewPass);
+		pwdConfirmNewPass = new JPasswordField();
+		pwdConfirmNewPass.setBorder(null);
+		pwdConfirmNewPass.setBounds(135, 11, 161, 24);
+		panelConfirmNewPass.add(pwdConfirmNewPass);
 		
 		JLabel logoShowConfirmNewPass = new JLabel("");
 		logoShowConfirmNewPass.setBounds(301, 11, 24, 24);
 		logoShowConfirmNewPass.setIcon(new ImageIcon(Images.showPass));
-		logoShowConfirmNewPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, currentPass));
+		logoShowConfirmNewPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, pwdCurrentPass));
 		panelConfirmNewPass.add(logoShowConfirmNewPass);
 		
 		JButton changePassButton = new JButton("Change Password");
@@ -110,9 +114,27 @@ public class panelChangePassSetting extends JPanel {
 		changePassButton.addMouseListener(new PropertiesListener(changePassButton));
 		changePassButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				char[] getCurrentPass = pwdCurrentPass.getPassword(), getNewPass = pwdNewPass.getPassword(), getConfirmNewPass = pwdConfirmNewPass.getPassword();
+				String currentPass = String.valueOf(getCurrentPass), newPass = String.valueOf(getNewPass), confirmNewPass = String.valueOf(getConfirmNewPass);
 				try {
 					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
-					//PreparedStatement changePass =
+					PreparedStatement checkCurrentPass = conn.prepareStatement("select pass from userInfo where pass='"+currentPass+"'");
+					ResultSet executeCheckCurrentPass = checkCurrentPass.executeQuery();
+					if(executeCheckCurrentPass.next()) {
+						if(newPass.equals(confirmNewPass)) {
+							PreparedStatement changePass = conn.prepareStatement("update userInfo set pass='"+newPass+"' where userID ='"+uid+"'");	
+							ResultSet executeChangePass = changePass.executeQuery();
+							if(executeChangePass.next()) {
+								JOptionPane.showMessageDialog(null, "Changed password successfully!");
+							} else {
+								
+							}
+						} else {
+							
+						}
+					} else {
+						
+					}
 				} catch (SQLException sql) {
 					sql.printStackTrace();
 				}

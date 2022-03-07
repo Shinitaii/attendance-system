@@ -18,7 +18,6 @@ public class Login extends JFrame {
 	private JLabel lblPassword;
 	private JLabel lblStatus;
 	int delayLabel = 100, delayButton = 50;
-	Timer tick;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -148,18 +147,12 @@ public class Login extends JFrame {
 						dispose();
 						checkOccupation.close();
 					} else {
-						int delay = 5000;
+						
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 						lblStatus.setText("Incorrect username or password!");
 						lblStatus.setForeground(Color.RED);
-						ActionListener timer = new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								lblStatus.setText("");
-							}	
-						};
-						Timer tick = new Timer(delay , timer);
-						tick.setRepeats(false);
-						tick.start();
+						
+		
 					}
 					conn.close();
 					checkAccount.close();
