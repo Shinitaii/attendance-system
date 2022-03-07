@@ -40,18 +40,15 @@ public class panelChangePassSetting extends JPanel {
 		JPanel panelCurrentPass = new JPanel();
 		panelCurrentPass.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelCurrentPass.setBackground(new Color(255, 255, 255));
-		panelCurrentPass.setBounds(101, 36, 335, 47);
+		panelCurrentPass.setBounds(100, 52, 335, 47);
 		panel.add(panelCurrentPass);
 		panelCurrentPass.setLayout(null);
 		
-		JLabel lblCurrentPass = new JLabel("Current Password:");
-		lblCurrentPass.setForeground(new Color(65, 105, 225));
-		lblCurrentPass.setBounds(10, 11, 90, 28);
-		panelCurrentPass.add(lblCurrentPass);
-		
 		pwdCurrentPass = new JPasswordField();
+		pwdCurrentPass.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		pwdCurrentPass.setForeground(new Color(65, 105, 225));
 		pwdCurrentPass.setBorder(null);
-		pwdCurrentPass.setBounds(110, 11, 186, 24);
+		pwdCurrentPass.setBounds(10, 11, 286, 24);
 		panelCurrentPass.add(pwdCurrentPass);
 		
 		JLabel logoShowCurrentPass = new JLabel("");
@@ -64,53 +61,48 @@ public class panelChangePassSetting extends JPanel {
 		panelNewPass.setLayout(null);
 		panelNewPass.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelNewPass.setBackground(Color.WHITE);
-		panelNewPass.setBounds(101, 141, 335, 47);
+		panelNewPass.setBounds(100, 157, 335, 47);
 		panel.add(panelNewPass);
 		
-		JLabel lblNewPass = new JLabel("New Password:");
-		lblNewPass.setForeground(new Color(65, 105, 225));
-		lblNewPass.setBounds(10, 11, 74, 28);
-		panelNewPass.add(lblNewPass);
-		
 		pwdNewPass = new JPasswordField();
+		pwdNewPass.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		pwdNewPass.setForeground(new Color(65, 105, 225));
 		pwdNewPass.setBorder(null);
-		pwdNewPass.setBounds(94, 11, 202, 24);
+		pwdNewPass.setBounds(10, 11, 286, 24);
 		panelNewPass.add(pwdNewPass);
 		
 		JLabel logoShowNewPass = new JLabel("");
 		logoShowNewPass.setBounds(301, 11, 24, 24);
 		logoShowNewPass.setIcon(new ImageIcon(Images.showPass));
-		logoShowNewPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, pwdCurrentPass));
+		logoShowNewPass.addMouseListener(new PasswordIcon(logoShowNewPass, pwdNewPass));
 		panelNewPass.add(logoShowNewPass);
 		
 		JPanel panelConfirmNewPass = new JPanel();
 		panelConfirmNewPass.setLayout(null);
 		panelConfirmNewPass.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelConfirmNewPass.setBackground(Color.WHITE);
-		panelConfirmNewPass.setBounds(101, 246, 335, 47);
+		panelConfirmNewPass.setBounds(100, 262, 335, 47);
 		panel.add(panelConfirmNewPass);
 		
-		JLabel lblConfirmNewPass = new JLabel("Confirm New Password:");
-		lblConfirmNewPass.setForeground(new Color(65, 105, 225));
-		lblConfirmNewPass.setBounds(10, 11, 115, 28);
-		panelConfirmNewPass.add(lblConfirmNewPass);
-		
 		pwdConfirmNewPass = new JPasswordField();
+		pwdConfirmNewPass.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		pwdConfirmNewPass.setForeground(new Color(65, 105, 225));
 		pwdConfirmNewPass.setBorder(null);
-		pwdConfirmNewPass.setBounds(135, 11, 161, 24);
+		pwdConfirmNewPass.setBounds(10, 11, 286, 24);
 		panelConfirmNewPass.add(pwdConfirmNewPass);
 		
 		JLabel logoShowConfirmNewPass = new JLabel("");
 		logoShowConfirmNewPass.setBounds(301, 11, 24, 24);
 		logoShowConfirmNewPass.setIcon(new ImageIcon(Images.showPass));
-		logoShowConfirmNewPass.addMouseListener(new PasswordIcon(logoShowCurrentPass, pwdCurrentPass));
+		logoShowConfirmNewPass.addMouseListener(new PasswordIcon(logoShowConfirmNewPass, pwdConfirmNewPass));
 		panelConfirmNewPass.add(logoShowConfirmNewPass);
 		
 		JButton changePassButton = new JButton("Change Password");
+		changePassButton.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		changePassButton.setBorder(null);
 		changePassButton.setForeground(new Color(255, 255, 255));
 		changePassButton.setBackground(new Color(65, 105, 225));
-		changePassButton.setBounds(187, 354, 170, 40);
+		changePassButton.setBounds(180, 369, 180, 50);
 		changePassButton.addMouseListener(new PropertiesListener(changePassButton));
 		changePassButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -145,8 +137,31 @@ public class panelChangePassSetting extends JPanel {
 		JLabel lblNewLabel = new JLabel("New label");
 		lblNewLabel.setForeground(new Color(255, 0, 0));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(101, 304, 334, 38);
+		lblNewLabel.setBounds(100, 320, 334, 38);
 		panel.add(lblNewLabel);
+		
+		JLabel lblCurrentPass = new JLabel("Current Password:");
+		lblCurrentPass.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblCurrentPass.setBounds(100, 11, 154, 40);
+		panel.add(lblCurrentPass);
+		lblCurrentPass.setForeground(new Color(65, 105, 225));
+		
+		JLabel lblNewPass = new JLabel("New Password:");
+		lblNewPass.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblNewPass.setBounds(100, 118, 154, 40);
+		panel.add(lblNewPass);
+		lblNewPass.setForeground(new Color(65, 105, 225));
+		
+		JLabel lblConfirmNewPass = new JLabel("Confirm New Password:");
+		lblConfirmNewPass.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		lblConfirmNewPass.setBounds(100, 223, 154, 40);
+		panel.add(lblConfirmNewPass);
+		lblConfirmNewPass.setForeground(new Color(65, 105, 225));
+		
+		JLabel logoPasswordPolicy = new JLabel("");
+		logoPasswordPolicy.setBounds(195, 128, 24, 24);
+		panel.add(logoPasswordPolicy);
+		logoPasswordPolicy.setIcon(new ImageIcon(Images.question));
 
 	}
 }
