@@ -107,33 +107,6 @@ public class AdminMenu extends JFrame {
 		panelDashB.add(lblDashb);
 		lblDashb.setIcon(new ImageIcon(Images.dashboard));
 		
-		JPanel panelViewU = new JPanel();
-		panelViewU.setBorder(null);
-		panelViewU.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelViewU.addMouseListener(new PropertiesListener(panelViewU) {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
-		panelViewU.setBackground(new Color(65, 105, 225));
-		panelViewU.setBounds(0, 240, 205, 64);
-		panel.add(panelViewU);
-		panelViewU.setLayout(null);
-		
-		JLabel lblAccount = new JLabel("Account");
-		lblAccount.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
-		lblAccount.setForeground(new Color(255, 255, 255));
-		lblAccount.setBounds(54, 11, 141, 42);
-		panelViewU.add(lblAccount);
-		
-		JLabel lblView = new JLabel("");
-		lblView.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblView.setHorizontalAlignment(SwingConstants.CENTER);
-		lblView.setBounds(12, 11, 34, 42);
-		panelViewU.add(lblView);
-		lblView.setIcon(new ImageIcon(Images.account));
-		
 		JPanel panelUserInfo = new JPanel();
 		panelUserInfo.setLayout(null);
 		panelUserInfo.setBorder(new LineBorder(new Color(65, 105, 225).darker()));

@@ -1,12 +1,18 @@
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JTextField;
 
 public class panelAccountSetting extends JPanel {
@@ -16,6 +22,8 @@ public class panelAccountSetting extends JPanel {
 	private JTextField txtFN;
 	private JTextField txtLN;
 	private JTextField txtMN;
+	private JLabel lblpfp;
+	AdminMenu AdminMenu;
 
 	public panelAccountSetting() {
 		setBackground(new Color(255, 255, 255));
@@ -30,7 +38,7 @@ public class panelAccountSetting extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblpfp = new JLabel("");
+		lblpfp = new JLabel("");
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpfp.setBounds(0, 0, 150, 150);
 		panel.add(lblpfp);
@@ -40,6 +48,16 @@ public class panelAccountSetting extends JPanel {
 		browseButton.setBorder(null);
 		browseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JFileChooser photoSelector = new JFileChooser();
+				photoSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "png");
+				photoSelector.setFileFilter(filter);
+				int returnPhoto = photoSelector.showOpenDialog(AdminMenu);
+				if(returnPhoto == JFileChooser.APPROVE_OPTION) {
+					File selectedPhoto = photoSelector.getSelectedFile();
+					String path = selectedPhoto.getAbsolutePath();
+					lblpfp.setIcon(ResizeImage(path));
+				}
 			}
 		});
 		browseButton.setForeground(new Color(255, 255, 255));
@@ -116,7 +134,7 @@ public class panelAccountSetting extends JPanel {
 		
 		JLabel lblNewLabel_3 = new JLabel("UID : 100000");
 		lblNewLabel_3.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
-		lblNewLabel_3.setBounds(170, 121, 379, 40);
+		lblNewLabel_3.setBounds(170, 121, 360, 40);
 		add(lblNewLabel_3);
 		
 		JPanel panelUserN = new JPanel();
@@ -142,7 +160,7 @@ public class panelAccountSetting extends JPanel {
 		add(lblUsername);
 		
 		JButton btnReset = new JButton("Reset");
-		btnReset.setForeground(new Color(255, 0, 0));
+		btnReset.setForeground(Color.WHITE);
 		btnReset.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
 		btnReset.setBorder(null);
 		btnReset.setBackground(new Color(65, 105, 225));
@@ -158,5 +176,11 @@ public class panelAccountSetting extends JPanel {
 		btnSave.setBounds(439, 11, 90, 30);
 		btnSave.addMouseListener(new PropertiesListener(btnSave));
 		add(btnSave);
+	}
+	
+	public ImageIcon ResizeImage(String ImagePath) {
+		Image profile = new ImageIcon(ImagePath).getImage().getScaledInstance(lblpfp.getWidth(), lblpfp.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon iconProfile = new ImageIcon(profile);
+		return iconProfile;
 	}
 }
