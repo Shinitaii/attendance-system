@@ -13,7 +13,7 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String occupation, pubUsername, pubUID = "1";
+	public static String pubUsername, pubUID;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JLabel lblStatus;
@@ -122,30 +122,18 @@ public class Login extends JFrame {
 					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkOccupation = conn.prepareStatement("select occupation from userInfo where username='"+username+"'");
-						ResultSet whatOccupation = checkOccupation.executeQuery();
-						while (whatOccupation.next()) {
-							occupation = whatOccupation.getString("occupation");
-						}
 						PreparedStatement checkUID = conn.prepareStatement("select userid from userInfo where username='"+username+"'");
 						ResultSet whatUID = checkUID.executeQuery();
 						while (whatUID.next()) {
 							pubUID = whatUID.getString("userid");
 						}
-						if(occupation.equals("Admin")) {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									AdminMenu frame = new AdminMenu();
 									frame.setVisible(true);
 								}
 							});
-						} else if(occupation.equals("Teacher")) {
-							JOptionPane.showMessageDialog(null, "Teacher");
-						} else {
-							JOptionPane.showMessageDialog(null, "Student");
-						}
 						dispose();
-						checkOccupation.close();
 					} else {
 						
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
