@@ -178,7 +178,7 @@ public class panelAccountSetting extends JPanel {
 		add(btnSave);
 	}
 	
-	public ImageIcon ResizeImage(String ImagePath) {
+	public ImageIcon ResizeImage(String ImagePath) { //this is where you get the images
 		Image profile = new ImageIcon(ImagePath).getImage().getScaledInstance(lblpfp.getWidth(), lblpfp.getHeight(), Image.SCALE_SMOOTH);
 		ImageIcon iconProfile = new ImageIcon(profile);
 		return iconProfile;
