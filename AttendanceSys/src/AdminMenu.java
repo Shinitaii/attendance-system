@@ -16,7 +16,7 @@ import java.awt.Font;
 
 
 public class AdminMenu extends JFrame {
-
+	//test
 	private static final long serialVersionUID = 1L;
 	
 	private panelHome panelHome;
