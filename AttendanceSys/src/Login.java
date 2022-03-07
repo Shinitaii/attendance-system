@@ -13,7 +13,7 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String occupation, pubUsername, pubUID = "100000";
+	public static String occupation, pubUsername, pubUID;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JLabel lblStatus;
