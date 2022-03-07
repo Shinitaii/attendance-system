@@ -224,7 +224,7 @@ public class Register extends JFrame {
 					Timer tick = new Timer(delay, lblStatusClearer);
 					tick.setRepeats(false);
 					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
-					if(firstName.isEmpty() || middleName.isEmpty() || lastName.isEmpty() || username.isEmpty() || password.isEmpty() || cPassword.isEmpty() || obtainedGender.isEmpty()) {		
+					if(firstName.isEmpty() && middleName.isEmpty() && lastName.isEmpty() && username.isEmpty() && password.isEmpty() && cPassword.isEmpty() && obtainedGender.isEmpty()) {		
 						lblStatus.setText("Enter all of the credentials!");
 						tick.start();
 					} else {

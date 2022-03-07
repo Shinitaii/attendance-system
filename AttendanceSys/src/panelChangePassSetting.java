@@ -2,10 +2,10 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,11 +19,21 @@ import java.sql.SQLException;
 public class panelChangePassSetting extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private int uid = Integer.valueOf(Login.pubUID);
+	private int uid = Integer.valueOf(Login.pubUID), delay = 5000;
 	private JPasswordField pwdCurrentPass;
 	private JPasswordField pwdNewPass;
 	private JPasswordField pwdConfirmNewPass;
+	private JLabel lblStatus;
+	Timer tick;
+	private boolean passwordChecker = false;
 
+	ActionListener lblStatusClearer = new ActionListener() {
+		public void actionPerformed (ActionEvent e) {
+			lblStatus.setText("");
+			lblStatus.setForeground(Color.RED);
+		}
+	};
+	
 	public panelChangePassSetting() {
 		setBounds(0,0, 539, 450);
 		setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -97,6 +107,9 @@ public class panelChangePassSetting extends JPanel {
 		logoShowConfirmNewPass.addMouseListener(new PasswordIcon(logoShowConfirmNewPass, pwdConfirmNewPass));
 		panelConfirmNewPass.add(logoShowConfirmNewPass);
 		
+		tick = new Timer(delay, lblStatusClearer);
+		tick.setRepeats(false);
+		
 		JButton changePassButton = new JButton("Change Password");
 		changePassButton.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		changePassButton.setBorder(null);
@@ -110,23 +123,47 @@ public class panelChangePassSetting extends JPanel {
 				String currentPass = String.valueOf(getCurrentPass), newPass = String.valueOf(getNewPass), confirmNewPass = String.valueOf(getConfirmNewPass);
 				try {
 					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
-					PreparedStatement checkCurrentPass = conn.prepareStatement("select pass from userInfo where pass='"+currentPass+"'");
+					PreparedStatement checkCurrentPass = conn.prepareStatement("select pass from userInfo where pass='"+currentPass+"' and userid='"+uid+"'");
 					ResultSet executeCheckCurrentPass = checkCurrentPass.executeQuery();
-					if(executeCheckCurrentPass.next()) {
-						if(newPass.equals(confirmNewPass)) {
-							PreparedStatement changePass = conn.prepareStatement("update userInfo set pass='"+newPass+"' where userID ='"+uid+"'");	
-							ResultSet executeChangePass = changePass.executeQuery();
-							if(executeChangePass.next()) {
-								JOptionPane.showMessageDialog(null, "Changed password successfully!");
+					if(!currentPass.isEmpty() && !newPass.isEmpty() && !confirmNewPass.isEmpty()) {
+						if(executeCheckCurrentPass.next()) {
+							if(newPass.equals(confirmNewPass)) {
+								if(newPass.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\\p{Punct}])(?=\\S+$).{8,}")){
+									passwordChecker = true;
+								}
+								if(!passwordChecker) {
+									lblStatus.setText("<html>Password must contain atleast 8 characters and requires a number, a lowercase letter, an uppercase letter, a special character and must not contain any spaces!</html>");
+									int longerDelay = 7000;
+									Timer longerTick = new Timer(longerDelay, lblStatusClearer);
+									longerTick.setRepeats(false);
+									longerTick.start();
+								} else {
+									PreparedStatement changePass = conn.prepareStatement("update userInfo set pass='"+newPass+"' where userID ='"+uid+"'");	
+									ResultSet executeChangePass = changePass.executeQuery();
+									if(executeChangePass.next()) {
+										lblStatus.setForeground(Color.GREEN);
+										lblStatus.setText("Changed password successfully!");
+										tick.start();
+									} else {
+										lblStatus.setText("Changed password failed!");
+										tick.start();
+									}
+									changePass.close();
+								}
 							} else {
-								
+								lblStatus.setText("Password does not match!");
+								tick.start();
 							}
 						} else {
-							
+							lblStatus.setText("Error!");
+							tick.start();
 						}
 					} else {
-						
+						lblStatus.setText("Enter all of the credentials!");
+						tick.start();
 					}
+					conn.close();
+					checkCurrentPass.close();
 				} catch (SQLException sql) {
 					sql.printStackTrace();
 				}
@@ -134,11 +171,11 @@ public class panelChangePassSetting extends JPanel {
 		});
 		panel.add(changePassButton);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setForeground(new Color(255, 0, 0));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(100, 320, 334, 38);
-		panel.add(lblNewLabel);
+		lblStatus = new JLabel("");
+		lblStatus.setForeground(new Color(255, 0, 0));
+		lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStatus.setBounds(100, 320, 334, 38);
+		panel.add(lblStatus);
 		
 		JLabel lblCurrentPass = new JLabel("Current Password:");
 		lblCurrentPass.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
@@ -162,6 +199,7 @@ public class panelChangePassSetting extends JPanel {
 		logoPasswordPolicy.setBounds(195, 128, 24, 24);
 		panel.add(logoPasswordPolicy);
 		logoPasswordPolicy.setIcon(new ImageIcon(Images.question));
-
+		logoPasswordPolicy.setToolTipText("<html>The password must have at least: <br/>- Contains 8 characters or more. <br/>- Contains atleast 1 lowercase and 1 uppercase letter."
+				+ "<br/>- Contains 1 special character. <br/>- Does not contain spaces. </html>");
 	}
 }

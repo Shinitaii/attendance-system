@@ -104,6 +104,8 @@ public class ResetPassword extends JFrame {
 		logoShowCPass.addMouseListener(new PasswordIcon(logoShowCPass, pwdCPassword));
 		panelCPass.add(logoShowCPass);
 		
+		
+		
 		JButton CheckA = new JButton();
 		CheckA.setBorder(null);
 		CheckA.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -123,7 +125,7 @@ public class ResetPassword extends JFrame {
 					tick.setRepeats(false);
 					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
 					PreparedStatement changePassword = conn.prepareStatement("update userInfo set pass='"+password+"' where userid ='"+uid+"';");
-					if(password.isEmpty() || cPassword.isEmpty()) {
+					if(password.isEmpty() && cPassword.isEmpty()) {
 						lblStatus.setText("Enter all of the credentials!");
 					} else {
 						if(password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\\p{Punct}])(?=\\S+$).{8,}")) {
@@ -220,4 +222,7 @@ public class ResetPassword extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 	}
+	
+	
+	
 }
