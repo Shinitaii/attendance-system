@@ -32,26 +32,25 @@ public class panelSettings extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
-		JPanel panelGeneral = new JPanel();
-		panelGeneral.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelGeneral.setBackground(new Color(65, 105, 225));
-		panelGeneral.addMouseListener(new PropertiesListener(panelGeneral) {
-
+		JPanel panelAccount = new JPanel();
+		panelAccount.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelAccount.setBackground(new Color(65, 105, 225));
+		panelAccount.addMouseListener(new PropertiesListener(panelAccount) {
 			public void mouseClicked(MouseEvent e) {
 				menuClicked(panelAccountSetting);
 			}
 		});
 		
-		panelGeneral.setBounds(10, 10, 150, 50);
-		panel.add(panelGeneral);
-		panelGeneral.setLayout(null);
+		panelAccount.setBounds(10, 10, 150, 50);
+		panel.add(panelAccount);
+		panelAccount.setLayout(null);
 		
-		JLabel lblGeneral = new JLabel("General");
-		lblGeneral.setForeground(new Color(255, 255, 255));
-		lblGeneral.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
-		lblGeneral.setHorizontalAlignment(SwingConstants.CENTER);
-		lblGeneral.setBounds(10, 11, 130, 28);
-		panelGeneral.add(lblGeneral);
+		JLabel lblAccount = new JLabel("Account");
+		lblAccount.setForeground(new Color(255, 255, 255));
+		lblAccount.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
+		lblAccount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAccount.setBounds(10, 11, 130, 28);
+		panelAccount.add(lblAccount);
 		
 		JPanel panelChangePass = new JPanel();
 		panelChangePass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
