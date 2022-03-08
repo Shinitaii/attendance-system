@@ -89,7 +89,7 @@ public class panelAccountSetting extends JPanel {
 		browseButton.setBounds(344, 262, 131, 30);
 		add(browseButton);
 		
-		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 800k");
+		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 30KB");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(new Color(0, 255, 255));
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
@@ -212,7 +212,7 @@ public class panelAccountSetting extends JPanel {
 		btnSave.addMouseListener(new PropertiesListener(btnSave));
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+			
 				try {
 					JPasswordField passField = new JPasswordField(20);
 					char[] pass = passField.getPassword();
@@ -260,7 +260,7 @@ public class panelAccountSetting extends JPanel {
 		Path photoLocation = Paths.get(fileName);
 		try {
 			long bytes = Files.size(photoLocation);
-			if(bytes < 100000) {
+			if(bytes < 30000) {
 				photoSizeCheck = true;
 			} else {
 				photoSizeCheck = false;
