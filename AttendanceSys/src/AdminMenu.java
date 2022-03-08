@@ -22,6 +22,10 @@ public class AdminMenu extends JFrame {
 	private panelHome panelHome;
 	private panelDashboard panelDashboard;
 	private panelSettings panelSettings;
+	private panelSkewl panelSkewl;
+	private panelDepartment panelDepartment;
+	private panelMembros panelMembros;
+	private panelAttendance panelAttendance;
 	private JPanel contentPane;
 	private String username = Login.pubUsername, uid = Login.pubUID;
 	public static void main(String[] args) {
@@ -56,6 +60,15 @@ public class AdminMenu extends JFrame {
 		panelDashboard.setBounds(0, 0, 559, 539);
 		panelSettings = new panelSettings();
 		panelSettings.setBounds(0, 0, 559, 539);
+		panelSkewl = new panelSkewl();
+		panelSkewl.setBounds(0, 0, 559, 539);
+		panelDepartment = new panelDepartment();
+		panelDepartment.setBounds(0, 0, 559, 539);
+		panelMembros = new panelMembros();
+		panelMembros.setBounds(0, 0, 559, 539);
+		panelAttendance = new panelAttendance();
+		panelAttendance.setBounds(0, 0, 559, 539);
+		
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225).darker()));
@@ -112,7 +125,7 @@ public class AdminMenu extends JFrame {
 		panelSchool.addMouseListener(new PropertiesListener(panelSchool) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelDashboard);
+				menuClicked(panelSkewl);
 			}
 			
 		});
@@ -140,7 +153,7 @@ public class AdminMenu extends JFrame {
 		panelDept.addMouseListener(new PropertiesListener(panelDept) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelDashboard);
+				menuClicked(panelDepartment);
 			}
 			
 		});
@@ -168,7 +181,7 @@ public class AdminMenu extends JFrame {
 		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelDashboard);
+				menuClicked(panelAttendance);
 			}
 			
 		});
@@ -196,7 +209,7 @@ public class AdminMenu extends JFrame {
 		panelMembers.addMouseListener(new PropertiesListener(panelMembers) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelDashboard);
+				menuClicked(panelMembros);
 			}
 			
 		});
@@ -304,6 +317,10 @@ public class AdminMenu extends JFrame {
 		panelMainContent.add(panelHome);
 		panelMainContent.add(panelDashboard);
 		panelMainContent.add(panelSettings);
+		panelMainContent.add(panelSkewl);
+		panelMainContent.add(panelDepartment);
+		panelMainContent.add(panelMembros);
+		panelMainContent.add(panelAttendance);
 		
 		menuClicked(panelHome);
 		setResizable(false);
@@ -314,6 +331,11 @@ public class AdminMenu extends JFrame {
 		panelHome.setVisible(false);
 		panelDashboard.setVisible(false);
 		panelSettings.setVisible(false);
+		panelSkewl.setVisible(false);
+		panelDepartment.setVisible(false);
+		panelMembros.setVisible(false);
+		panelAttendance.setVisible(false);
+		
 		
 		panel.setVisible(true);
 		
