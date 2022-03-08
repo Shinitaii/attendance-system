@@ -1,14 +1,28 @@
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
+
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.Image;
@@ -24,6 +38,10 @@ public class panelAccountSetting extends JPanel {
 	private JTextField txtMN;
 	private JLabel lblpfp;
 	AdminMenu AdminMenu;
+	private int uid = Integer.valueOf(Login.pubUID);
+	String path;
+	boolean photoSizeCheck = false;
+	FileInputStream isPhoto;
 
 	public panelAccountSetting() {
 		setBackground(new Color(255, 255, 255));
@@ -39,6 +57,7 @@ public class panelAccountSetting extends JPanel {
 		panel.setLayout(null);
 		
 		lblpfp = new JLabel("");
+		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 150, 150);
 		panel.add(lblpfp);
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
@@ -55,8 +74,13 @@ public class panelAccountSetting extends JPanel {
 				int returnPhoto = photoSelector.showOpenDialog(AdminMenu);
 				if(returnPhoto == JFileChooser.APPROVE_OPTION) {
 					File selectedPhoto = photoSelector.getSelectedFile();
-					String path = selectedPhoto.getAbsolutePath();
+					path = selectedPhoto.getAbsolutePath();
+					ImageSizeChecker(path);
+					if(photoSizeCheck) {
 					lblpfp.setIcon(ResizeImage(path));
+					} else {
+						JOptionPane.showMessageDialog(null, "The photo you selected is higher than 30 KB!");
+					}
 				}
 			}
 		});
@@ -80,6 +104,8 @@ public class panelAccountSetting extends JPanel {
 		panelFN.setLayout(null);
 		
 		txtFN = new JTextField();
+		txtFN.setForeground(new Color(65, 105, 225));
+		txtFN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtFN.setBorder(null);
 		txtFN.setSelectionColor(new Color(65, 105, 225));
 		txtFN.setColumns(10);
@@ -94,6 +120,8 @@ public class panelAccountSetting extends JPanel {
 		panelLN.setLayout(null);
 		
 		txtLN = new JTextField();
+		txtLN.setForeground(new Color(65, 105, 225));
+		txtLN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtLN.setBorder(null);
 		txtLN.setSelectionColor(new Color(65, 105, 225));
 		txtLN.setColumns(10);
@@ -108,6 +136,8 @@ public class panelAccountSetting extends JPanel {
 		panelMN.setLayout(null);
 		
 		txtMN = new JTextField();
+		txtMN.setForeground(new Color(65, 105, 225));
+		txtMN.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txtMN.setBorder(null);
 		txtMN.setSelectionColor(new Color(65, 105, 225));
 		txtMN.setColumns(10);
@@ -132,10 +162,10 @@ public class panelAccountSetting extends JPanel {
 		lblMname.setBounds(10, 281, 150, 29);
 		add(lblMname);
 		
-		JLabel lblNewLabel_3 = new JLabel("UID : ");
-		lblNewLabel_3.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
-		lblNewLabel_3.setBounds(334, 222, 151, 40);
-		add(lblNewLabel_3);
+		JLabel userid = new JLabel("UID : "+uid);
+		userid.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
+		userid.setBounds(334, 222, 151, 40);
+		add(userid);
 		
 		JPanel panelUserN = new JPanel();
 		panelUserN.setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -166,6 +196,11 @@ public class panelAccountSetting extends JPanel {
 		btnReset.setBackground(new Color(65, 105, 225));
 		btnReset.setBounds(315, 11, 90, 30);
 		btnReset.addMouseListener(new PropertiesListener(btnReset));
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lblpfp.setIcon(null);
+			}
+		});
 		add(btnReset);
 		
 		JButton btnSave = new JButton("Save");
@@ -175,7 +210,64 @@ public class panelAccountSetting extends JPanel {
 		btnSave.setBackground(new Color(65, 105, 225));
 		btnSave.setBounds(415, 11, 90, 30);
 		btnSave.addMouseListener(new PropertiesListener(btnSave));
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					JPasswordField passField = new JPasswordField(20);
+					char[] pass = passField.getPassword();
+					String databasePass = "", obtainedPass = String.valueOf(pass), username = txtUser.getText(), firstname = txtFN.getText(), middlename = txtMN.getText(), lastname = txtLN.getText();
+					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
+					Box box = Box.createHorizontalBox();
+					box.add(passField);
+					int button = JOptionPane.showConfirmDialog(null, box, "Input your password.", JOptionPane.OK_CANCEL_OPTION);
+					if(button == JOptionPane.OK_OPTION) {
+						obtainedPass = String.valueOf(pass);
+						PreparedStatement checkPass = conn.prepareStatement("select pass from userInfo where pass='"+obtainedPass+"'");
+						ResultSet checkingPass = checkPass.executeQuery();
+						while(checkingPass.next()) {
+							databasePass = checkingPass.getString("pass");
+						}
+						if(databasePass.equals(obtainedPass)) {
+							try {
+								File photo = new File(path);
+								isPhoto = new FileInputStream(photo);
+								isPhoto.close();
+							} catch (Exception photo) {
+								photo.printStackTrace();
+							}
+							PreparedStatement saveCredentials = conn.prepareStatement("update userInfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"', profilepicture='"+isPhoto+"' where userid ='"+uid+"'");
+							int saving = saveCredentials.executeUpdate();
+							if(saving == 1) {
+								JOptionPane.showMessageDialog(null, "Credentials are now updated and saved!");
+								checkPass.close();
+								saveCredentials.close();
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Incorrect password!");
+						}
+					}
+					conn.close();
+				} catch (SQLException sql) {
+					sql.printStackTrace();
+				}
+			}
+		});
 		add(btnSave);
+	}
+	
+	public void ImageSizeChecker(String fileName) {
+		Path photoLocation = Paths.get(fileName);
+		try {
+			long bytes = Files.size(photoLocation);
+			if(bytes < 100000) {
+				photoSizeCheck = true;
+			} else {
+				photoSizeCheck = false;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public ImageIcon ResizeImage(String ImagePath) { //this is where you get the images
