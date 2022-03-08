@@ -107,6 +107,118 @@ public class AdminMenu extends JFrame {
 		panelDashB.add(lblDashb);
 		lblDashb.setIcon(new ImageIcon(Images.dashboard));
 		
+		JPanel panelSchool = new JPanel();
+		panelSchool.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelSchool.addMouseListener(new PropertiesListener(panelSchool) {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				menuClicked(panelDashboard);
+			}
+			
+		});
+		panelSchool.setLayout(null);
+		panelSchool.setBorder(null);
+		panelSchool.setBackground(new Color(65, 105, 225));
+		panelSchool.setBounds(0, 240, 205, 64);
+		panel.add(panelSchool);
+		
+		JLabel lblSchool = new JLabel("School");
+		lblSchool.setForeground(Color.WHITE);
+		lblSchool.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblSchool.setBounds(54, 11, 141, 42);
+		panelSchool.add(lblSchool);
+		
+		JLabel lblSkewl = new JLabel("");
+		lblSkewl.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblSkewl.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSkewl.setBounds(10, 11, 36, 42);
+		lblSkewl.setIcon(new ImageIcon(Images.school));
+		panelSchool.add(lblSkewl);
+		
+		JPanel panelDept = new JPanel();
+		panelDept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelDept.addMouseListener(new PropertiesListener(panelDept) {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				menuClicked(panelDashboard);
+			}
+			
+		});
+		panelDept.setLayout(null);
+		panelDept.setBorder(null);
+		panelDept.setBackground(new Color(65, 105, 225));
+		panelDept.setBounds(0, 305, 205, 64);
+		panel.add(panelDept);
+		
+		JLabel lblDepartment = new JLabel("Department");
+		lblDepartment.setForeground(Color.WHITE);
+		lblDepartment.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblDepartment.setBounds(54, 11, 141, 42);
+		panelDept.add(lblDepartment);
+		
+		JLabel lblDept = new JLabel("");
+		lblDept.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblDept.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDept.setBounds(10, 11, 36, 42);
+		lblDept.setIcon(new ImageIcon(Images.department));
+		panelDept.add(lblDept);
+		
+		JPanel panelAttend = new JPanel();
+		panelAttend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				menuClicked(panelDashboard);
+			}
+			
+		});
+		panelAttend.setLayout(null);
+		panelAttend.setBorder(null);
+		panelAttend.setBackground(new Color(65, 105, 225));
+		panelAttend.setBounds(0, 369, 205, 64);
+		panel.add(panelAttend);
+		
+		JLabel lblAttendance = new JLabel("Attendance");
+		lblAttendance.setForeground(Color.WHITE);
+		lblAttendance.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblAttendance.setBounds(54, 11, 141, 42);
+		panelAttend.add(lblAttendance);
+		
+		JLabel lblAttend = new JLabel("");
+		lblAttend.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblAttend.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAttend.setBounds(10, 11, 36, 42);
+		lblAttend.setIcon(new ImageIcon(Images.logo2));
+		panelAttend.add(lblAttend);
+		
+		JPanel panelMembers = new JPanel();
+		panelMembers.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelMembers.addMouseListener(new PropertiesListener(panelMembers) {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				menuClicked(panelDashboard);
+			}
+			
+		});
+		panelMembers.setLayout(null);
+		panelMembers.setBorder(null);
+		panelMembers.setBackground(new Color(65, 105, 225));
+		panelMembers.setBounds(0, 433, 205, 64);
+		panel.add(panelMembers);
+		
+		JLabel lblMembers = new JLabel("Members");
+		lblMembers.setForeground(Color.WHITE);
+		lblMembers.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblMembers.setBounds(54, 11, 141, 42);
+		panelMembers.add(lblMembers);
+		
+		JLabel lblMems = new JLabel("");
+		lblMems.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblMems.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMems.setBounds(10, 11, 36, 42);
+		lblMems.setIcon(new ImageIcon(Images.members));
+		panelMembers.add(lblMems);
+		
 		JPanel panelUserInfo = new JPanel();
 		panelUserInfo.setLayout(null);
 		panelUserInfo.setBorder(new LineBorder(new Color(65, 105, 225).darker()));

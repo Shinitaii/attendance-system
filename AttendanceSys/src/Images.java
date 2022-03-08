@@ -19,4 +19,11 @@ public class Images {
 	public static Image question = new ImageIcon(Images.class.getResource("res/question.png")).getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
 	public static Image courses = new ImageIcon(Images.class.getResource("res/course.png")).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 	public static Image signoutred = new ImageIcon(Images.class.getResource("res/signoutred.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	public static Image logo2 = new ImageIcon(Images.class.getResource("res/logo2.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	public static Image department = new ImageIcon(Images.class.getResource("res/department.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	public static Image school = new ImageIcon(Images.class.getResource("res/school.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	public static Image members = new ImageIcon(Images.class.getResource("res/members.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	
+	
+	
 }
