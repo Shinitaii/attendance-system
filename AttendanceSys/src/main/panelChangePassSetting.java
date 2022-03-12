@@ -123,7 +123,7 @@ public class panelChangePassSetting extends JPanel {
 				String currentPass = String.valueOf(getCurrentPass), newPass = String.valueOf(getNewPass), confirmNewPass = String.valueOf(getConfirmNewPass);
 				boolean passwordChecker = false;
 				try {
-					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
+					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 					PreparedStatement checkCurrentPass = conn.prepareStatement("select pass from userInfo where pass='"+currentPass+"'");
 					ResultSet executeCheckCurrentPass = checkCurrentPass.executeQuery();
 					if(executeCheckCurrentPass.next()) {

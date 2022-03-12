@@ -219,7 +219,7 @@ public class panelAccountSetting extends JPanel {
 					JPasswordField passField = new JPasswordField(20);
 					char[] pass = passField.getPassword();
 					String databasePass = "", obtainedPass = String.valueOf(pass), username = txtUser.getText(), firstname = txtFN.getText(), middlename = txtMN.getText(), lastname = txtLN.getText();
-					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
+					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 					Box box = Box.createHorizontalBox();
 					box.add(passField);
 					int button = JOptionPane.showConfirmDialog(null, box, "Input your password.", JOptionPane.OK_CANCEL_OPTION);
