@@ -1,7 +1,9 @@
+package main;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.Color;
 
 import javax.swing.Box;
@@ -49,17 +51,17 @@ public class panelAccountSetting extends JPanel {
 		setBorder(new LineBorder(new Color(65, 105, 225)));
 		setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(65, 105, 225)));
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(334, 71, 150, 150);
-		add(panel);
-		panel.setLayout(null);
+		JPanel panelPFP = new JPanel();
+		panelPFP.setBorder(new LineBorder(new Color(65, 105, 225)));
+		panelPFP.setBackground(new Color(255, 255, 255));
+		panelPFP.setBounds(334, 71, 150, 150);
+		add(panelPFP);
+		panelPFP.setLayout(null);
 		
 		lblpfp = new JLabel("");
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 150, 150);
-		panel.add(lblpfp);
+		panelPFP.add(lblpfp);
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JButton browseButton = new JButton("Browse Image");

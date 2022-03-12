@@ -1,21 +1,27 @@
+package main;
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class panelHome extends JPanel {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Create the panel.
-	 */
+	
+	private String username = Login.pubUsername, firstname = Login.pubFN, middlename = Login.pubMN, lastname = Login.pubLN;
+	private int uid = Integer.valueOf(Login.pubUID);
+ 	
 	public panelHome() {
 		setBackground(new Color(255, 255, 255));
 		setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -27,8 +33,8 @@ public class panelHome extends JPanel {
 		JLabel lblWelcome = new JLabel("Welcome,");
 		lblWelcome.setForeground(new Color(65, 105, 225));
 		lblWelcome.setHorizontalAlignment(SwingConstants.LEFT);
-		lblWelcome.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 40));
-		lblWelcome.setBounds(10, 60, 175, 60);
+		lblWelcome.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 35));
+		lblWelcome.setBounds(10, 60, 153, 60);
 		add(lblWelcome);
 		
 		JPanel panelpfp = new JPanel();
@@ -38,22 +44,43 @@ public class panelHome extends JPanel {
 		add(panelpfp);
 		panelpfp.setLayout(null);
 		
-		JLabel lblAccountS = new JLabel("*Username*");
+		JLabel lblpfp = new JLabel();
+		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
+		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
+		lblpfp.setBounds(0, 0, 153, 153);
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
+			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+uid+"'");
+			ResultSet get = getPhoto.executeQuery();
+			if(get.next()) {
+				byte[] photo = get.getBytes("profilePicture");
+				Image img = new ImageIcon(photo).getImage().getScaledInstance(lblpfp.getWidth(), lblpfp.getHeight(), Image.SCALE_SMOOTH);
+				lblpfp.setIcon(new ImageIcon(img));
+			} else {
+				
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		panelpfp.add(lblpfp);
+		
+		JLabel lblAccountS = new JLabel(username);
 		lblAccountS.setForeground(new Color(0, 0, 0));
 		lblAccountS.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
 		lblAccountS.setBounds(179, 194, 280, 42);
 		add(lblAccountS);
 		
-		JLabel lblUID = new JLabel("UID:");
+		JLabel lblUID = new JLabel("UID:"+uid);
 		lblUID.setForeground(new Color(0, 0, 0));
 		lblUID.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 30));
 		lblUID.setBounds(10, 285, 376, 52);
 		add(lblUID);
 		
-		JLabel lblName = new JLabel("*Full Name*");
+		JLabel lblName = new JLabel(firstname + " " + middlename + " " + lastname + ".");
 		lblName.setForeground(new Color(65, 105, 225));
-		lblName.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 25));
-		lblName.setBounds(179, 76, 366, 42);
+		lblName.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblName.setBounds(162, 74, 366, 42);
 		add(lblName);
 		
 		JLabel lblUsername = new JLabel("*Account Status*");

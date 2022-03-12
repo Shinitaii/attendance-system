@@ -1,7 +1,10 @@
+package main;
 import javax.swing.*;
 import javax.swing.border.*;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.InputStream;
 import java.sql.*;
 
 public class Login extends JFrame {
@@ -13,7 +16,7 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String pubUsername, pubUID;
+	public static String pubUsername, pubUID, pubFN, pubMN, pubLN;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JLabel lblStatus;
@@ -118,14 +121,17 @@ public class Login extends JFrame {
 					char[] getPassword = pwdPassword.getPassword();
 					String username = txtUsername.getText(), password = String.valueOf(getPassword);
 					pubUsername = username;
-					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
+					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkUID = conn.prepareStatement("select userid from userInfo where username='"+username+"'");
-						ResultSet whatUID = checkUID.executeQuery();
-						while (whatUID.next()) {
-							pubUID = whatUID.getString("userid");
+						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname from userInfo where username='"+username+"'");
+						ResultSet whatInfo = checkInfo.executeQuery();
+						while (whatInfo.next()) {
+							pubUID = whatInfo.getString("userid");
+							pubFN = whatInfo.getString("firstname");
+							pubMN = whatInfo.getString("middlename");
+							pubLN = whatInfo.getString("lastname");
 						}
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {

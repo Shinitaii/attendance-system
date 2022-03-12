@@ -1,5 +1,7 @@
+package main;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
