@@ -1,7 +1,9 @@
 package main;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -19,8 +21,6 @@ public class Register extends JFrame {
 	private JRadioButton male, female;
 	private ButtonGroup groupGender;
 	private boolean passwordChecker = false;
-	String path;
-	boolean photoSizeCheck = false;
 	String obtainedGender = "", obtainedOccupation = "";
 	
 	public static void main(String[] args) {
@@ -256,7 +256,13 @@ public class Register extends JFrame {
 										longerTick.setRepeats(false);
 										longerTick.start();
 									} else {
-										FileInputStream inputPhoto = new FileInputStream(path);
+										FileInputStream inputPhoto = null;
+										try {
+										String path = browseAction.pubPath;
+										inputPhoto = new FileInputStream(path);
+										} catch (IOException photo) {
+											JOptionPane.showMessageDialog(null, "No photo!");
+										}
 										PreparedStatement register = conn.prepareStatement("INSERT INTO userInfo (firstName, middlename, lastname, username, pass, gender, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
 										register.setString(1, firstName);
 										register.setString(2, middleName);

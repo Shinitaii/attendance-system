@@ -1,4 +1,5 @@
 package main;
+
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 
 
 public class AdminMenu extends JFrame {
@@ -44,7 +46,7 @@ public class AdminMenu extends JFrame {
 	}
 
 	public AdminMenu() {
-		setIconImage(Images.bLogo);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ForgotPassword.class.getResource("/res/attendance.png")));
 		setTitle("Attendance");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);

@@ -1,4 +1,5 @@
 package main;
+
 import javax.swing.JPanel;
 
 public class panelCourse extends JPanel {
