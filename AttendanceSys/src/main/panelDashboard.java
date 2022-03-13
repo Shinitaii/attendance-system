@@ -1,5 +1,4 @@
 package main;
-
 import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.Color;

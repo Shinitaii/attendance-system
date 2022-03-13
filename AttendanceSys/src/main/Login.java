@@ -1,5 +1,4 @@
 package main;
-
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -19,7 +18,6 @@ public class Login extends JFrame {
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
 	public static String pubUsername, pubUID, pubFN, pubMN, pubLN;
-	public static byte[] pubPhoto;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JLabel lblStatus;
@@ -129,14 +127,13 @@ public class Login extends JFrame {
 					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, profilePicture from userInfo where username='"+username+"'");
+						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname from userInfo where username='"+username+"'");
 						ResultSet whatInfo = checkInfo.executeQuery();
 						while (whatInfo.next()) {
 							pubUID = whatInfo.getString("userid");
 							pubFN = whatInfo.getString("firstname");
 							pubMN = whatInfo.getString("middlename");
 							pubLN = whatInfo.getString("lastname");
-							pubPhoto = whatInfo.getBytes("profilePicture");
 						}
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {

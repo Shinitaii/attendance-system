@@ -1,11 +1,19 @@
 package main;
-
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.swing.SwingConstants;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -33,15 +41,35 @@ public class panelHome extends JPanel {
 		JPanel panelpfp = new JPanel();
 		panelpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelpfp.setBackground(new Color(255, 255, 255));
-		panelpfp.setBounds(10, 131, 150, 150);
+		panelpfp.setBounds(10, 131, 153, 153);
 		add(panelpfp);
 		panelpfp.setLayout(null);
 		
 		JLabel lblpfp = new JLabel();
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
+<<<<<<< Updated upstream
 		lblpfp.setBounds(0, 0, 150, 150);
 		//lblpfp.setIcon(new ImageIcon(Images.profile));
+=======
+		lblpfp.setBounds(0, 0, 153, 153);
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
+			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+uid+"'");
+			ResultSet get = getPhoto.executeQuery();
+			Blob photo = null;
+			while(get.next()) {
+				photo = get.getBlob("profilePicture");
+				
+			}
+			byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+			lblpfp.setIcon(new ImageIcon(image));
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+>>>>>>> Stashed changes
 		panelpfp.add(lblpfp);
 		
 		JLabel lblAccountS = new JLabel(username);

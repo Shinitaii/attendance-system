@@ -1,5 +1,4 @@
 package main;
-
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
@@ -13,8 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -35,6 +34,9 @@ public class panelAccountSetting extends JPanel {
 	private JLabel lblpfp;
 	AdminMenu AdminMenu;
 	private int uid = Integer.valueOf(Login.pubUID);
+	String path;
+	boolean photoSizeCheck = false;
+	FileInputStream isPhoto;
 
 	public panelAccountSetting() {
 		setBackground(new Color(255, 255, 255));
@@ -203,14 +205,14 @@ public class panelAccountSetting extends JPanel {
 						while(checkingPass.next()) {
 							databasePass = checkingPass.getString("pass");
 						}
-						String path = browseAction.pubPath;
-						FileInputStream isPhoto = null;
-						try {
-						isPhoto = new FileInputStream(path);
-						} catch (IOException photo) {
-							photo.printStackTrace();
-						}
 						if(databasePass.equals(obtainedPass)) {
+							try {
+								File photo = new File(path);
+								isPhoto = new FileInputStream(photo);
+								isPhoto.close();
+							} catch (Exception photo) {
+								photo.printStackTrace();
+							}
 							PreparedStatement saveCredentials = conn.prepareStatement("update userInfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"', profilepicture='"+isPhoto+"' where userid ='"+uid+"'");
 							int saving = saveCredentials.executeUpdate();
 							if(saving == 1) {
