@@ -25,6 +25,7 @@ public class Login extends JFrame {
 	private JLabel lblStatus;
 	int delayLabel = 100, delayButton = 50;
 	
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -41,7 +42,7 @@ public class Login extends JFrame {
 
 	public Login() {
 		setTitle("Login");
-		setIconImage(Images.readImage("/attendance.png"));
+		setIconImage(Images.bLogo);
 		setBackground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 500);
@@ -69,7 +70,7 @@ public class Login extends JFrame {
 		logoUsername = new JLabel("");
 		logoUsername.setBounds(7, 11, 24, 24);
 		panelUsername.add(logoUsername);
-		logoUsername.setIcon(Images.readImage("/user.png"));
+		logoUsername.setIcon(new ImageIcon(Images.user));
 		
 		lblUsername = new JLabel("Username");
 		lblUsername.setForeground(new Color(65, 105, 225));
