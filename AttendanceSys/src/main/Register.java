@@ -26,7 +26,6 @@ public class Register extends JFrame {
 	private JRadioButton male, female;
 	private ButtonGroup groupGender;
 	private boolean passwordChecker = false;
-	private byte[] photo;
 	String path;
 	boolean photoSizeCheck = false;
 	String obtainedGender = "", obtainedOccupation = "";
@@ -272,7 +271,7 @@ public class Register extends JFrame {
 										register.setString(4, username);
 										register.setString(5, password);
 										register.setString(6, obtainedGender);
-										register.setBinaryStream(7,(InputStream) inputPhoto, (int)path.length());
+										register.setBinaryStream(7, inputPhoto);
 										int creation = register.executeUpdate();
 												if(creation == 1) {
 												String userID = "";
@@ -297,6 +296,8 @@ public class Register extends JFrame {
 												dispose();
 												register.close();
 												checkUserID.close();
+											} else {
+												JOptionPane.showMessageDialog(null, "Something went wrong.");
 											}
 										}
 									}							
@@ -414,28 +415,10 @@ public class Register extends JFrame {
 		browseButton.setBorder(null);
 		browseButton.setBackground(new Color(65, 105, 225));
 		browseButton.setBounds(167, 141, 78, 30);
-		browseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser photoSelector = new JFileChooser();
-				photoSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "png");
-				photoSelector.setFileFilter(filter);
-				int returnPhoto = photoSelector.showOpenDialog(null);
-				if(returnPhoto == JFileChooser.APPROVE_OPTION) {
-					File selectedPhoto = photoSelector.getSelectedFile();
-					path = selectedPhoto.getAbsolutePath();
-					ImageSizeChecker(path);
-					if(photoSizeCheck) {
-					lblpfp.setIcon(ResizeImage(path));
-					} else {
-						JOptionPane.showMessageDialog(null, "The photo you selected is higher than 30 KB!");
-					}
-				}
-			}
-		});
+		browseButton.addActionListener(new browseAction(lblpfp));
 		contentPane.add(browseButton);
 		
-		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 30KB");
+		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 16MB");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(Color.CYAN);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
@@ -443,24 +426,6 @@ public class Register extends JFrame {
 		contentPane.add(lblNewLabel_1);
 		setResizable(false);
 	}
-	
-	public void ImageSizeChecker(String fileName) {
-		Path photoLocation = Paths.get(fileName);
-		try {
-			long bytes = Files.size(photoLocation);
-			if(bytes < 30000) {
-				photoSizeCheck = true;
-			} else {
-				photoSizeCheck = false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public ImageIcon ResizeImage(String ImagePath) { //this is where you get the images
-		Image profile = new ImageIcon(ImagePath).getImage().getScaledInstance(lblpfp.getWidth(), lblpfp.getHeight(), Image.SCALE_SMOOTH);
-		ImageIcon iconProfile = new ImageIcon(profile);
-		return iconProfile;
-	}
+
 }
+

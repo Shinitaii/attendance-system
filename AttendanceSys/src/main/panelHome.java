@@ -4,15 +4,16 @@ import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import javax.swing.SwingConstants;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -49,16 +50,17 @@ public class panelHome extends JPanel {
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 153, 153);
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+uid+"'");
 			ResultSet get = getPhoto.executeQuery();
-			if(get.next()) {
-				byte[] photo = get.getBytes("profilePicture");
-				Image img = new ImageIcon(photo).getImage().getScaledInstance(lblpfp.getWidth(), lblpfp.getHeight(), Image.SCALE_SMOOTH);
-				lblpfp.setIcon(new ImageIcon(img));
-			} else {
+			Blob photo = null;
+			while(get.next()) {
+				photo = get.getBlob("profilePicture");
 				
 			}
+			byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+			lblpfp.setIcon(new ImageIcon(image));
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();

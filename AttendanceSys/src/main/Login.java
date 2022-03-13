@@ -4,7 +4,6 @@ import javax.swing.border.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.InputStream;
 import java.sql.*;
 
 public class Login extends JFrame {

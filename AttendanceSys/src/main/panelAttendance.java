@@ -10,6 +10,11 @@ import java.awt.Font;
 public class panelAttendance extends JPanel {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Create the panel.
 	 */
 	public panelAttendance() {

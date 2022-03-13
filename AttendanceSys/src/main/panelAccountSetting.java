@@ -67,25 +67,7 @@ public class panelAccountSetting extends JPanel {
 		JButton browseButton = new JButton("Browse Image");
 		browseButton.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
 		browseButton.setBorder(null);
-		browseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser photoSelector = new JFileChooser();
-				photoSelector.setCurrentDirectory(new File(System.getProperty("user.home")));
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "png");
-				photoSelector.setFileFilter(filter);
-				int returnPhoto = photoSelector.showOpenDialog(AdminMenu);
-				if(returnPhoto == JFileChooser.APPROVE_OPTION) {
-					File selectedPhoto = photoSelector.getSelectedFile();
-					path = selectedPhoto.getAbsolutePath();
-					ImageSizeChecker(path);
-					if(photoSizeCheck) {
-					lblpfp.setIcon(ResizeImage(path));
-					} else {
-						JOptionPane.showMessageDialog(null, "The photo you selected is higher than 30 KB!");
-					}
-				}
-			}
-		});
+		browseButton.addActionListener(new browseAction(lblpfp));
 		browseButton.setForeground(new Color(255, 255, 255));
 		browseButton.setBackground(new Color(65, 105, 225));
 		browseButton.setBounds(344, 262, 131, 30);
@@ -256,25 +238,5 @@ public class panelAccountSetting extends JPanel {
 			}
 		});
 		add(btnSave);
-	}
-	
-	public void ImageSizeChecker(String fileName) {
-		Path photoLocation = Paths.get(fileName);
-		try {
-			long bytes = Files.size(photoLocation);
-			if(bytes < 30000) {
-				photoSizeCheck = true;
-			} else {
-				photoSizeCheck = false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public ImageIcon ResizeImage(String ImagePath) { //this is where you get the images
-		Image profile = new ImageIcon(ImagePath).getImage().getScaledInstance(lblpfp.getWidth(), lblpfp.getHeight(), Image.SCALE_SMOOTH);
-		ImageIcon iconProfile = new ImageIcon(profile);
-		return iconProfile;
 	}
 }
