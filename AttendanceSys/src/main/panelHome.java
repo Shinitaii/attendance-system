@@ -41,7 +41,7 @@ public class panelHome extends JPanel {
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 150, 150);
-		lblpfp.setIcon(new ImageIcon(Images.profile));
+		//lblpfp.setIcon(new ImageIcon(Images.profile));
 		panelpfp.add(lblpfp);
 		
 		JLabel lblAccountS = new JLabel(username);

@@ -82,7 +82,7 @@ public class ForgotPassword extends JFrame {
 		JLabel logoUser = new JLabel("New label");
 		logoUser.setBounds(10, 11, 24, 24);
 		panel.add(logoUser);
-		logoUser.setIcon(new ImageIcon(Images.username));
+		logoUser.setIcon(new ImageIcon(Images.user));
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setForeground(new Color(65, 105, 225));
