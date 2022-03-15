@@ -21,7 +21,7 @@ public class AdminMenu extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private panelHome panelHome;
-	private panelDashboard panelDashboard;
+	private panelSchedule panelSchedule;
 	private panelSettings panelSettings;
 	private panelSkewl panelSkewl;
 	private panelDepartment panelDepartment;
@@ -57,8 +57,8 @@ public class AdminMenu extends JFrame {
 		
 		panelHome = new panelHome();
 		panelHome.setBounds(0, 0, 559, 539);
-		panelDashboard = new panelDashboard();
-		panelDashboard.setBounds(0, 0, 559, 539);
+		panelSchedule = new panelSchedule();
+		panelSchedule.setBounds(0, 0, 559, 539);
 		panelSettings = new panelSettings();
 		panelSettings.setBounds(0, 0, 559, 539);
 		panelSkewl = new panelSkewl();
@@ -93,34 +93,6 @@ public class AdminMenu extends JFrame {
 		panel.add(lblLogo);
 		lblLogo.setIcon(new ImageIcon(Images.wLogo));
 		
-		JPanel panelDashB = new JPanel();
-		panelDashB.setBorder(null);
-		panelDashB.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelDashB.addMouseListener(new PropertiesListener(panelDashB) {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelDashboard);
-			}
-			
-		});
-		panelDashB.setBackground(new Color(65, 105, 225));
-		panelDashB.setBounds(0, 177, 205, 64);
-		panel.add(panelDashB);
-		panelDashB.setLayout(null);
-		
-		JLabel lblDashBoard = new JLabel("Dashboard");
-		lblDashBoard.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
-		lblDashBoard.setForeground(new Color(255, 255, 255));
-		lblDashBoard.setBounds(54, 11, 141, 42);
-		panelDashB.add(lblDashBoard);
-		
-		JLabel lblDashb = new JLabel("");
-		lblDashb.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblDashb.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDashb.setBounds(10, 11, 36, 42);
-		panelDashB.add(lblDashb);
-		lblDashb.setIcon(new ImageIcon(Images.dashboard));
-		
 		JPanel panelSchool = new JPanel();
 		panelSchool.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelSchool.addMouseListener(new PropertiesListener(panelSchool) {
@@ -133,7 +105,7 @@ public class AdminMenu extends JFrame {
 		panelSchool.setLayout(null);
 		panelSchool.setBorder(null);
 		panelSchool.setBackground(new Color(65, 105, 225));
-		panelSchool.setBounds(0, 240, 205, 64);
+		panelSchool.setBounds(0, 177, 205, 64);
 		panel.add(panelSchool);
 		
 		JLabel lblSchool = new JLabel("School");
@@ -161,7 +133,7 @@ public class AdminMenu extends JFrame {
 		panelDept.setLayout(null);
 		panelDept.setBorder(null);
 		panelDept.setBackground(new Color(65, 105, 225));
-		panelDept.setBounds(0, 305, 205, 64);
+		panelDept.setBounds(0, 242, 205, 64);
 		panel.add(panelDept);
 		
 		JLabel lblDepartment = new JLabel("Department");
@@ -189,7 +161,7 @@ public class AdminMenu extends JFrame {
 		panelAttend.setLayout(null);
 		panelAttend.setBorder(null);
 		panelAttend.setBackground(new Color(65, 105, 225));
-		panelAttend.setBounds(0, 369, 205, 64);
+		panelAttend.setBounds(0, 306, 205, 64);
 		panel.add(panelAttend);
 		
 		JLabel lblAttendance = new JLabel("Attendance");
@@ -308,6 +280,34 @@ public class AdminMenu extends JFrame {
 		lblSignOut.setIcon(new ImageIcon(Images.signoutred));
 		panelSignOut.add(lblSignOut);
 		
+		JPanel panelSched = new JPanel();
+		panelSched.setLayout(null);
+		panelSched.setBorder(null);
+		panelSched.setBackground(new Color(65, 105, 225));
+		panelSched.setBounds(0, 369, 205, 64);
+		panelSched.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelSched.addMouseListener(new PropertiesListener(panelSched) {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				menuClicked(panelSchedule);
+			}
+			
+		});
+		panel.add(panelSched);
+		
+		JLabel lblSchedule = new JLabel("Schedule");
+		lblSchedule.setForeground(Color.WHITE);
+		lblSchedule.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblSchedule.setBounds(54, 11, 141, 42);
+		panelSched.add(lblSchedule);
+		
+		JLabel lblSched = new JLabel("");
+		lblSched.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblSched.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSched.setBounds(10, 11, 36, 42);
+		lblSched.setIcon(new ImageIcon(Images.schedule));
+		panelSched.add(lblSched);
+		
 		JPanel panelMainContent = new JPanel();
 		panelMainContent.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelMainContent.setBackground(new Color(255, 255, 255));
@@ -316,7 +316,7 @@ public class AdminMenu extends JFrame {
 		panelMainContent.setLayout(null);
 		
 		panelMainContent.add(panelHome);
-		panelMainContent.add(panelDashboard);
+		panelMainContent.add(panelSchedule);
 		panelMainContent.add(panelSettings);
 		panelMainContent.add(panelSkewl);
 		panelMainContent.add(panelDepartment);
@@ -330,7 +330,7 @@ public class AdminMenu extends JFrame {
 	
 	public void menuClicked(JPanel panel) {
 		panelHome.setVisible(false);
-		panelDashboard.setVisible(false);
+		panelSchedule.setVisible(false);
 		panelSettings.setVisible(false);
 		panelSkewl.setVisible(false);
 		panelDepartment.setVisible(false);

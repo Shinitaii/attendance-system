@@ -23,5 +23,6 @@ public class Images {
 	public static final Image department = new ImageIcon(Images.class.getResource("/res/department.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	public static final Image school = new ImageIcon(Images.class.getResource("/res/school.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	public static final Image members = new ImageIcon(Images.class.getResource("/res/members.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	public static final Image schedule = new ImageIcon(Images.class.getResource("/res/Schedul.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	public static Image profile;
 }
