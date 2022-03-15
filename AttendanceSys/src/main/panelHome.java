@@ -12,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+
+
 import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -48,10 +50,8 @@ public class panelHome extends JPanel {
 		JLabel lblpfp = new JLabel();
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
-<<<<<<< Updated upstream
 		lblpfp.setBounds(0, 0, 150, 150);
-		//lblpfp.setIcon(new ImageIcon(Images.profile));
-=======
+		lblpfp.setIcon(new ImageIcon(Images.profile));
 		lblpfp.setBounds(0, 0, 153, 153);
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
@@ -69,7 +69,6 @@ public class panelHome extends JPanel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
->>>>>>> Stashed changes
 		panelpfp.add(lblpfp);
 		
 		JLabel lblAccountS = new JLabel(username);

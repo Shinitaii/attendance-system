@@ -18,12 +18,17 @@ public class PropertiesListener extends MouseAdapter{
 		public PropertiesListener(JLabel label) {
 			this.label = label; 
 			label.setBackground(new Color(65, 105, 225));
+			label.setForeground(new Color(65, 105, 225));
+			label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 12));
 			label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
 		
 		public PropertiesListener(JButton button) {
 			this.button = button;
 			button.setBackground(new Color(65, 105, 225));
+			button.setForeground(Color.WHITE);
+			button.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
+			button.setBorder(null);
 			button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
 		

@@ -4,8 +4,6 @@ import javax.swing.border.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.InputStream;
 import java.sql.*;
 
 public class Login extends JFrame {
@@ -94,7 +92,7 @@ public class Login extends JFrame {
 		logoPassword = new JLabel("");
 		logoPassword.setBounds(7, 11, 24, 24);
 		panelPassword.add(logoPassword);
-		//logoPassword.setIcon(new ImageIcon(Images.pass));
+		logoPassword.setIcon(new ImageIcon(Images.pass));
 		
 		lblPassword = new JLabel("Password");
 		lblPassword.setForeground(new Color(65, 105, 225));
@@ -106,7 +104,7 @@ public class Login extends JFrame {
 		logoShowPassword.setBounds(201, 14, 24, 24);
 		panelPassword.add(logoShowPassword);
 		logoShowPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		//logoShowPassword.setIcon(new ImageIcon(Images.showPass));
+		logoShowPassword.setIcon(new ImageIcon(Images.showPass));
 		logoShowPassword.addMouseListener(new PasswordIcon(logoShowPassword, pwdPassword));
 		
 		lblStatus = new JLabel("");
@@ -141,14 +139,12 @@ public class Login extends JFrame {
 									frame.setVisible(true);
 								}
 							});
+							checkInfo.close();
 						dispose();
 					} else {
-						
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 						lblStatus.setText("Incorrect username or password!");
 						lblStatus.setForeground(Color.RED);
-						
-		
 					}
 					conn.close();
 					checkAccount.close();
@@ -173,7 +169,7 @@ public class Login extends JFrame {
 		logo.setHorizontalAlignment(SwingConstants.CENTER);
 		logo.setBounds(124, 11, 235, 136);
 		contentPane.add(logo);
-		//logo.setIcon(new ImageIcon(Images.bLogo));
+		logo.setIcon(new ImageIcon(Images.bLogo));
 		
 		forgotPass = new JLabel("Forgot password?");
 		forgotPass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

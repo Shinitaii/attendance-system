@@ -189,7 +189,6 @@ public class panelAccountSetting extends JPanel {
 		btnSave.addMouseListener(new PropertiesListener(btnSave));
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
 				try {
 					JPasswordField passField = new JPasswordField(20);
 					char[] pass = passField.getPassword();
@@ -205,6 +204,7 @@ public class panelAccountSetting extends JPanel {
 						while(checkingPass.next()) {
 							databasePass = checkingPass.getString("pass");
 						}
+
 						if(databasePass.equals(obtainedPass)) {
 							try {
 								File photo = new File(path);
@@ -217,9 +217,12 @@ public class panelAccountSetting extends JPanel {
 							int saving = saveCredentials.executeUpdate();
 							if(saving == 1) {
 								JOptionPane.showMessageDialog(null, "Credentials are now updated and saved!");
-								checkPass.close();
-								saveCredentials.close();
+								
+							} else {
+								JOptionPane.showMessageDialog(null, "Failed to update credentials!");
 							}
+							checkPass.close();
+							saveCredentials.close();
 						} else {
 							JOptionPane.showMessageDialog(null, "Incorrect password!");
 						}
