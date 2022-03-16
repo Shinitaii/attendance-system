@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import java.awt.GridLayout;
 import javax.swing.JTabbedPane;
 import java.awt.Color;
+import java.awt.EventQueue;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +33,8 @@ public class SelectSchool extends JDialog {
 	private JTextField txtSchool;
 	private JTextField txtInvite;
 	String school;
+	public static String obtainedSchool = "";
+	public static String pubSchoolName = obtainedSchool;
 
 	/**
 	 * Launch the application.
@@ -79,8 +82,7 @@ public class SelectSchool extends JDialog {
 								@Override
 								public void mouseClicked(MouseEvent e) {
 									try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl")) {
-										String obtainedSchool = txtSchool.getText();
-										String obtainedSchoolID = "";
+										obtainedSchool = txtSchool.getText();
 										if(obtainedSchool.isEmpty()) {
 											JOptionPane.showMessageDialog(null, "Input name!");
 										} else {
@@ -91,26 +93,32 @@ public class SelectSchool extends JDialog {
 											} else {
 												String obtainedInviteCode = getInviteCode(5);
 												PreparedStatement addSchool = conn.prepareStatement("insert into schoolInfo (schoolname, creator, inviteCode) values (?, ?, ?)");
-												addSchool.setString(1, school);
+												addSchool.setString(1, obtainedSchool);
 												addSchool.setString(2, Login.pubUID);
 												addSchool.setString(3, obtainedInviteCode);
 												int addedSchool = addSchool.executeUpdate();
 												if(addedSchool == 1) {
 													JOptionPane.showMessageDialog(null, "School added!");
 													JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
-													PreparedStatement checkSchoolID = conn.prepareStatement("select schoolid from schoolInfo where schoolname='"+obtainedSchool+"'");
-													ResultSet checkedSchool = checkSchoolID.executeQuery();
-													if(checkedSchool.next()) {
-													obtainedSchoolID = checkedSchool.getString("schoolid");
-													}
-													PreparedStatement inSchool = conn.prepareStatement("update userInfo set hasASchool = true, schoolname ="+obtainedSchool+" where userid ="+Login.pubUID);
+													PreparedStatement inSchool = conn.prepareStatement("update userInfo set hasASchool = true, schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
 													inSchool.executeUpdate();
 														
 													conn.close();
 													checkingSameSchoolName.close();
 													addSchool.close();
-													checkSchoolID.close();
 													inSchool.close(); 
+													
+													EventQueue.invokeLater(new Runnable() {
+														public void run() {
+															try {
+																AdminMenu frame = new AdminMenu();
+																frame.setVisible(true);
+															} catch (Exception e) {
+																e.printStackTrace();
+															}
+														}
+													});
+													dispose();
 												} else {
 													JOptionPane.showMessageDialog(null, "Failed to add school!");
 												}
@@ -158,7 +166,6 @@ public class SelectSchool extends JDialog {
 								String inviteCode = txtInvite.getText();
 								String obtainedInviteCode = "";
 								try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
-									String obtainedSchool = "";
 									if(inviteCode.isEmpty()) {
 										JOptionPane.showMessageDialog(null, "Input code!");
 									} else {
@@ -169,7 +176,22 @@ public class SelectSchool extends JDialog {
 											obtainedSchool = obtainedInvite.getString("schoolname");
 										}
 										if(inviteCode.equals(obtainedInviteCode)) {
-											JOptionPane.showMessageDialog(null, "You have joined to "+obtainedSchool+"!");
+											PreparedStatement joined = conn.prepareStatement("update userInfo set schoolname ='"+obtainedSchool+"', hasASchool = 1 where userid="+Login.pubUID);
+											int joinedResult = joined.executeUpdate();
+											if(joinedResult == 1) {
+												JOptionPane.showMessageDialog(null, "You have joined to "+obtainedSchool+"!");
+												EventQueue.invokeLater(new Runnable() {
+													public void run() {
+														try {
+															AdminMenu frame = new AdminMenu();
+															frame.setVisible(true);
+														} catch (Exception e) {
+															e.printStackTrace();
+														}
+													}
+												});
+												dispose();
+											}
 										} else {
 											JOptionPane.showMessageDialog(null, "Invite Code does not exist!");
 										}

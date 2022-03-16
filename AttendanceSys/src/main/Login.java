@@ -15,7 +15,8 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String pubUsername, pubUID = "1", pubFN, pubMN, pubLN, pubOccupation;
+	public static String pubUsername, pubUID = "1", pubFN, pubMN, pubLN, pubOccupation, pubSchoolName;
+	public static boolean pubHasASchool;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JLabel lblStatus;
@@ -124,7 +125,7 @@ public class Login extends JFrame {
 					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation from userInfo where username='"+username+"'");
+						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname from userInfo where username='"+username+"'");
 						ResultSet whatInfo = checkInfo.executeQuery();
 						while (whatInfo.next()) {
 							pubUID = whatInfo.getString("userid");
@@ -132,7 +133,10 @@ public class Login extends JFrame {
 							pubMN = whatInfo.getString("middlename");
 							pubLN = whatInfo.getString("lastname");
 							pubOccupation = whatInfo.getString("occupation");
+							pubHasASchool = whatInfo.getBoolean("hasASchool");
+							pubSchoolName = whatInfo.getString("schoolname");
 						}	
+						if(!pubHasASchool) {
 							try {
 								SelectSchool dialog = new SelectSchool();
 								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -140,7 +144,20 @@ public class Login extends JFrame {
 							} catch (Exception dialog) {
 								dialog.printStackTrace();
 							}
-							checkInfo.close();
+						} else {
+							EventQueue.invokeLater(new Runnable() {
+								public void run() {
+									try {
+										AdminMenu frame = new AdminMenu();
+										frame.setVisible(true);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							});
+						}
+						dispose();
+						checkInfo.close();
 					} else {
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 						lblStatus.setText("Incorrect username or password!");

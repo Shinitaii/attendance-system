@@ -27,7 +27,8 @@ public class AdminMenu extends JFrame {
 	private panelMembros panelMembros;
 	private panelAttendance panelAttendance;
 	private JPanel contentPane;
-	private String username = Login.pubUsername,uid = Login.pubUID ;
+	private String username = Login.pubUsername,uid = Login.pubUID;
+	private String LoginSchoolName = Login.pubSchoolName, SSSchoolName = SelectSchool.pubSchoolName;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
