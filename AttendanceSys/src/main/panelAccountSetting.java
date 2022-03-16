@@ -204,7 +204,6 @@ public class panelAccountSetting extends JPanel {
 						while(checkingPass.next()) {
 							databasePass = checkingPass.getString("pass");
 						}
-
 						if(databasePass.equals(obtainedPass)) {
 							try {
 								File photo = new File(path);

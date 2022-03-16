@@ -18,6 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class browseAction implements ActionListener {
 
 	JLabel label;
+	public static String pubPath;
 	
 	public browseAction(JLabel label) {
 		this.label = label;
@@ -35,6 +36,7 @@ public class browseAction implements ActionListener {
 			if(result == JFileChooser.APPROVE_OPTION) {
 				boolean photoSizeCheck = false;
 				String path = selectedPhoto.getAbsolutePath();
+				pubPath = path;
 				Path photoLocation = Paths.get(path);
 				try {
 					long bytes = Files.size(photoLocation);

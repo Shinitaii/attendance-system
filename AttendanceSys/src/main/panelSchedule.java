@@ -3,11 +3,7 @@ import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
 
 public class panelSchedule extends JPanel {
 	

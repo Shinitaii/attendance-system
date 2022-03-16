@@ -15,7 +15,7 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String pubUsername, pubUID, pubFN, pubMN, pubLN;
+	public static String pubUsername, pubUID = "1", pubFN, pubMN, pubLN, pubOccupation;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
 	private JLabel lblStatus;
@@ -117,30 +117,30 @@ public class Login extends JFrame {
 		login.addMouseListener(new PropertiesListener(login));
 		login.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				try {	
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {	
 					char[] getPassword = pwdPassword.getPassword();
 					String username = txtUsername.getText(), password = String.valueOf(getPassword);
 					pubUsername = username;
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname from userInfo where username='"+username+"'");
+						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation from userInfo where username='"+username+"'");
 						ResultSet whatInfo = checkInfo.executeQuery();
 						while (whatInfo.next()) {
 							pubUID = whatInfo.getString("userid");
 							pubFN = whatInfo.getString("firstname");
 							pubMN = whatInfo.getString("middlename");
 							pubLN = whatInfo.getString("lastname");
-						}
-							EventQueue.invokeLater(new Runnable() {
-								public void run() {
-									AdminMenu frame = new AdminMenu();
-									frame.setVisible(true);
-								}
-							});
+							pubOccupation = whatInfo.getString("occupation");
+						}	
+							try {
+								SelectSchool dialog = new SelectSchool();
+								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+								dialog.setVisible(true);
+							} catch (Exception dialog) {
+								dialog.printStackTrace();
+							}
 							checkInfo.close();
-						dispose();
 					} else {
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 						lblStatus.setText("Incorrect username or password!");
