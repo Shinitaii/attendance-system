@@ -28,7 +28,6 @@ public class AdminMenu extends JFrame {
 	private panelAttendance panelAttendance;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
-	private String LoginSchoolName = Login.pubSchoolName, SSSchoolName = SelectSchool.pubSchoolName;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -250,6 +249,14 @@ public class AdminMenu extends JFrame {
 		lblSignOut.setBounds(10, 11, 30, 42);
 		lblSignOut.setIcon(new ImageIcon(Images.signoutred));
 		panelSignOut.add(lblSignOut);
+		
+		JLabel lblSchoolName = new JLabel(Login.pubSchoolName);
+		lblSchoolName.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblSchoolName.setHorizontalAlignment(SwingConstants.LEFT);
+		lblSchoolName.setForeground(Color.WHITE);
+		lblSchoolName.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
+		lblSchoolName.setBounds(2, 43, 98, 21);
+		panelUserInfo.add(lblSchoolName);
 		
 		JPanel panelSched = new JPanel();
 		panelSched.setLayout(null);

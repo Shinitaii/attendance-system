@@ -32,10 +32,7 @@ public class SelectSchool extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JTextField txtSchool;
 	private JTextField txtInvite;
-	String school;
-	public static String obtainedSchool = "";
-	public static String pubSchoolName = obtainedSchool;
-
+	String obtainedSchool = "";  
 	/**
 	 * Launch the application.
 	 */
@@ -98,6 +95,7 @@ public class SelectSchool extends JDialog {
 												addSchool.setString(3, obtainedInviteCode);
 												int addedSchool = addSchool.executeUpdate();
 												if(addedSchool == 1) {
+													Login.pubSchoolName = obtainedSchool;
 													JOptionPane.showMessageDialog(null, "School added!");
 													JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
 													PreparedStatement inSchool = conn.prepareStatement("update userInfo set hasASchool = true, schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
@@ -176,6 +174,7 @@ public class SelectSchool extends JDialog {
 											obtainedSchool = obtainedInvite.getString("schoolname");
 										}
 										if(inviteCode.equals(obtainedInviteCode)) {
+											Login.pubSchoolName = obtainedSchool;
 											PreparedStatement joined = conn.prepareStatement("update userInfo set schoolname ='"+obtainedSchool+"', hasASchool = 1 where userid="+Login.pubUID);
 											int joinedResult = joined.executeUpdate();
 											if(joinedResult == 1) {
