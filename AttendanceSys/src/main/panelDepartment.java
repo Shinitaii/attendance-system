@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class panelDepartment extends JPanel {
@@ -42,6 +43,13 @@ public class panelDepartment extends JPanel {
 		setBackground(new Color(255, 255, 255));
 		setLayout(null);
 		
+		MainContent = new JPanel();
+		MainContent.setBorder(new LineBorder(new Color(65, 105, 225)));
+		MainContent.setBackground(Color.WHITE);       
+		MainContent.setBounds(10, 102, 539, 426);
+		add(MainContent);
+		MainContent.setLayout(new GridLayout(0, 2, 0, 0));
+		
 		JPanel buttonSelection = new JPanel();
 		buttonSelection.setBackground(new Color(255, 255, 255));
 		buttonSelection.setBounds(10, 11, 539, 80);
@@ -64,16 +72,24 @@ public class panelDepartment extends JPanel {
 							addDept.setString(2, Login.pubSchoolName);
 							int added = addDept.executeUpdate();
 							if(added == 1) {
-								JPanel panel = new JPanel();
+								PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from departmentinfo where schoolname='"+Login.pubSchoolName+"'");
+								ResultSet checkedCount = checkCount.executeQuery();
+								while(checkedCount.next()) {
+									count = checkedCount.getInt("count(departmentname)");
+								}
+								
+								panel = new JPanel();
 								panel.setLayout(new BorderLayout());
+								panelNames.add(panel);
 								panel.addMouseListener(new PropertiesListener(panel));
 								JLabel deptname = new JLabel(obtainedDept);
-						
 								panel.add(deptname, BorderLayout.NORTH);
+								
+								invalidate();
 								MainContent.add(panel);
-								revalidate();
-								repaint();
-							}
+							}	
+							revalidate();
+							repaint();
 						} catch (SQLException sql) {
 							sql.printStackTrace();
 						}
@@ -100,14 +116,23 @@ public class panelDepartment extends JPanel {
 							PreparedStatement deleteDept = conn.prepareStatement("delete from departmentinfo where departmentname='"+whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
 							int result = deleteDept.executeUpdate();
 							if(result == 1) {
+								PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from departmentinfo where schoolname='"+Login.pubSchoolName+"'");
+								ResultSet checkedCount = checkCount.executeQuery();
+								while(checkedCount.next()) {
+									count = checkedCount.getInt("count(departmentname)");
+								}
+								panel = new JPanel();
+								panel = panelNames.get(count);
+								invalidate();
 								
+								MainContent.remove(panel);
 							} else {
 								JOptionPane.showMessageDialog(null, "Failed to delete department "+whatDept+"!");
 							}
+							
 							revalidate();
 							repaint();
-							setVisible(false);
-							setVisible(true);
+
 						} catch (SQLException sql) {
 							sql.printStackTrace();
 						}
@@ -121,11 +146,6 @@ public class panelDepartment extends JPanel {
 		deleteDept.setBorder(null);
 		deleteDept.setBounds(170, 11, 150, 58);
 		buttonSelection.add(deleteDept);
-		
-		MainContent = new JPanel();
-		MainContent.setBorder(new LineBorder(new Color(65, 105, 225)));
-		MainContent.setBackground(Color.WHITE);       
-		MainContent.setBounds(10, 102, 539, 426);
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from departmentinfo where schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
@@ -153,16 +173,15 @@ public class panelDepartment extends JPanel {
 				});
 				JLabel label = new JLabel(deptNames[i]);
 				panel.add(label, BorderLayout.NORTH);
-				
-				
+			}
+			
+			for(JPanel panel : panelNames) {
 				MainContent.add(panel);
 			}
 
 		} catch (SQLException sql){
 			sql.printStackTrace();
 		}
-		add(MainContent);
-		MainContent.setLayout(new GridLayout(0, 2, 0, 0));
 
 	}
 }

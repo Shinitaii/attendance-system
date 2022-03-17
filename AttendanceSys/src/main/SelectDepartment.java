@@ -1,12 +1,9 @@
 package main;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,10 +16,13 @@ import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 
 public class SelectDepartment extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	String obtainedResult;
 	/**
@@ -54,7 +54,7 @@ public class SelectDepartment extends JDialog {
 		contentPanel.add(lblSelectDept);
 		
 		String[] deptNames = panelDepartment.deptNames;
-		JComboBox<String>comboBox = new JComboBox<>(deptNames);
+		JComboBox<String> comboBox = new JComboBox<>(deptNames);
 		comboBox.setBounds(113, 7, 135, 22);
 		contentPanel.add(comboBox);
 		

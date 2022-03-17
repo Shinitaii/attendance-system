@@ -150,13 +150,13 @@ public class Login extends JFrame {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									try {
-										AdminMenu frame = new AdminMenu();
-										frame.setVisible(true);
 										if(!pubHasADept && !pubOccupation.equals("Admin")) {
 										SelectDepartment dialog = new SelectDepartment();
 										dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 										dialog.setVisible(true);
 										}
+										AdminMenu frame = new AdminMenu();
+										frame.setVisible(true);
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
