@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
@@ -53,11 +54,13 @@ public class SelectDepartment extends JDialog {
 		contentPanel.add(lblSelectDept);
 		
 		String[] deptNames = panelDepartment.deptNames;
-		JComboBox<String> comboBox = new JComboBox<>(deptNames);
-		obtainedResult = comboBox.getItemAt(comboBox.getSelectedIndex());
-
+		JComboBox<String>comboBox = new JComboBox<>(deptNames);
 		comboBox.setBounds(113, 7, 135, 22);
 		contentPanel.add(comboBox);
+		
+		JLabel lblNote = new JLabel("<html>Note: You can only join in one at at time and once you joined a department, you can't join on the other departments. <br/>If you accidentally joined on another department: message your school's admin.</html>");
+		lblNote.setBounds(10, 56, 414, 169);
+		contentPanel.add(lblNote);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -70,8 +73,12 @@ public class SelectDepartment extends JDialog {
 			joinDept.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+						obtainedResult = (String) comboBox.getSelectedItem();
 						PreparedStatement join = conn.prepareStatement("update userinfo set departmentname='"+obtainedResult+"' where userid ="+Login.pubUID);
-						
+						int result = join.executeUpdate();
+						if(result == 1) {
+							JOptionPane.showMessageDialog(null, "Joined department "+obtainedResult+"!");
+						}
 					} catch (SQLException sql) {
 						sql.printStackTrace();
 					}

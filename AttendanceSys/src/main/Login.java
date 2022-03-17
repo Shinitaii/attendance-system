@@ -152,20 +152,17 @@ public class Login extends JFrame {
 									try {
 										AdminMenu frame = new AdminMenu();
 										frame.setVisible(true);
+										if(!pubHasADept && !pubOccupation.equals("Admin")) {
+										SelectDepartment dialog = new SelectDepartment();
+										dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+										dialog.setVisible(true);
+										}
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
 								}
 							});
-							if(!pubHasADept && !pubOccupation.equals("Admin")) {
-								try {
-									SelectDepartment dialog = new SelectDepartment();
-									dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-									dialog.setVisible(true);
-								} catch (Exception dialog) {
-									dialog.printStackTrace();
-								}
-							}
+							
 						}
 						dispose();
 						checkInfo.close();
