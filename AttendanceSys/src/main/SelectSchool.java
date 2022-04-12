@@ -188,8 +188,9 @@ public class SelectSchool extends JDialog {
 															e.printStackTrace();
 														}
 													}
-												});
+												}); 
 												dispose();
+
 											}
 										} else {
 											JOptionPane.showMessageDialog(null, "Invite Code does not exist!");

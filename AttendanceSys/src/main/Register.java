@@ -439,7 +439,7 @@ public class Register extends JFrame {
 		panelPFP.setBounds(434, 11, 150, 150);
 		contentPane.add(panelPFP);
 		
-		lblpfp = new JLabel("");
+		lblpfp = new JLabel();
 		lblpfp.setHorizontalAlignment(SwingConstants.CENTER);
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 150, 150);

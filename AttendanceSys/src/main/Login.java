@@ -1,7 +1,7 @@
 package main;
+
 import javax.swing.*;
 import javax.swing.border.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -150,11 +150,6 @@ public class Login extends JFrame {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									try {
-										if(!pubHasADept && !pubOccupation.equals("Admin")) {
-										SelectDepartment dialog = new SelectDepartment();
-										dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-										dialog.setVisible(true);
-										}
 										AdminMenu frame = new AdminMenu();
 										frame.setVisible(true);
 									} catch (Exception e) {

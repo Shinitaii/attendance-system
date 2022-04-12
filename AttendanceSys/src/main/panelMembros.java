@@ -87,6 +87,7 @@ public class panelMembros extends JPanel {
 		DefaultTableModel model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0);
 		
 		table = new JTable();
+		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
 		table.setBorder(null);
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
@@ -101,8 +102,13 @@ public class panelMembros extends JPanel {
 		} catch (SQLException sql) {
 			sql.printStackTrace();
 		}
-		table.setModel(model);
-
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Full Name", "Department", "Occupation"
+			}
+		));
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);

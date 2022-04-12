@@ -2,6 +2,8 @@ package main;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +13,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+
 import javax.swing.UIManager;
 
 import java.awt.Font;
@@ -20,12 +23,15 @@ public class AdminMenu extends JFrame {
 	//test
 	private static final long serialVersionUID = 1L;
 	
-	private panelHome panelHome;
-	private panelSchedule panelSchedule;
-	private panelSettings panelSettings;
-	private panelDepartment panelDepartment;
-	private panelMembros panelMembros;
-	private panelAttendance panelAttendance;
+	private static panelHome panelHome;
+	private static panelSchedule panelSchedule;
+	private static panelSettings panelSettings;
+	public static panelDepartment panelDepartment;
+	private static panelMembros panelMembros;
+	private static panelAttendance panelAttendance;
+	public static panelSections panelSections;
+	public static panelSectionMembers panelSectionMembers;
+	public static Records records;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
 
@@ -67,6 +73,12 @@ public class AdminMenu extends JFrame {
 		panelMembros.setBounds(0, 0, 559, 539);
 		panelAttendance = new panelAttendance();
 		panelAttendance.setBounds(0, 0, 559, 539);
+		panelSections = new panelSections();
+		panelSections.setBounds(0, 0, 559, 539);
+		panelSectionMembers = new panelSectionMembers();
+		panelSectionMembers.setBounds(0,0,559,539);
+		records = new Records();
+		records.setBounds(0,0,559,539);
 		
 		
 		JPanel panel = new JPanel();
@@ -97,6 +109,11 @@ public class AdminMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				menuClicked(panelDepartment);
+				panelSections.buttonNames.clear();
+				panelSections.listSecNames.clear();
+				panelSections.sectionScreen.removeAll();
+				revalidate();
+				repaint();
 			}
 			
 		});
@@ -299,20 +316,25 @@ public class AdminMenu extends JFrame {
 		panelMainContent.add(panelDepartment);
 		panelMainContent.add(panelMembros);
 		panelMainContent.add(panelAttendance);
+		panelMainContent.add(panelSections);
+		panelMainContent.add(panelSectionMembers);
+		panelMainContent.add(records);
 		
 		menuClicked(panelHome);
 		setResizable(false);
 	}
 	
 	
-	public void menuClicked(JPanel panel) {
+	public static void menuClicked(JPanel panel) {
 		panelHome.setVisible(false);
 		panelSchedule.setVisible(false);
 		panelSettings.setVisible(false);
 		panelDepartment.setVisible(false);
 		panelMembros.setVisible(false);
 		panelAttendance.setVisible(false);
-		
+		panelSections.setVisible(false);
+		panelSectionMembers.setVisible(false);
+		records.setVisible(false);
 		
 		panel.setVisible(true);
 		

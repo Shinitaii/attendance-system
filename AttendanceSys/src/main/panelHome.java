@@ -4,6 +4,8 @@ import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.sql.Blob;
@@ -11,10 +13,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,7 +27,8 @@ public class panelHome extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private String username = Login.pubUsername, firstname = Login.pubFN, middlename = Login.pubMN, lastname = Login.pubLN;
-	private int uid = Integer.valueOf(Login.pubUID);
+	private String uid = Login.pubUID;
+ 
  	
 	public panelHome() {
 		setBackground(new Color(255, 255, 255));
@@ -108,6 +113,24 @@ public class panelHome extends JPanel {
 		btnNewButton.setBackground(new Color(65, 105, 225));
 		btnNewButton.setBounds(404, 11, 145, 38);
 		panel.add(btnNewButton);
+		
+		JLabel lblTime = new JLabel();
+		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTime.setForeground(new Color(65, 105, 225));
+		lblTime.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 35));
+		lblTime.setBounds(10, 368, 539, 60);
+		add(lblTime);
+		
+		DateFormat dateandtime = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+		Timer time = new Timer(500, (ActionListener) new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        Date date = new Date();
+		        lblTime.setText("Time: "+dateandtime.format(date));
+		        repaint();
+		    }
+		});
+		time.start();
 
 	}
 }
