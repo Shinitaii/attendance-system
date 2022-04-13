@@ -48,7 +48,7 @@ public class attendanceSettings extends JDialog {
 	public static int currentRecordCount = 0;
 	public static String obtainedSec;
 	String currentTime;
-	JComboBox<String> cbSection;
+	public static JComboBox<String> cbSection;
 	public static boolean isCancelled = false;
 
 	/**
@@ -276,7 +276,7 @@ public class attendanceSettings extends JDialog {
 			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = getStatement.executeQuery();
 			cb.removeAllItems();
-			cb.addItem("Select a section.");
+			cb.addItem("Select a section");
 			while(result.next()) {
 				String obtainedString = result.getString("sectionname");
 				cb.addItem(obtainedString);
@@ -336,9 +336,11 @@ public class attendanceSettings extends JDialog {
 	private class selectedDept implements ItemListener {
 		
 		JComboBox<String> cb;
+
 		
-		private selectedDept (JComboBox<String> cb) {
+		public selectedDept (JComboBox<String> cb) {
 			this.cb = cb;
+
 		}
 		
 		public void itemStateChanged(ItemEvent e) {
@@ -348,4 +350,5 @@ public class attendanceSettings extends JDialog {
 			}
 		}	
 	}
+	
 }

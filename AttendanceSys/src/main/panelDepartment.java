@@ -16,7 +16,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JLabel;
+import javax.swing.JLabel;	
+import javax.swing.BoxLayout;
+import javax.swing.JScrollPane;
 
 public class panelDepartment extends JPanel {
 
@@ -40,8 +42,9 @@ public class panelDepartment extends JPanel {
 		MainContent.setBorder(new LineBorder(new Color(65, 105, 225)));
 		MainContent.setBackground(Color.WHITE);       
 		MainContent.setBounds(10, 102, 539, 426);
+		MainContent.setLayout(new GridLayout(0, 2, 0, 0));
 		add(MainContent);
-		MainContent.setLayout(new GridLayout(0, 2));
+		
 		
 		JPanel buttonSelection = new JPanel();
 		buttonSelection.setBackground(new Color(255, 255, 255));

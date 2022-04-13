@@ -28,7 +28,8 @@ public class AdminMenu extends JFrame {
 	private static panelSettings panelSettings;
 	public static panelDepartment panelDepartment;
 	private static panelMembros panelMembros;
-	private static panelAttendance panelAttendance;
+	private static AttendanceSelectDepartment AttendanceSelectDepartment;
+	public static panelAttendance panelAttendance;
 	public static panelSections panelSections;
 	public static panelSectionMembers panelSectionMembers;
 	public static Records records;
@@ -71,6 +72,8 @@ public class AdminMenu extends JFrame {
 		panelDepartment.setBounds(0, 0, 559, 539);
 		panelMembros = new panelMembros();
 		panelMembros.setBounds(0, 0, 559, 539);
+		AttendanceSelectDepartment = new AttendanceSelectDepartment();
+		AttendanceSelectDepartment.setBounds(0,0,559,539);
 		panelAttendance = new panelAttendance();
 		panelAttendance.setBounds(0, 0, 559, 539);
 		panelSections = new panelSections();
@@ -141,7 +144,8 @@ public class AdminMenu extends JFrame {
 		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelAttendance);
+				menuClicked(AttendanceSelectDepartment);
+				AttendanceSelectDepartment.execute();
 			}
 			
 		});
@@ -315,6 +319,7 @@ public class AdminMenu extends JFrame {
 		panelMainContent.add(panelSettings);
 		panelMainContent.add(panelDepartment);
 		panelMainContent.add(panelMembros);
+		panelMainContent.add(AttendanceSelectDepartment);
 		panelMainContent.add(panelAttendance);
 		panelMainContent.add(panelSections);
 		panelMainContent.add(panelSectionMembers);
@@ -331,6 +336,7 @@ public class AdminMenu extends JFrame {
 		panelSettings.setVisible(false);
 		panelDepartment.setVisible(false);
 		panelMembros.setVisible(false);
+		AttendanceSelectDepartment.setVisible(false);
 		panelAttendance.setVisible(false);
 		panelSections.setVisible(false);
 		panelSectionMembers.setVisible(false);
