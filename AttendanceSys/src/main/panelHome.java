@@ -106,14 +106,6 @@ public class panelHome extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
-		JButton btnNewButton = new JButton("Edit Profile");
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		btnNewButton.setBorder(null);
-		btnNewButton.setBackground(new Color(65, 105, 225));
-		btnNewButton.setBounds(404, 11, 145, 38);
-		panel.add(btnNewButton);
-		
 		JLabel lblTime = new JLabel();
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTime.setForeground(new Color(65, 105, 225));

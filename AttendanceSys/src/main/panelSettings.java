@@ -17,8 +17,10 @@ public class panelSettings extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	panelProfileDisplay panelProfileDisplay;
 	panelAccountSetting panelAccountSetting;
 	panelChangePassSetting panelChangePassSetting;	
+	
 	AdminMenu AdminMenu;
 	
 	public panelSettings() {
@@ -34,25 +36,25 @@ public class panelSettings extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
-		JPanel panelAccount = new JPanel();
-		panelAccount.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelAccount.setBackground(new Color(65, 105, 225));
-		panelAccount.addMouseListener(new PropertiesListener(panelAccount) {
+		JPanel panelEditPf = new JPanel();
+		panelEditPf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelEditPf.setBackground(new Color(65, 105, 225));
+		panelEditPf.addMouseListener(new PropertiesListener(panelEditPf) {
 			public void mouseClicked(MouseEvent e) {
 				menuClicked(panelAccountSetting);
 			}
 		});
 		
-		panelAccount.setBounds(10, 10, 150, 50);
-		panel.add(panelAccount);
-		panelAccount.setLayout(null);
+		panelEditPf.setBounds(10, 10, 150, 50);
+		panel.add(panelEditPf);
+		panelEditPf.setLayout(null);
 		
-		JLabel lblAccount = new JLabel("Account");
-		lblAccount.setForeground(new Color(255, 255, 255));
-		lblAccount.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
-		lblAccount.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAccount.setBounds(10, 11, 130, 28);
-		panelAccount.add(lblAccount);
+		JLabel lblEditPf = new JLabel("Edit Profile");
+		lblEditPf.setForeground(new Color(255, 255, 255));
+		lblEditPf.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
+		lblEditPf.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEditPf.setBounds(10, 11, 130, 28);
+		panelEditPf.add(lblEditPf);
 		
 		JPanel panelChangePass = new JPanel();
 		panelChangePass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -88,10 +90,16 @@ public class panelSettings extends JPanel {
 		panelMain.add(panelChangePassSetting);
 		panelChangePassSetting.setLayout(null);
 		
-		menuClicked(panelAccountSetting);
+		panelProfileDisplay = new panelProfileDisplay();
+		panelProfileDisplay.setBounds(0,0,539,450);
+		panelMain.add(panelProfileDisplay);
+		panelProfileDisplay.setLayout(null);
+		
+		menuClicked(panelProfileDisplay);
 	}
 	
 	public void menuClicked(JPanel panel) {
+		panelProfileDisplay.setVisible(false);
 		panelAccountSetting.setVisible(false);
 		panelChangePassSetting.setVisible(false);
 		

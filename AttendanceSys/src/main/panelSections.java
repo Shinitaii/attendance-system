@@ -18,6 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Rectangle;
+import java.awt.Font;
 
 public class panelSections extends JPanel {
 
@@ -36,11 +38,13 @@ public class panelSections extends JPanel {
 	static boolean isDeletingSec = false;
 	boolean isAddingSec = false;
 	public static String whatSec;
+	private boolean isDeletingSecs = false, isAddingSecs = false;
 	/*
 	 * Create the panel.
 	 */
 	public panelSections() {
-		setBorder(null);
+		setBounds(new Rectangle(0, 0, 559, 539));
+		setBorder(new LineBorder(new Color(65, 105, 225), 2));
 		setBackground(Color.WHITE);
 		setBounds(0, 0, 559, 539);
 		setLayout(null);
@@ -49,9 +53,13 @@ public class panelSections extends JPanel {
 		panel.setBackground(new Color(255, 255, 255));
 		panel.setBounds(10, 11, 539, 60);
 		add(panel);
-		panel.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		JButton backToDept = new JButton("Back");
+		backToDept.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		backToDept.setBackground(new Color(65, 105, 225));
+		backToDept.setForeground(new Color(255, 255, 255));
+		backToDept.setBorder(null);
+		backToDept.setBounds(1, 0, 134, 49);
 		backToDept.addMouseListener(new PropertiesListener(backToDept));
 		backToDept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -63,9 +71,15 @@ public class panelSections extends JPanel {
 				repaint();
 			}
 		});
+		panel.setLayout(null);
 		panel.add(backToDept);
 		
 		JButton addSec = new JButton("Add Section");
+		addSec.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		addSec.setBackground(new Color(65, 105, 225));
+		addSec.setForeground(new Color(255, 255, 255));
+		addSec.setBorder(null);
+		addSec.setBounds(145, 0, 134, 49);
 		addSec.addMouseListener(new PropertiesListener(addSec));
 		addSec.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -118,30 +132,44 @@ public class panelSections extends JPanel {
 		});
 		panel.add(addSec);
 		
+		JLabel lblSelectSection = new JLabel("Select a section.");
+		lblSelectSection.setBounds(10, 71, 328, 14);
+		add(lblSelectSection);
+		
 		JButton deleteSec = new JButton("Delete Section");
+		deleteSec.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		deleteSec.setBackground(new Color(65, 105, 225));
+		deleteSec.setForeground(new Color(255, 255, 255));
+		deleteSec.setBorder(null);
+		deleteSec.setBounds(289, 0, 134, 49);
 		deleteSec.addMouseListener(new PropertiesListener(deleteSec));
 		deleteSec.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(isDeletingSec) {
-					isDeletingSec = false;
-
+				if(!isDeletingSecs) {
+					isDeletingSecs = true;
+					lblSelectSection.setText("Click on a Section to delete. Click on the \"Delete Section\" again to stop deleting.");
 				} else {
-					isDeletingSec = true;
+					isDeletingSecs = false;
+					lblSelectSection.setText("Click on a Section to select its sections.");
 				}
 			}
 		});
 		panel.add(deleteSec);
 		
 		currentDept = new JLabel();
+		currentDept.setBounds(433, 0, 104, 60);
 		currentDept.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(currentDept);
 		
 		sectionScreen = new JPanel();
+		sectionScreen.setBounds(new Rectangle(0, 0, 539, 426));
 		sectionScreen.setBorder(new LineBorder(new Color(65, 105, 225)));
 		sectionScreen.setBackground(Color.WHITE);
-		sectionScreen.setBounds(10, 82, 539, 446);
+		sectionScreen.setBounds(10, 96, 539, 432);
 		add(sectionScreen);
 		sectionScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		
 		
 		
 		

@@ -23,6 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.Font;
 
 import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class panelAccountSetting extends JPanel {
 	
@@ -33,6 +35,7 @@ public class panelAccountSetting extends JPanel {
 	private JTextField txtMN;
 	private JLabel lblpfp;
 	AdminMenu AdminMenu;
+	panelProfileDisplay panelProfileDisplay;
 	private int uid = Integer.valueOf(Login.pubUID);
 	String path;
 	boolean photoSizeCheck = false;
@@ -63,14 +66,14 @@ public class panelAccountSetting extends JPanel {
 		browseButton.addActionListener(new browseAction(lblpfp));
 		browseButton.setForeground(new Color(255, 255, 255));
 		browseButton.setBackground(new Color(65, 105, 225));
-		browseButton.setBounds(344, 262, 131, 30);
+		browseButton.setBounds(344, 232, 131, 30);
 		add(browseButton);
 		
 		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 30KB");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(new Color(0, 255, 255));
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblNewLabel_1.setBounds(322, 295, 175, 14);
+		lblNewLabel_1.setBounds(323, 266, 175, 14);
 		add(lblNewLabel_1);
 		
 		JPanel panelFN = new JPanel();
@@ -141,7 +144,7 @@ public class panelAccountSetting extends JPanel {
 		
 		JLabel userid = new JLabel("UID : "+uid);
 		userid.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
-		userid.setBounds(334, 222, 151, 40);
+		userid.setBounds(323, 273, 151, 40);
 		add(userid);
 		
 		JPanel panelUserN = new JPanel();
@@ -171,7 +174,7 @@ public class panelAccountSetting extends JPanel {
 		btnReset.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
 		btnReset.setBorder(null);
 		btnReset.setBackground(new Color(65, 105, 225));
-		btnReset.setBounds(315, 11, 90, 30);
+		btnReset.setBounds(310, 11, 90, 30);
 		btnReset.addMouseListener(new PropertiesListener(btnReset));
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -233,5 +236,21 @@ public class panelAccountSetting extends JPanel {
 			}
 		});
 		add(btnSave);
+		
+		JLabel Dept = new JLabel("Department : ");
+		Dept.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
+		Dept.setBounds(324, 310, 151, 40);
+		add(Dept);
+		
+		JLabel Occup = new JLabel("Occupation :");
+		Occup.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
+		Occup.setBounds(323, 350, 151, 40);
+		add(Occup);
+		
+		
+	
+		
+
+		
 	}
 }

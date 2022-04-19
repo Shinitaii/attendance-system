@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
+import javax.swing.JComboBox;
 
 public class panelMembros extends JPanel {
 
@@ -24,8 +25,8 @@ public class panelMembros extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
 	private JTable table;
+	private JTextField textField;
 
 	/**
 	 * Create the panel.
@@ -39,31 +40,54 @@ public class panelMembros extends JPanel {
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(0, 0, 559, 65);
+		panel.setBounds(0, 0, 559, 76);
 		add(panel);
 		panel.setLayout(null);
-		
-		JLabel lblSearchM = new JLabel("Search Members :");
-		lblSearchM.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 25));
-		lblSearchM.setForeground(new Color(65, 105, 225));
-		lblSearchM.setBounds(10, 11, 226, 43);
-		panel.add(lblSearchM);
-		
-		textField = new JTextField();
-		textField.setBorder(new LineBorder(new Color(65, 105, 225)));
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		textField.setForeground(new Color(0, 0, 0));
-		textField.setBounds(203, 13, 226, 43);
-		panel.add(textField);
-		textField.setColumns(10);
 		
 		JButton btnNewButton = new JButton("Search");
 		btnNewButton.setForeground(new Color(255, 255, 255));
 		btnNewButton.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		btnNewButton.setBackground(new Color(65, 105, 225));
 		btnNewButton.setBorder(null);
-		btnNewButton.setBounds(439, 17, 110, 35);
+		btnNewButton.setBounds(484, 11, 65, 23);
 		panel.add(btnNewButton);
+		
+		textField = new JTextField();
+		textField.setBorder(new LineBorder(new Color(65, 105, 225)));
+		textField.setBounds(330, 11, 150, 22);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JComboBox cbDept = new JComboBox();
+		cbDept.setBackground(new Color(255, 255, 255));
+		cbDept.setBorder(new LineBorder(new Color(65, 105, 225)));
+		cbDept.setBounds(369, 43, 85, 22);
+		panel.add(cbDept);
+		
+		JComboBox cbOccup = new JComboBox();
+		cbOccup.setBorder(new LineBorder(new Color(65, 105, 225)));
+		cbOccup.setBounds(464, 43, 85, 22);
+		panel.add(cbOccup);
+		
+		JLabel lblNewLabel = new JLabel("Sort :");
+		lblNewLabel.setBounds(330, 47, 32, 18);
+		panel.add(lblNewLabel);
+		
+		JButton btnAddMem = new JButton("Add Members");
+		btnAddMem.setBackground(new Color(65, 105, 225));
+		btnAddMem.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		btnAddMem.setForeground(new Color(255, 255, 255));
+		btnAddMem.setBorder(null);
+		btnAddMem.setBounds(10, 11, 150, 54);
+		panel.add(btnAddMem);
+		
+		JButton btnDeleteMem = new JButton("Delete Members");
+		btnDeleteMem.setForeground(new Color(255, 255, 255));
+		btnDeleteMem.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		btnDeleteMem.setBackground(new Color(65, 105, 225));
+		btnDeleteMem.setBorder(null);
+		btnDeleteMem.setBounds(170, 11, 150, 54);
+		panel.add(btnDeleteMem);
 		
 		JLabel lblTotalMem = new JLabel("Total Members :");
 		lblTotalMem.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -81,7 +105,7 @@ public class panelMembros extends JPanel {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(new Color(65, 105, 225)));
-		scrollPane.setBounds(0, 64, 559, 437);
+		scrollPane.setBounds(0, 74, 559, 427);
 		add(scrollPane);
 		
 		DefaultTableModel model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0);

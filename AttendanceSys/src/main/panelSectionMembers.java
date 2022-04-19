@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
 
 public class panelSectionMembers extends JPanel {
 	/**
@@ -23,8 +24,7 @@ public class panelSectionMembers extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTable table;
-	private JScrollPane scrollPane;
-	public JPanel wholeScreen;
+	private boolean isDeletingMems = false, isAddingMems = false;
 
 	/**
 	 * Create the panel.
@@ -34,47 +34,6 @@ public class panelSectionMembers extends JPanel {
 		setBounds(new Rectangle(0, 0, 559, 539));
 		setLayout(null);
 		
-		wholeScreen = new JPanel();
-		wholeScreen.setBackground(Color.WHITE);
-		wholeScreen.setBounds(0, 0, 559, 539);
-		add(wholeScreen);
-		wholeScreen.setLayout(null);
-		
-		JButton backButton = new JButton("Back");
-		backButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.panelSections);
-				revalidate();
-				repaint();
-			}
-		});
-		backButton.addMouseListener(new PropertiesListener(backButton));
-		backButton.setBounds(10, 11, 80, 39);
-		wholeScreen.add(backButton);
-		
-		JButton addMember = new JButton("Add Member");
-		addMember.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		addMember.addMouseListener(new PropertiesListener(addMember));
-		addMember.setBounds(100, 11, 160, 39);
-		wholeScreen.add(addMember);
-		
-		JButton deleteMember = new JButton("Delete Member");
-		deleteMember.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		deleteMember.addMouseListener(new PropertiesListener(deleteMember));
-		deleteMember.setBounds(270, 11, 160, 39);
-		wholeScreen.add(deleteMember);
-		
-		scrollPane = new JScrollPane();
-		scrollPane.setBackground(Color.WHITE);
-		scrollPane.setBorder(new LineBorder(new Color(65, 105, 225)));
-		scrollPane.setBounds(10, 64, 539, 464);
-		wholeScreen.add(scrollPane);
 		
 	}
 	

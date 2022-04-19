@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import java.awt.Font;
 
 public class panelAttendance extends JPanel {
 
@@ -57,6 +58,10 @@ public class panelAttendance extends JPanel {
 		setLayout(null);
 		
 		JButton addAttendance = new JButton("Add Attendance");
+		addAttendance.setForeground(new Color(255, 255, 255));
+		addAttendance.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		addAttendance.setBorder(null);
+		addAttendance.setBackground(new Color(65, 105, 225));
 		addAttendance.addMouseListener(new PropertiesListener(addAttendance));
 		addAttendance.addActionListener(new AddDeleteListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -93,6 +98,10 @@ public class panelAttendance extends JPanel {
 		add(addAttendance);
 		
 		JButton deleteAttendance = new JButton("Delete Attendance");
+		deleteAttendance.setBorder(null);
+		deleteAttendance.setBackground(new Color(65, 105, 225));
+		deleteAttendance.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+		deleteAttendance.setForeground(new Color(255, 255, 255));
 		deleteAttendance.addMouseListener(new PropertiesListener(deleteAttendance));
 		deleteAttendance.addActionListener(new AddDeleteListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -114,14 +123,15 @@ public class panelAttendance extends JPanel {
 		mainScreen.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		cbDept = new JComboBox<String>();
-		cbDept.setBounds(364, 39, 85, 22);
+		cbDept.setBackground(new Color(65, 105, 225));
+		cbDept.setBounds(369, 39, 85, 22);
 		cbDept.addItem("Department");
 		cbDept.addItemListener(new selectedDept(cbDept));
 		dept(cbDept);
 		add(cbDept);
 		
 		cbSec = new JComboBox<String>();
-		cbSec.setBounds(459, 39, 85, 22);
+		cbSec.setBounds(464, 39, 85, 22);
 		cbSec.addItem("Section");
 		cbSec.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -135,16 +145,21 @@ public class panelAttendance extends JPanel {
 		});
 		add(cbSec);
 		
-		JLabel lblNewLabel = new JLabel("Sort:");
-		lblNewLabel.setBounds(330, 43, 24, 14);
+		JLabel lblNewLabel = new JLabel("Sort :");
+		lblNewLabel.setBounds(330, 43, 29, 14);
 		add(lblNewLabel);
 		
 		txtSearch = new JTextField();
+		txtSearch.setBorder(new LineBorder(new Color(65, 105, 225)));
 		txtSearch.setBounds(330, 11, 150, 22);
 		add(txtSearch);
 		txtSearch.setColumns(10);
 		
 		JButton searchButton = new JButton("Search");
+		searchButton.setForeground(new Color(255, 255, 255));
+		searchButton.setBorder(null);
+		searchButton.setBackground(new Color(65, 105, 225));
+		searchButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		searchButton.setBounds(484, 11, 65, 23);
 		add(searchButton);
 		
