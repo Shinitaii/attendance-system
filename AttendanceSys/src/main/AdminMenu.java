@@ -24,11 +24,13 @@ public class AdminMenu extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private static panelHome panelHome;
-	private static panelSchedule panelSchedule;
+	public static panelSubjects panelSubjects;
+	public static SubjectSelectDepartment SubjectSelectDepartment;
 	private static panelSettings panelSettings;
 	public static panelDepartment panelDepartment;
 	private static panelMembros panelMembros;
-	private static AttendanceSelectDepartment AttendanceSelectDepartment;
+	public static AttendanceSelectDepartment AttendanceSelectDepartment;
+	public static AttendanceSelectSection AttendanceSelectSection;
 	public static panelAttendance panelAttendance;
 	public static panelSections panelSections;
 	public static panelSectionMembers panelSectionMembers;
@@ -64,8 +66,10 @@ public class AdminMenu extends JFrame {
 		
 		panelHome = new panelHome();
 		panelHome.setBounds(0, 0, 559, 539);
-		panelSchedule = new panelSchedule();
-		panelSchedule.setBounds(0, 0, 559, 539);
+		panelSubjects = new panelSubjects();
+		panelSubjects.setBounds(0, 0, 559, 539);
+		SubjectSelectDepartment = new SubjectSelectDepartment();
+		SubjectSelectDepartment.setBounds(0,0,559,539);
 		panelSettings = new panelSettings();
 		panelSettings.setBounds(0, 0, 559, 539);
 		panelDepartment = new panelDepartment();
@@ -75,6 +79,8 @@ public class AdminMenu extends JFrame {
 		AttendanceSelectDepartment = new AttendanceSelectDepartment();
 		AttendanceSelectDepartment.setBounds(0,0,559,539);
 		panelAttendance = new panelAttendance();
+		AttendanceSelectSection = new AttendanceSelectSection();
+		AttendanceSelectSection.setBounds(0,0,559,539);
 		panelAttendance.setBounds(0, 0, 559, 539);
 		panelSections = new panelSections();
 		panelSections.setBounds(0, 0, 559, 539);
@@ -145,7 +151,13 @@ public class AdminMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				menuClicked(AttendanceSelectDepartment);
+				panelAttendance.buttonNames.clear();
+				panelAttendance.listRecordNames.clear();
+				panelAttendance.listDates.clear();
+				panelAttendance.mainScreen.removeAll();
 				AttendanceSelectDepartment.execute();
+				revalidate();
+				repaint();
 			}
 			
 		});
@@ -288,23 +300,24 @@ public class AdminMenu extends JFrame {
 		panelSched.addMouseListener(new PropertiesListener(panelSched) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelSchedule);
+				menuClicked(SubjectSelectDepartment);
+				SubjectSelectDepartment.execute();
 			}
 			
 		});
 		panel.add(panelSched);
 		
-		JLabel lblSchedule = new JLabel("Schedule");
-		lblSchedule.setForeground(Color.WHITE);
-		lblSchedule.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
-		lblSchedule.setBounds(54, 11, 141, 42);
-		panelSched.add(lblSchedule);
+		JLabel lblSubject = new JLabel("Subject");
+		lblSubject.setForeground(Color.WHITE);
+		lblSubject.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblSubject.setBounds(54, 11, 141, 42);
+		panelSched.add(lblSubject);
 		
 		JLabel lblSched = new JLabel("");
 		lblSched.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblSched.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSched.setBounds(10, 11, 36, 42);
-		lblSched.setIcon(new ImageIcon(Images.schedule));
+		lblSched.setIcon(new ImageIcon(Images.subject));
 		panelSched.add(lblSched);
 		
 		JPanel panelMainContent = new JPanel();
@@ -315,11 +328,13 @@ public class AdminMenu extends JFrame {
 		panelMainContent.setLayout(null);
 		
 		panelMainContent.add(panelHome);
-		panelMainContent.add(panelSchedule);
+		panelMainContent.add(panelSubjects);
+		panelMainContent.add(SubjectSelectDepartment);
 		panelMainContent.add(panelSettings);
 		panelMainContent.add(panelDepartment);
 		panelMainContent.add(panelMembros);
 		panelMainContent.add(AttendanceSelectDepartment);
+		panelMainContent.add(AttendanceSelectSection);
 		panelMainContent.add(panelAttendance);
 		panelMainContent.add(panelSections);
 		panelMainContent.add(panelSectionMembers);
@@ -332,18 +347,19 @@ public class AdminMenu extends JFrame {
 	
 	public static void menuClicked(JPanel panel) {
 		panelHome.setVisible(false);
-		panelSchedule.setVisible(false);
+		panelSubjects.setVisible(false);
+		SubjectSelectDepartment.setVisible(false);
 		panelSettings.setVisible(false);
 		panelDepartment.setVisible(false);
 		panelMembros.setVisible(false);
 		AttendanceSelectDepartment.setVisible(false);
+		AttendanceSelectSection.setVisible(false);
 		panelAttendance.setVisible(false);
 		panelSections.setVisible(false);
 		panelSectionMembers.setVisible(false);
 		records.setVisible(false);
 		
-		panel.setVisible(true);
-		
+		panel.setVisible(true);		
 	}
 }
 

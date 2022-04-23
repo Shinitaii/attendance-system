@@ -37,12 +37,14 @@ public class panelAttendance extends JPanel {
 	List<String> listRecordNames = new ArrayList<String>();
 	List<JButton> buttonNames = new ArrayList<JButton>();
 	List<Date> listDates = new ArrayList<Date>();
-	JComboBox<String> cbSec = new JComboBox<String>();
-	JComboBox<String> cbDept = new JComboBox<String>();
+	public JComboBox<String> cbSub = new JComboBox<String>();
+	JComboBox<String> cbDate = new JComboBox<String>();
 	private int count = 0;
-	private String obtainedDept, obtainedSec;
+	public String obtainedSec;
+	private String obtainedSub;
+	public String obtainedDept;
 	public boolean addingRecords = false, deletingRecords = false, newRecord;
-	
+	private boolean sortingDate = false;
 	JPanel mainScreen;
 	
 	JButton button;
@@ -68,21 +70,54 @@ public class panelAttendance extends JPanel {
 				try {
 					deletingRecords = false;
 					addingRecords = true;
-					attendanceSettings.isCancelled = false;
 					attendanceSettings dialog = new attendanceSettings();
+					dialog.obtainedDept = AdminMenu.panelAttendance.obtainedDept;
+					dialog.obtainedSec = AdminMenu.panelAttendance.obtainedSec;
+					dialog.obtainedDeptName.setText(dialog.obtainedDept);
+					dialog.obtainedSecName.setText(dialog.obtainedSec);
+					System.out.println(dialog.obtainedDept);
+					dialog.isCancelled = false;
+					dialog.sub(dialog.cbSub);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);	
 					
-					if(!attendanceSettings.isCancelled) {
+					if(!dialog.isCancelled) {
 						checkName();
 						button = new JButton(attendanceSettings.name);
-						buttonNames.add(button);
-						button = buttonNames.get(count);
-						buttonNames.get(count).addMouseListener(new PropertiesListener(buttonNames.get(count)));
-						buttonNames.get(count).setName(attendanceSettings.name);
-						buttonNames.get(count).addActionListener(new AddDeleteListener());
-						if(attendanceSettings.cbSection.getSelectedIndex() == cbSec.getSelectedIndex()) {
-							mainScreen.add(button);							
+						if(!sortingDate) {
+							buttonNames.add(0, button);
+							buttonNames.get(0).addMouseListener(new PropertiesListener(buttonNames.get(0)));
+							buttonNames.get(0).setName(attendanceSettings.name);
+							buttonNames.get(0).addActionListener(new AddDeleteListener());
+						} else {
+							buttonNames.add(button);
+							button = buttonNames.get(count);	
+							buttonNames.get(count).addMouseListener(new PropertiesListener(buttonNames.get(count)));
+							buttonNames.get(count).setName(attendanceSettings.name);
+							buttonNames.get(count).addActionListener(new AddDeleteListener());
+						}
+						if(dialog.cbSub.getSelectedIndex() > 0 && cbSub.getSelectedIndex() == 0) { // will add a button if selected sort is default
+							if(!sortingDate) {
+								mainScreen.removeAll();
+								checkCount();
+								existingRecords();
+							} else {
+								mainScreen.add(button);	
+							}
+						} else if (dialog.cbSub.getSelectedIndex() == cbSub.getSelectedIndex()) {// will add a button if the created record is the same section as the selected sort
+							if(!sortingDate) {
+								mainScreen.removeAll();
+								checkCount();
+								existingRecords();
+							} else {
+								mainScreen.add(button);	
+							}
+						} else { // will always secretly remove the created record section isn't the same as the selected sort
+							if(!sortingDate) {
+								buttonNames.remove(0);
+							} else {
+								buttonNames.remove(count);
+							}
 						}
 						addingRecords = false;
 						checkCount();
@@ -94,7 +129,7 @@ public class panelAttendance extends JPanel {
 				}
 			}
 		});
-		addAttendance.setBounds(10, 11, 150, 50);
+		addAttendance.setBounds(10, 11, 135, 50);
 		add(addAttendance);
 		
 		JButton deleteAttendance = new JButton("Delete Attendance");
@@ -112,7 +147,7 @@ public class panelAttendance extends JPanel {
 				}
 			}
 		});
-		deleteAttendance.setBounds(170, 11, 150, 50);
+		deleteAttendance.setBounds(155, 11, 140, 50);
 		add(deleteAttendance);
 		
 		mainScreen = new JPanel();
@@ -122,31 +157,40 @@ public class panelAttendance extends JPanel {
 		add(mainScreen);
 		mainScreen.setLayout(new GridLayout(0, 2, 0, 0));
 		
-		cbDept = new JComboBox<String>();
-		cbDept.setBackground(new Color(65, 105, 225));
-		cbDept.setBounds(369, 39, 85, 22);
-		cbDept.addItem("Department");
-		cbDept.addItemListener(new selectedDept(cbDept));
-		dept(cbDept);
-		add(cbDept);
-		
-		cbSec = new JComboBox<String>();
-		cbSec.setBounds(464, 39, 85, 22);
-		cbSec.addItem("Section");
-		cbSec.addItemListener(new ItemListener() {
+		cbDate = new JComboBox<String>();
+		cbDate.setBounds(340, 39, 114, 22);
+		cbDate.addItem("Newest To Oldest");
+		cbDate.addItem("Oldest to Newest");
+		cbDate.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if(cbSec.getSelectedIndex() > 0) {
-				obtainedSec = cbSec.getSelectedItem().toString();
-				execute();
+				if(cbDate.getSelectedIndex() == 0) {
+					sortingDate = false;
+					execute();
 				} else {
+					sortingDate = true;
 					execute();
 				}
 			}
 		});
-		add(cbSec);
+		add(cbDate);
+		
+		cbSub = new JComboBox<String>();
+		cbSub.setBounds(464, 39, 85, 22);
+		cbSub.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbSub.getSelectedIndex() > 0) {
+					obtainedSub = cbSub.getSelectedItem().toString();
+					execute();
+				} else {
+					execute();
+				}
+				cbDate.setSelectedIndex(0);
+			}
+		});
+		add(cbSub);
 		
 		JLabel lblNewLabel = new JLabel("Sort :");
-		lblNewLabel.setBounds(330, 43, 29, 14);
+		lblNewLabel.setBounds(305, 43, 29, 14);
 		add(lblNewLabel);
 		
 		txtSearch = new JTextField();
@@ -161,11 +205,7 @@ public class panelAttendance extends JPanel {
 		searchButton.setBackground(new Color(65, 105, 225));
 		searchButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		searchButton.setBounds(484, 11, 65, 23);
-		add(searchButton);
-		
-		checkCount();
-		checkName();
-		existingRecords();  
+		add(searchButton); 
 		
 		Timer time = new Timer(500, (ActionListener) new ActionListener() {
 		    @Override
@@ -180,6 +220,7 @@ public class panelAttendance extends JPanel {
 		    		for(int i = 0; i < count; i++) {
 		    			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		    			if(timestamp.after(listDates.get(i))) {
+		    				
 		    			} else {
 		    				long diff = listDates.get(i).getTime() - timestamp.getTime();
 		    				long sec = TimeUnit.MILLISECONDS.toSeconds(diff) % 60;
@@ -197,7 +238,7 @@ public class panelAttendance extends JPanel {
 		
 	}
 	
-	private void execute() {
+	public void execute() {
 		mainScreen.removeAll();
 		listRecordNames.clear();
 		buttonNames.clear();
@@ -210,17 +251,13 @@ public class panelAttendance extends JPanel {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String normal = "select count(record_name) from attendancerecords where schoolname='"+Login.pubSchoolName+"'";
-			String sortingDeptOnly = "select count(record_name) from attendancerecords where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'";
 			String sortingDeptAndSec= "select count(record_name) from attendancerecords where departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
-			
+			String sortingDeptSecAndSub = "select count(record_name) from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
 			PreparedStatement checkCount;
-			if(cbDept.getSelectedIndex() == 0 && cbSec.getSelectedIndex() == 0) {
-				checkCount = conn.prepareStatement(normal);
-			} else if (cbDept.getSelectedIndex() > 0 && cbSec.getSelectedIndex() == 0) {
-				checkCount = conn.prepareStatement(sortingDeptOnly);
-			} else {
+			if (cbSub.getSelectedIndex() == 0) {
 				checkCount = conn.prepareStatement(sortingDeptAndSec);
+			} else {
+				checkCount = conn.prepareStatement(sortingDeptSecAndSub);
 			}
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
@@ -233,18 +270,22 @@ public class panelAttendance extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String normal = "select record_name from attendancerecords where schoolname='"+Login.pubSchoolName+"'";
-			String sortingDeptOnly = "select record_name from attendancerecords where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'";
-			String sortingDeptAndSec= "select record_name from attendancerecords where departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
-
+			String sortingDeptAndSec= "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
+			String sortingDeptSecAndSub = "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
+			String sortedDate = "order by created";
 			PreparedStatement checkName;
-			
-			if(cbDept.getSelectedIndex() == 0 && cbSec.getSelectedIndex() == 0) {
-				checkName = conn.prepareStatement(normal);
-			} else if (cbDept.getSelectedIndex() > 0 && cbSec.getSelectedIndex() == 0) {
-				checkName = conn.prepareStatement(sortingDeptOnly);
+			if (cbSub.getSelectedIndex() == 0) {
+				if(sortingDate) {
+					checkName = conn.prepareStatement(sortingDeptAndSec + " " + sortedDate + " asc");
+				} else {
+					checkName = conn.prepareStatement(sortingDeptAndSec + " " + sortedDate + " desc");
+				}
 			} else {
-				checkName = conn.prepareStatement(sortingDeptAndSec);
+				if(sortingDate) {
+					checkName = conn.prepareStatement(sortingDeptSecAndSub + " " + sortedDate + " asc");
+				} else {
+					checkName = conn.prepareStatement(sortingDeptSecAndSub + " " + sortedDate + " desc");
+				}
 			} 
 			ResultSet checking = checkName.executeQuery();
 			if(!addingRecords) {
@@ -267,6 +308,7 @@ public class panelAttendance extends JPanel {
 		for(int i = 0; i < count; i++) {
 			JButton button = new JButton(listRecordNames.get(i));
 			buttonNames.add(button);
+			button = buttonNames.get(i);
 			buttonNames.get(i).setName(listRecordNames.get(i));
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new AddDeleteListener());
@@ -276,27 +318,14 @@ public class panelAttendance extends JPanel {
 		repaint();
 	}
 	
-	private void dept(JComboBox<String> cb) {
+	public void sub(JComboBox<String> cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select departmentname from departmentinfo where schoolname ='"+Login.pubSchoolName+"'");
-			ResultSet result = getStatement.executeQuery();
-			while(result.next()) {
-				String obtainedString = result.getString("departmentname");
-				cb.addItem(obtainedString);
-			}
-		} catch (SQLException sql) {
-			sql.printStackTrace();
-		}
-	}
-	
-	private void sec(JComboBox<String> cb) {
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = getStatement.executeQuery();
 			cb.removeAllItems();
-			cb.addItem("Section");
+			cb.addItem("Subject");
 			while(result.next()) {
-				String obtainedString = result.getString("sectionname");
+				String obtainedString = result.getString("subjectname");
 				cb.addItem(obtainedString);
 			}
 		} catch (SQLException sql) {
@@ -330,24 +359,5 @@ public class panelAttendance extends JPanel {
 				}
 			}
 		}
-	}
-	
-	private class selectedDept implements ItemListener {
-		
-		JComboBox<String> cb;
-
-		
-		public selectedDept (JComboBox<String> cb) {
-			this.cb = cb;
-
-		}
-		
-		public void itemStateChanged(ItemEvent e) {
-			if(e.getStateChange() == ItemEvent.SELECTED) {
-				obtainedDept = cb.getSelectedItem().toString();
-				sec(cbSec);
-				execute();
-			}
-		}	
 	}
 }

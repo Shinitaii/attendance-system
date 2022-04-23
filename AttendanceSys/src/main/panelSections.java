@@ -38,7 +38,7 @@ public class panelSections extends JPanel {
 	static boolean isDeletingSec = false;
 	boolean isAddingSec = false;
 	public static String whatSec;
-	private boolean isDeletingSecs = false, isAddingSecs = false;
+	private boolean isDeletingSecs = false;
 	/*
 	 * Create the panel.
 	 */

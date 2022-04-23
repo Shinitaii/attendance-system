@@ -21,7 +21,6 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 public class panelHome extends JPanel {
 	private static final long serialVersionUID = 1L;

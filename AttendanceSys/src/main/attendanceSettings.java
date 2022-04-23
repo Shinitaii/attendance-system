@@ -35,7 +35,7 @@ public class attendanceSettings extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	panelAttendance panelAttendance;
-	public static String obtainedDept;
+	public String obtainedDept;
 	int[] hr = new int[24];
 	int[] num = new int[60];
 	int selectedHour, selectedMinute, selectedSecond;
@@ -46,11 +46,11 @@ public class attendanceSettings extends JDialog {
 	public static String name;
 	int day, year;
 	public static int currentRecordCount = 0;
-	public static String obtainedSec;
+	public String obtainedSub, obtainedSec;
 	String currentTime;
-	public static JComboBox<String> cbSection;
-	public static boolean isCancelled = false;
-
+	public JComboBox<String> cbSub;
+	public boolean isCancelled = false;
+	public JLabel obtainedDeptName, obtainedSecName;
 	/**
 	 * Launch the application.
 	 */
@@ -89,7 +89,7 @@ public class attendanceSettings extends JDialog {
 		panelAttendance = new panelAttendance();
 		
 		JLabel attendanceName = new JLabel("Attendance Name: ");
-		attendanceName.setBounds(10, 79, 262, 14);
+		attendanceName.setBounds(10, 98, 262, 14);
 		contentPanel.add(attendanceName);
 		
 		JLabel sectionName = new JLabel("Section Name: ");
@@ -145,25 +145,18 @@ public class attendanceSettings extends JDialog {
 		
 		JCheckBox withTimer = new JCheckBox("With Time Limit");
 		withTimer.setBounds(10, 198, 97, 23);
-		contentPanel.add(withTimer);
+		contentPanel.add(withTimer);;
 		
-		JComboBox<String> cbDept = new JComboBox<String>();
-		cbDept.setBounds(117, 7, 155, 22);
-		cbDept.addItem("Select a department");
-		dept(cbDept);
-		cbDept.addItemListener(new selectedDept(cbDept));
-		contentPanel.add(cbDept);
-		
-		cbSection = new JComboBox<String>();
-		cbSection.setBounds(92, 32, 180, 22);
-		cbSection.addItem("Select a department first");
-		cbSection.addItemListener(new ItemListener() {
+		cbSub = new JComboBox<String>();
+		cbSub.setBounds(92, 69, 180, 22);
+		cbSub.addItem("Select a department first");
+		cbSub.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
-					if(cbSection.getSelectedIndex() == 0) {
+					if(cbSub.getSelectedIndex() == 0) {
 						attendanceName.setText("Attendance Name: ");
 					} else {
-						obtainedSec = cbSection.getSelectedItem().toString();
+						obtainedSub = cbSub.getSelectedItem().toString();
 						checkRecordCount();
 						Date date = new Date();
 						Calendar cal = Calendar.getInstance();
@@ -171,7 +164,7 @@ public class attendanceSettings extends JDialog {
 						month = new SimpleDateFormat("MMM").format(cal.getTime());
 						day = cal.get(Calendar.DAY_OF_MONTH);
 						year = cal.get(Calendar.YEAR);
-						name = obtainedDept+"-"+obtainedSec+" | "+month+" "+day+", "+year;
+						name = obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount;
 						attendanceName.setText("Attendance Name: " + name); 
 					}
 				}
@@ -179,12 +172,24 @@ public class attendanceSettings extends JDialog {
 				repaint();
 			}
 		});
-		contentPanel.add(cbSection);
+		contentPanel.add(cbSub);
 		
 		JLabel warningLabel = new JLabel("");
 		warningLabel.setBounds(295, 177, 129, 40);
 		warningLabel.setForeground(Color.RED);
 		contentPanel.add(warningLabel);
+		
+		obtainedDeptName = new JLabel();
+		obtainedDeptName.setBounds(117, 11, 97, 14);
+		contentPanel.add(obtainedDeptName);
+		
+		JLabel subjectName = new JLabel("Subject Name:");
+		subjectName.setBounds(10, 73, 72, 14);
+		contentPanel.add(subjectName);
+		
+		obtainedSecName = new JLabel();
+		obtainedSecName.setBounds(93, 36, 97, 14);
+		contentPanel.add(obtainedSecName);
 		
 		withTimer.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -209,8 +214,8 @@ public class attendanceSettings extends JDialog {
 				JButton createButton = new JButton("Create");
 				createButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(cbDept.getSelectedIndex() == 0 || cbSection.getSelectedIndex() == 0) {
-							warningLabel.setText("<html>Set all the Department</br> and the Sections!</html>");
+						if(cbSub.getSelectedIndex() == 0) {
+							warningLabel.setText("Set the Subject!");
 							Timer timer = new Timer(3000, new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
 									warningLabel.setText("");
@@ -220,11 +225,12 @@ public class attendanceSettings extends JDialog {
 							timer.start();
 						} else {
 							try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-								PreparedStatement getStatement = conn.prepareStatement("insert into attendancerecords (record_name, sectionname, departmentname, schoolname, timecreated, timelimit, currenttime, timeexpires) values (?,?,?,?,CURRENT_TIMESTAMP,TIME(\"" + selectedHour + ":" + selectedMinute + ":" + selectedSecond + "\"),CURRENT_TIMESTAMP, ADDTIME(attendancerecords.timecreated, attendancerecords.timelimit))");
-								getStatement.setString(1, obtainedDept+"-"+obtainedSec+" | "+month+" "+day+", "+year);
-								getStatement.setString(2, obtainedSec);
-								getStatement.setString(3, obtainedDept);
-								getStatement.setString(4, Login.pubSchoolName);
+								PreparedStatement getStatement = conn.prepareStatement("insert into attendancerecords (record_name, subjectname, sectionname, departmentname, schoolname, timecreated, timelimit, currenttime, timeexpires) values (?,?,?,?,?,CURRENT_TIMESTAMP,TIME(\"" + selectedHour + ":" + selectedMinute + ":" + selectedSecond + "\"),CURRENT_TIMESTAMP, ADDTIME(attendancerecords.timecreated, attendancerecords.timelimit))");
+								getStatement.setString(1, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount);
+								getStatement.setString(2, obtainedSub);
+								getStatement.setString(3, obtainedSec);
+								getStatement.setString(4, obtainedDept);
+								getStatement.setString(5, Login.pubSchoolName);
 								int result = getStatement.executeUpdate();
 								if(result == 1) {
 									dispose();
@@ -258,27 +264,14 @@ public class attendanceSettings extends JDialog {
 		}
 	}
 	
-	private void dept(JComboBox<String> cb) {
+	public void sub(JComboBox<String> cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select departmentname from departmentinfo where schoolname ='"+Login.pubSchoolName+"'");
-			ResultSet result = getStatement.executeQuery();
-			while(result.next()) {
-				String obtainedString = result.getString("departmentname");
-				cb.addItem(obtainedString);
-			}
-		} catch (SQLException sql) {
-			sql.printStackTrace();
-		}
-	}
-	
-	private void sec(JComboBox<String> cb) {
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = getStatement.executeQuery();
 			cb.removeAllItems();
-			cb.addItem("Select a section");
+			cb.addItem("Select a subject");
 			while(result.next()) {
-				String obtainedString = result.getString("sectionname");
+				String obtainedString = result.getString("subjectname");
 				cb.addItem(obtainedString);
 			}
 		} catch (SQLException sql) {
@@ -300,7 +293,7 @@ public class attendanceSettings extends JDialog {
 	
 	private void checkRecordCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement getStatement = conn.prepareStatement("select count(record_name) from attendancerecords where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select count(record_name) from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = getStatement.executeQuery();
 			if(result.next()) {
 				currentRecordCount = result.getInt("count(record_name)");
@@ -332,23 +325,4 @@ public class attendanceSettings extends JDialog {
 			}
 		}
 	}
-	
-	private class selectedDept implements ItemListener {
-		
-		JComboBox<String> cb;
-
-		
-		public selectedDept (JComboBox<String> cb) {
-			this.cb = cb;
-
-		}
-		
-		public void itemStateChanged(ItemEvent e) {
-			if(e.getStateChange() == ItemEvent.SELECTED) {
-				obtainedDept = cb.getSelectedItem().toString();
-				sec(cbSection);
-			}
-		}	
-	}
-	
 }

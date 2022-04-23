@@ -1,12 +1,5 @@
 package main;
 
-import java.awt.Rectangle;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.JButton;
@@ -16,56 +9,122 @@ import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JLabel;
 
 public class panelSectionMembers extends JPanel {
 	/**
       	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTable table;
-	private boolean isDeletingMems = false, isAddingMems = false;
-
+	private JTable table_1;
 	/**
 	 * Create the panel.
 	 */
 	public panelSectionMembers() {
+		setBorder(new LineBorder(new Color(65, 105, 225)));
 		setBackground(Color.WHITE);
-		setBounds(new Rectangle(0, 0, 559, 539));
+		setBounds(0, 0, 559, 539);
 		setLayout(null);
 		
-		
-	}
-	
-	public void getTable() {
-		
-		DefaultTableModel model = new DefaultTableModel(new String[] {"Full Name","Occupation"}, 0);
-		
-		table = new JTable();
-		table.setRowSelectionAllowed(false);
-		scrollPane.setViewportView(table);
-		table.setBorder(null);
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where departmentname='"+panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
-			ResultSet result = puttingInTable.executeQuery();
-			while(result.next()) {
-				String name = result.getString("fullname");
-				String occ = result.getString("occupation");
-				model.addRow(new Object[] {name, occ});
+		JButton btnDelete = new JButton("Back");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AdminMenu.menuClicked(AdminMenu.panelSections);
 			}
-		} catch (SQLException sql) {
-			sql.printStackTrace();
-		}
-		table.setModel(new DefaultTableModel(
+		});
+		btnDelete.addMouseListener(new PropertiesListener(btnDelete));
+		btnDelete.setBounds(10, 11, 100, 40);
+		add(btnDelete);
+		
+		JButton btnNewButton = new JButton("Add Member");
+		btnNewButton.setBounds(120, 11, 100, 40);
+		add(btnNewButton);
+		
+		JButton btnDeleteMember = new JButton("Delete Member");
+		btnDeleteMember.setBounds(230, 11, 105, 40);
+		add(btnDeleteMember);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 64, 539, 464);
+		add(scrollPane_1);
+		
+		table_1 = new JTable();
+		table_1.setModel(new DefaultTableModel(
 			new Object[][] {
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
 			},
 			new String[] {
-				"Full Name", "Occupation"
+				"New column", "New column", "New column"
 			}
 		));
-		table.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table.getColumnModel().getColumn(0).setMinWidth(150);
-		table.getTableHeader().setReorderingAllowed(false);
-		table.getColumnModel().getColumn(0).setResizable(false);
+		scrollPane_1.setViewportView(table_1);
 	}
 }

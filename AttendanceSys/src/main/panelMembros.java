@@ -58,13 +58,13 @@ public class panelMembros extends JPanel {
 		panel.add(textField);
 		textField.setColumns(10);
 		
-		JComboBox cbDept = new JComboBox();
+		JComboBox<String> cbDept = new JComboBox<String>();
 		cbDept.setBackground(new Color(255, 255, 255));
 		cbDept.setBorder(new LineBorder(new Color(65, 105, 225)));
 		cbDept.setBounds(369, 43, 85, 22);
 		panel.add(cbDept);
 		
-		JComboBox cbOccup = new JComboBox();
+		JComboBox<String> cbOccup = new JComboBox<String>();
 		cbOccup.setBorder(new LineBorder(new Color(65, 105, 225)));
 		cbOccup.setBounds(464, 43, 85, 22);
 		panel.add(cbOccup);

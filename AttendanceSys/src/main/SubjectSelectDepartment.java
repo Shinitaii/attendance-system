@@ -1,9 +1,6 @@
 package main;
 
-import javax.swing.JPanel;
 import java.awt.Color;
-import javax.swing.border.LineBorder;
-
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +14,10 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
-public class AttendanceSelectDepartment extends JPanel {
+public class SubjectSelectDepartment extends JPanel {
 
 	/**
 	 * 
@@ -29,10 +28,11 @@ public class AttendanceSelectDepartment extends JPanel {
 	private int count = 0;
 	public String selectedDept;
 	private JPanel selectionScreen;
+
 	/**
 	 * Create the panel.
 	 */
-	public AttendanceSelectDepartment() {
+	public SubjectSelectDepartment() {
 		setBorder(new LineBorder(new Color(65, 105, 225)));
 		setBackground(Color.WHITE);
 		setBounds(0,0,559,539);
@@ -95,11 +95,11 @@ public class AttendanceSelectDepartment extends JPanel {
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AdminMenu.menuClicked(AdminMenu.AttendanceSelectSection);
+					AdminMenu.menuClicked(AdminMenu.panelSubjects);
 					JButton source = (JButton) e.getSource();
-					AdminMenu.AttendanceSelectSection.obtainedDept = source.getName();
-					AdminMenu.panelAttendance.obtainedDept = source.getName();
-					AdminMenu.AttendanceSelectSection.execute();
+					AdminMenu.panelSubjects.obtainedDept = source.getName();
+					selectedDept = source.getName();
+					AdminMenu.panelSubjects.execute();
 				}
 			});
 			selectionScreen.add(button);
@@ -107,5 +107,5 @@ public class AttendanceSelectDepartment extends JPanel {
 		revalidate();
 		repaint();
 	}
-	
+
 }

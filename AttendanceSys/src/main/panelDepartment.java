@@ -1,7 +1,12 @@
   package main;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.border.LineBorder;
 import java.awt.Rectangle;
 import javax.swing.JOptionPane;
@@ -16,9 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JLabel;	
-import javax.swing.BoxLayout;
-import javax.swing.JScrollPane;
+import javax.swing.JLabel;
 
 public class panelDepartment extends JPanel {
 
@@ -42,9 +45,11 @@ public class panelDepartment extends JPanel {
 		MainContent.setBorder(new LineBorder(new Color(65, 105, 225)));
 		MainContent.setBackground(Color.WHITE);       
 		MainContent.setBounds(10, 102, 539, 426);
-		MainContent.setLayout(new GridLayout(0, 2, 0, 0));
-		add(MainContent);
+		MainContent.setLayout(new GridLayout(0, 2, 2, 2));
 		
+		JScrollPane scrollPane = new JScrollPane(MainContent, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(10,102,539,426);
+		add(scrollPane);
 		
 		JPanel buttonSelection = new JPanel();
 		buttonSelection.setBackground(new Color(255, 255, 255));
@@ -169,6 +174,7 @@ public class panelDepartment extends JPanel {
 	}
 	
 	public void checkExistingDepts() {
+		int height = 0;
 		for(int i = 0; i < count; i++){	
 			existingButton = new JButton(listDeptNames.get(i));
 			existingButton.setName(listDeptNames.get(i));
@@ -177,8 +183,10 @@ public class panelDepartment extends JPanel {
 			existingButton.setLayout(new BorderLayout());				
 			existingButton.addMouseListener(new PropertiesListener(existingButton));
 			buttonNames.get(i).addActionListener(new AddDeleteListener());
-			MainContent.add(existingButton);			
+			MainContent.add(existingButton);
+			height += 33;
 		}
+		MainContent.setPreferredSize(new Dimension(0, height));
 	}
 	
 	private class AddDeleteListener implements ActionListener {
