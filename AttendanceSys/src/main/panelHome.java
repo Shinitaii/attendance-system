@@ -56,8 +56,7 @@ public class panelHome extends JPanel {
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 150, 150);
 		lblpfp.setBounds(0, 0, 153, 153);
-		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
 			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+uid+"'");
 			ResultSet get = getPhoto.executeQuery();
 			Blob photo = null;

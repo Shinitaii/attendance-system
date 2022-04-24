@@ -28,7 +28,7 @@ public class AdminMenu extends JFrame {
 	public static SubjectSelectDepartment SubjectSelectDepartment;
 	private static panelSettings panelSettings;
 	public static panelDepartment panelDepartment;
-	private static panelMembros panelMembros;
+	public static panelMembros panelMembros;
 	public static AttendanceSelectDepartment AttendanceSelectDepartment;
 	public static AttendanceSelectSection AttendanceSelectSection;
 	public static panelAttendance panelAttendance;

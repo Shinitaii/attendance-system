@@ -1,9 +1,10 @@
 package main;
 import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.Component;
-
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.Rectangle;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,6 +22,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class panelMembros extends JPanel {
 
@@ -30,7 +35,8 @@ public class panelMembros extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTable table;
 	private JTextField textField;
-
+	private boolean isEditing = false;
+	public DefaultTableModel model;
 	/**
 	 * Create the panel.
 	 */
@@ -76,21 +82,27 @@ public class panelMembros extends JPanel {
 		lblNewLabel.setBounds(330, 47, 32, 18);
 		panel.add(lblNewLabel);
 		
-		JButton btnAddMem = new JButton("Add Members");
-		btnAddMem.setBackground(new Color(65, 105, 225));
-		btnAddMem.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		btnAddMem.setForeground(new Color(255, 255, 255));
-		btnAddMem.setBorder(null);
-		btnAddMem.setBounds(10, 11, 150, 54);
-		panel.add(btnAddMem);
-		
-		JButton btnDeleteMem = new JButton("Delete Members");
-		btnDeleteMem.setForeground(new Color(255, 255, 255));
-		btnDeleteMem.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		btnDeleteMem.setBackground(new Color(65, 105, 225));
-		btnDeleteMem.setBorder(null);
-		btnDeleteMem.setBounds(170, 11, 150, 54);
-		panel.add(btnDeleteMem);
+		JButton editButton = new JButton("Edit Member");
+		editButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!isEditing) {
+					isEditing = true;
+					table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				} else {
+					isEditing = false;
+					table.setRowSelectionAllowed(false);
+				}
+				
+				if(isEditing) {
+					table.getSelectionModel().addListSelectionListener(selectedRow);
+				} else {
+					table.getSelectionModel().removeListSelectionListener(selectedRow);
+				}
+			}
+		});
+		editButton.addMouseListener(new PropertiesListener(editButton));
+		editButton.setBounds(10, 11, 120, 55);
+		panel.add(editButton);
 		
 		JLabel lblTotalMem = new JLabel("Total Members :");
 		lblTotalMem.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -111,7 +123,7 @@ public class panelMembros extends JPanel {
 		scrollPane.setBounds(0, 74, 559, 427);
 		add(scrollPane);
 		
-		DefaultTableModel model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0) {
+		model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0) {
 			/**
 			 * 
 			 */
@@ -123,10 +135,20 @@ public class panelMembros extends JPanel {
 		};
 		
 		table = new JTable();
-		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
 		table.setBorder(null);
 		table.setModel(model);
+		checkList();
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table.getColumnModel().getColumn(0).setMinWidth(150);
+		table.getTableHeader().setReorderingAllowed(false);
+		
+		revalidate();
+		repaint();
+	}
+	
+	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, departmentname, occupation from userInfo where schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = puttingInTable.executeQuery();
@@ -136,15 +158,30 @@ public class panelMembros extends JPanel {
 				String occ = result.getString("occupation");
 				model.addRow(new Object[] {name, dept, occ});
 			}
+			revalidate();
+			repaint();
 		} catch (SQLException sql) {
 			sql.printStackTrace();
 		}
-		
-		table.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table.getColumnModel().getColumn(0).setMinWidth(150);
-		table.getTableHeader().setReorderingAllowed(false);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		revalidate();
-		repaint();
 	}
+	
+	public ListSelectionListener selectedRow = new ListSelectionListener() {
+		public void valueChanged(ListSelectionEvent e) {
+		       if(!e.getValueIsAdjusting()){
+		    	   if (table.getSelectedRow() > -1) {
+		    		   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+		    		   try {
+		    			   memberSettings dialog = new memberSettings();
+		    			   dialog.obtainedUser = value;
+		    			   dialog.lblCurrentUserSelected.setText("User: "+dialog.obtainedUser);
+		    			   dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		    			   dialog.setVisible(true);
+		    		   } catch (Exception dialog) {
+		    			   dialog.printStackTrace();
+		    		   }
+		    	   }
+	        }
+		}
+	};
+	
 }
