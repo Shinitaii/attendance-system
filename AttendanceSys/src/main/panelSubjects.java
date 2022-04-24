@@ -6,6 +6,8 @@ import javax.swing.border.LineBorder;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import java.awt.GridLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -164,10 +166,20 @@ public class panelSubjects extends JPanel {
 	
 	private class AddDeleteListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			JButton source = (JButton) e.getSource();
 			if(!isDeletingSub) {
 				
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
+					int select = JOptionPane.showConfirmDialog(null, "You sure you want to delete "+source.getName()+"?", "Warning!", JOptionPane.YES_NO_OPTION);
+					if(select == JOptionPane.YES_OPTION) {
+						buttonNames.remove(source);
+						subjectScreen.remove(source);
+						PreparedStatement getStatement = conn.prepareStatement("delete subjectinfo where subjectname ='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
+						getStatement.executeUpdate();
+						checkCount();
+						getStatement.close();
+					}
 					
 					conn.close();
 				} catch (SQLException sql) {

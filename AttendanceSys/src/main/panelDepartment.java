@@ -32,7 +32,7 @@ public class panelDepartment extends JPanel {
 	private int count = 0;
 	private JButton existingButton, newButton, addDept, deleteDept;
 	private boolean isDeletingDepts = false, isAddingDepts = false;
-	public static String whatDept;
+	public String whatDept;
 	public static boolean hasOpenedADept = false;
           	
 	public panelDepartment() {
@@ -195,6 +195,7 @@ public class panelDepartment extends JPanel {
 				AdminMenu.menuClicked(AdminMenu.panelSections);
 				JButton source = (JButton) e.getSource();
 				whatDept = buttonNames.get(buttonNames.indexOf(source)).getName();
+				AdminMenu.panelSectionMembers.obtainedDept = whatDept;
 				AdminMenu.panelSections.currentDept.setText("Department: "+whatDept);
 				AdminMenu.panelSections.execute();
 			} else {

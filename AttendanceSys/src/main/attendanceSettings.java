@@ -14,8 +14,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -225,6 +227,11 @@ public class attendanceSettings extends JDialog {
 							timer.start();
 						} else {
 							try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
+								String obtainedRecordID = "";
+								int totalMembers = 0;
+								List<String> obtainedFN = new ArrayList<String>();
+								List<String> obtainedMN = new ArrayList<String>();
+								List<String> obtainedLN = new ArrayList<String>();
 								PreparedStatement getStatement = conn.prepareStatement("insert into attendancerecords (record_name, subjectname, sectionname, departmentname, schoolname, timecreated, timelimit, currenttime, timeexpires) values (?,?,?,?,?,CURRENT_TIMESTAMP,TIME(\"" + selectedHour + ":" + selectedMinute + ":" + selectedSecond + "\"),CURRENT_TIMESTAMP, ADDTIME(attendancerecords.timecreated, attendancerecords.timelimit))");
 								getStatement.setString(1, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount);
 								getStatement.setString(2, obtainedSub);
@@ -232,6 +239,39 @@ public class attendanceSettings extends JDialog {
 								getStatement.setString(4, obtainedDept);
 								getStatement.setString(5, Login.pubSchoolName);
 								int result = getStatement.executeUpdate();
+								PreparedStatement getRecordID = conn.prepareStatement("select recordid from attendancerecords where record_name='"+obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount+"' and schoolname='"+Login.pubSchoolName+"'");
+								ResultSet resultID = getRecordID.executeQuery();
+								if(resultID.next()) {
+									obtainedRecordID = resultID.getString("recordid");
+								}
+								PreparedStatement getTotalMembers = conn.prepareStatement("select count(concat(firstname, ' ', middlename, ' ', lastname)) as fullname from userinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+								ResultSet obtainedTotalMembers = getTotalMembers.executeQuery();
+								if(obtainedTotalMembers.next()) {
+									totalMembers = obtainedTotalMembers.getInt("fullname");
+								}
+								PreparedStatement getMemberNames = conn.prepareStatement("select firstname, middlename, lastname from userinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+								ResultSet obtainedMemberNames = getMemberNames.executeQuery();
+								while(obtainedMemberNames.next()) {
+									String FN = obtainedMemberNames.getString("firstname");
+									String MN = obtainedMemberNames.getString("middlename");
+									String LN = obtainedMemberNames.getString("lastname");
+									obtainedFN.add(FN);
+									obtainedMN.add(MN);
+									obtainedLN.add(LN);
+								}
+								for(int i = 0; i < totalMembers; i++) {
+									PreparedStatement getSecondStatement = conn.prepareStatement("insert into attendancestatus (recordid, record_name, firstname, middlename, lastname, subjectname, sectionname, departmentname, schoolname) values (?,?,?,?,?,?,?,?,?)");
+									getSecondStatement.setString(1, obtainedRecordID);
+									getSecondStatement.setString(2, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount);
+									getSecondStatement.setString(3, obtainedFN.get(i));
+									getSecondStatement.setString(4, obtainedMN.get(i));
+									getSecondStatement.setString(5, obtainedLN.get(i));
+									getSecondStatement.setString(6, obtainedSub);
+									getSecondStatement.setString(7, obtainedSec);
+									getSecondStatement.setString(8, obtainedDept);
+									getSecondStatement.setString(9, Login.pubSchoolName);
+									getSecondStatement.executeUpdate();
+								}
 								if(result == 1) {
 									dispose();
 									JOptionPane.showMessageDialog(null, "Successfully created!");

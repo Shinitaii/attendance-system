@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 
 public class subjectSettings extends JDialog {
@@ -66,11 +67,11 @@ public class subjectSettings extends JDialog {
 		contentPanel.add(lblSubjDesc);
 		
 		JLabel lblNote = new JLabel("Note: 200 characters limit!");
-		lblNote.setBounds(119, 36, 127, 14);
+		lblNote.setBounds(116, 36, 127, 14);
 		contentPanel.add(lblNote);
 		
-		JTextArea taSubjDesc = new JTextArea();
-		taSubjDesc.setBounds(10, 61, 235, 156);
+		JTextPane taSubjDesc = new JTextPane();
+		taSubjDesc.setBounds(10, 61, 233, 156);
 		contentPanel.add(taSubjDesc);
 		{
 			JPanel buttonPane = new JPanel();

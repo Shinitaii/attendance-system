@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 
 public class memberSettings extends JDialog {
 
@@ -48,6 +49,9 @@ public class memberSettings extends JDialog {
 	 * Create the dialog.
 	 */
 	public memberSettings() {
+		super(null, ModalityType.TOOLKIT_MODAL);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(memberSettings.class.getResource("/res/attendance.png")));
+		setTitle("Edit Role");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -59,7 +63,7 @@ public class memberSettings extends JDialog {
 		contentPanel.add(lblCurrentUserSelected);
 		
 		JLabel lblInstruction = new JLabel("Select a role to change:");
-		lblInstruction.setBounds(10, 33, 110, 13);
+		lblInstruction.setBounds(10, 33, 120, 13);
 		contentPanel.add(lblInstruction);
 		
 		JTextPane roleDesc = new JTextPane();

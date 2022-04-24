@@ -336,7 +336,10 @@ public class panelAttendance extends JPanel {
 			if(!deletingRecords) {
 				AdminMenu.menuClicked(AdminMenu.records);
 				JButton source = (JButton) e.getSource();
-				Records.lblNewLabel.setText(source.getName());			
+				AdminMenu.records.obtainedDept = obtainedDept;
+				AdminMenu.records.obtainedSec = obtainedSec;
+				AdminMenu.records.obtainedRecord = source.getName();
+				AdminMenu.records.checkList();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();
@@ -346,6 +349,8 @@ public class panelAttendance extends JPanel {
 						buttonNames.remove(source);
 						PreparedStatement deleteRecord = conn.prepareStatement("delete from attendancerecords where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
 						deleteRecord.executeUpdate();
+						PreparedStatement deleteStatusRecord = conn.prepareStatement("delete from attendancestatus where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
+						deleteStatusRecord.executeUpdate();
 						revalidate();
 						repaint();
 						checkCount();
