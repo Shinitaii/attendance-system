@@ -168,11 +168,7 @@ public class panelSections extends JPanel {
 		sectionScreen.setBounds(10, 96, 539, 432);
 		add(sectionScreen);
 		sectionScreen.setLayout(new GridLayout(0, 2, 0, 0));
-		
-		
-		
-		
-		
+
 		revalidate();
 		repaint();
 	}

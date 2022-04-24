@@ -3,12 +3,9 @@ import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
 import java.awt.GridLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;

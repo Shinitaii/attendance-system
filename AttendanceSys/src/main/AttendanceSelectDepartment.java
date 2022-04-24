@@ -48,7 +48,7 @@ public class AttendanceSelectDepartment extends JPanel {
 		JLabel noteLabel = new JLabel("Select a department");
 		noteLabel.setBounds(10, 11, 97, 14);
 		add(noteLabel);
-	
+
 	}
 	
 	public void execute() {

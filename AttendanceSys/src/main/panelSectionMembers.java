@@ -35,13 +35,18 @@ public class panelSectionMembers extends JPanel {
 		btnDelete.setBounds(10, 11, 100, 40);
 		add(btnDelete);
 		
-		JButton btnNewButton = new JButton("Add Member");
-		btnNewButton.setBounds(120, 11, 100, 40);
-		add(btnNewButton);
+		JButton addMember = new JButton("Add Member");
+		addMember.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		addMember.addMouseListener(new PropertiesListener(addMember));
+		addMember.setBounds(120, 11, 100, 40);
+		add(addMember);
 		
-		JButton btnDeleteMember = new JButton("Delete Member");
-		btnDeleteMember.setBounds(230, 11, 105, 40);
-		add(btnDeleteMember);
+		JButton deleteMember = new JButton("Delete Member");
+		deleteMember.setBounds(230, 11, 105, 40);
+		add(deleteMember);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(10, 64, 539, 464);

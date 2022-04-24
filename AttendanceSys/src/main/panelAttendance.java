@@ -85,9 +85,10 @@ public class panelAttendance extends JPanel {
 						checkName();
 						button = new JButton(attendanceSettings.name);
 						if(!sortingDate) {
-							buttonNames.add(0, button);
+							buttonNames.add(0, button);						
 							buttonNames.get(0).addMouseListener(new PropertiesListener(buttonNames.get(0)));
 							buttonNames.get(0).setName(attendanceSettings.name);
+							listRecordNames.add(0, button.getName());
 							buttonNames.get(0).addActionListener(new AddDeleteListener());
 						} else {
 							buttonNames.add(button);
@@ -99,6 +100,7 @@ public class panelAttendance extends JPanel {
 						if(dialog.cbSub.getSelectedIndex() > 0 && cbSub.getSelectedIndex() == 0) { // will add a button if selected sort is default
 							if(!sortingDate) {
 								mainScreen.removeAll();
+								checkName();
 								checkCount();
 								existingRecords();
 							} else {
@@ -107,6 +109,7 @@ public class panelAttendance extends JPanel {
 						} else if (dialog.cbSub.getSelectedIndex() == cbSub.getSelectedIndex()) {// will add a button if the created record is the same section as the selected sort
 							if(!sortingDate) {
 								mainScreen.removeAll();
+								checkName();
 								checkCount();
 								existingRecords();
 							} else {
@@ -288,16 +291,9 @@ public class panelAttendance extends JPanel {
 				}
 			} 
 			ResultSet checking = checkName.executeQuery();
-			if(!addingRecords) {
-				while(checking.next()) {
-					String recordNames = checking.getString("record_name");
-					listRecordNames.add(recordNames);
-				}
-			} else {
-				if(checking.next()) {
-					String recordNames = checking.getString("record_name");
-					listRecordNames.add(recordNames);
-				}
+			while(checking.next()) {
+				String recordNames = checking.getString("record_name");
+				listRecordNames.add(recordNames);
 			}
 		} catch (SQLException sql) {
 			sql.printStackTrace();

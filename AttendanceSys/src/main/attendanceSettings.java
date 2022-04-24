@@ -237,7 +237,8 @@ public class attendanceSettings extends JDialog {
 									JOptionPane.showMessageDialog(null, "Successfully created!");
 									revalidate();
 									repaint();
-								}	
+								}
+								panelAttendance.addingRecords = false;
 							} catch (SQLException sql) {
 								sql.printStackTrace();
 							}
@@ -255,6 +256,7 @@ public class attendanceSettings extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
 						isCancelled = true;
+						panelAttendance.addingRecords = false;
 					}
 				});
 				cancelButton.addMouseListener(new PropertiesListener(cancelButton));

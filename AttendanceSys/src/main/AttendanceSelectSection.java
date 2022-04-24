@@ -97,8 +97,8 @@ public class AttendanceSelectSection extends JPanel {
 					AdminMenu.menuClicked(AdminMenu.panelAttendance);
 					JButton source = (JButton) e.getSource();
 					AdminMenu.panelAttendance.obtainedSec = source.getName();
-					AdminMenu.panelAttendance.execute();
 					AdminMenu.panelAttendance.sub(AdminMenu.panelAttendance.cbSub);
+					AdminMenu.panelAttendance.execute();
 				}
 			});
 			selectionScreen.add(button);

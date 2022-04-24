@@ -160,12 +160,14 @@ public class Login extends JFrame {
 							
 						}
 						dispose();
+						whatInfo.close();
 						checkInfo.close();
 					} else {
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 						lblStatus.setText("Incorrect username or password!");
 						lblStatus.setForeground(Color.RED);
 					}
+					x.close();
 					conn.close();
 					checkAccount.close();
 				} catch (SQLException sql) {

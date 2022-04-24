@@ -1,6 +1,8 @@
 package main;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.border.LineBorder;
 import java.awt.Rectangle;
 import java.sql.Connection;
@@ -13,6 +15,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -108,12 +111,22 @@ public class panelMembros extends JPanel {
 		scrollPane.setBounds(0, 74, 559, 427);
 		add(scrollPane);
 		
-		DefaultTableModel model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0);
+		DefaultTableModel model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		
 		table = new JTable();
 		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
 		table.setBorder(null);
+		table.setModel(model);
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, departmentname, occupation from userInfo where schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = puttingInTable.executeQuery();
@@ -126,15 +139,12 @@ public class panelMembros extends JPanel {
 		} catch (SQLException sql) {
 			sql.printStackTrace();
 		}
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Full Name", "Department", "Occupation"
-			}
-		));
+		
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		revalidate();
+		repaint();
 	}
 }

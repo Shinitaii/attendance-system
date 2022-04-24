@@ -17,8 +17,8 @@ public class Register extends JFrame {
 		lblStatus, usernameNote, logoShowPassword, logoShowCPassword, logoPasswordPolicy, lblpfp;
 	public static JLabel back;
 	private JButton createAccount;
-	private JRadioButton male, female, student, teacher, admin;
-	private ButtonGroup groupGender, occupationGroup;
+	private JRadioButton male, female;
+	private ButtonGroup groupGender;
 	private boolean passwordChecker = false;
 	String path;
 	boolean photoSizeCheck = false;
@@ -209,19 +209,17 @@ public class Register extends JFrame {
 		createAccount.addMouseListener(new PropertiesListener(createAccount));
 		createAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)){
 					char[] getPassword = pwdPassword.getPassword(), getCPassword = pwdCPassword.getPassword();
 					String firstName = txtFirstName.getText(), middleName = txtMiddleName.getText(), lastName = txtLastName.getText(),
 							username = txtUsername.getText(), password = String.valueOf(getPassword), cPassword = String.valueOf(getCPassword);
-					int delay = 3000;
 					ActionListener lblStatusClearer = new ActionListener() {
 									public void actionPerformed (ActionEvent e) {
 										lblStatus.setText("");
 									}
 								};
-					Timer tick = new Timer(delay, lblStatusClearer);
+					Timer tick = new Timer(3000, lblStatusClearer);
 					tick.setRepeats(false);
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 					if(firstName.isEmpty() || middleName.isEmpty() || lastName.isEmpty() || username.isEmpty() || password.isEmpty() || cPassword.isEmpty() || obtainedGender.isEmpty()) {		
 						lblStatus.setText("Enter all of the credentials!");
 						tick.start();
@@ -245,8 +243,7 @@ public class Register extends JFrame {
 									}
 									if(!passwordChecker) {
 										lblStatus.setText("<html>Password must contain atleast 8 characters and requires a number, a lowercase letter, an uppercase letter, a special character and must not contain any spaces!</html>");
-										int longerDelay = 7000;
-										Timer longerTick = new Timer(longerDelay, lblStatusClearer);
+										Timer longerTick = new Timer(7000, lblStatusClearer);
 										longerTick.setRepeats(false);
 										longerTick.start();
 									} else {
@@ -257,17 +254,17 @@ public class Register extends JFrame {
 										} catch (IOException photo) {
 											JOptionPane.showMessageDialog(null, "No photo!");
 										}
-										PreparedStatement register = conn.prepareStatement("INSERT INTO userInfo (firstName, middlename, lastname, username, pass, gender, occupation, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
+										PreparedStatement register = conn.prepareStatement("INSERT INTO userInfo (firstName, middlename, lastname, username, pass, gender, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
 										register.setString(1, firstName);
 										register.setString(2, middleName);
 										register.setString(3, lastName);
 										register.setString(4, username);
 										register.setString(5, password);
 										register.setString(6, obtainedGender);
-										register.setString(7, obtainedOccupation);
+										register.setString(7, "Student");
 										register.setBinaryStream(8, inputPhoto);
 										int creation = register.executeUpdate();
-												if(creation == 1) {
+											if(creation == 1) {
 												String userID = "";
 												PreparedStatement checkUserID = conn.prepareStatement("SELECT userid FROM userInfo WHERE username='"+username+"'");
 												ResultSet confirmUserID = checkUserID.executeQuery();
@@ -275,8 +272,7 @@ public class Register extends JFrame {
 													userID = confirmUserID.getString("userid");
 												}
 												JOptionPane.showMessageDialog(null, "Account created successfully!");
-												JOptionPane.showMessageDialog(null, "Your account UID is "+userID+".");
-												
+												JOptionPane.showMessageDialog(null, "Your account UID is "+userID+".");											
 												EventQueue.invokeLater(new Runnable() {
 													public void run() {
 														try {
@@ -341,46 +337,7 @@ public class Register extends JFrame {
 		groupGender = new ButtonGroup();
 		groupGender.add(male);
 		groupGender.add(female);
-		
-		student = new JRadioButton("Student");
-		student.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				obtainedOccupation = "Student";
-			}
-		});
-		student.setOpaque(false);
-		student.setForeground(new Color(65, 105, 225));
-		student.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		student.setBounds(430, 336, 78, 24);
-		contentPane.add(student);
-		
-		teacher = new JRadioButton("Teacher");
-		teacher.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				obtainedOccupation = "Teacher";
-			}
-		});
-		teacher.setOpaque(false);
-		teacher.setForeground(new Color(65, 105, 225));
-		teacher.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		teacher.setBounds(510, 336, 78, 24);
-		contentPane.add(teacher);
-		
-		admin = new JRadioButton("Admin");
-		admin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				obtainedOccupation = "Admin";
-			}
-		});
-		admin.setOpaque(false);
-		admin.setForeground(new Color(65, 105, 225));
-		admin.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		admin.setBounds(476, 364, 78, 24);
-		contentPane.add(admin);
-		
-		occupationGroup = new ButtonGroup();
-		occupationGroup.add(teacher);
-		occupationGroup.add(admin);
+	
 		
 		back = new JLabel("Back");
 		back.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -430,8 +387,6 @@ public class Register extends JFrame {
 		
 		getRootPane().setDefaultButton(createAccount);
 		
-		
-		
 		JPanel panelPFP = new JPanel();
 		panelPFP.setLayout(null);
 		panelPFP.setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -460,12 +415,6 @@ public class Register extends JFrame {
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblNewLabel_1.setBounds(409, 169, 175, 14);
 		contentPane.add(lblNewLabel_1);
-		
-		JLabel occupation = new JLabel("Occupation:");
-		occupation.setForeground(new Color(65, 105, 225));
-		occupation.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		occupation.setBounds(349, 336, 78, 24);
-		contentPane.add(occupation);
 		
 		setResizable(false);
 	}
