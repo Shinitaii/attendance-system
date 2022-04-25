@@ -139,6 +139,19 @@ public class panelDepartment extends JPanel {
 		recountCheck();
 		recheckName();
 		checkExistingDepts();
+		
+		if(!Login.pubOccupation.equals("Admin")) {
+			buttonSelection.setVisible(false);
+			lblSelectToDelete.setVisible(false);
+			JLabel lblInstruction = new JLabel("Click on a department to select its sections.");
+			lblInstruction.setVisible(true);
+			lblInstruction.setBounds(10, 11, 425, 12);
+			add(lblInstruction);
+			scrollPane.setBounds(10,30,539,499);
+		}
+		
+		revalidate();
+		repaint();
 	}
 	
 	public void recountCheck() {

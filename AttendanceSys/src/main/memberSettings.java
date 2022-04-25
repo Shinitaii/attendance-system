@@ -69,7 +69,7 @@ public class memberSettings extends JDialog {
 		JTextPane roleDesc = new JTextPane();
 		roleDesc.setEditable(false);
 		roleDesc.setText("Student are responsible for attending in their classes, they can only view most of the menus here and can only press a button to attend on an attendance record created by a teacher.");
-		roleDesc.setBounds(10, 88, 416, 134);
+		roleDesc.setBounds(10, 88, 170, 140);
 		contentPanel.add(roleDesc);
 		
 		JComboBox<String> cbRoles = new JComboBox<String>();
@@ -83,6 +83,7 @@ public class memberSettings extends JDialog {
 					roleDesc.setText("Students are responsible for attending in their classes, they can only view most of the menus here and can only press a button to attend on an attendance record created by a teacher.");
 				} else if (cbRoles.getSelectedIndex() == 1) {
 					roleDesc.setText("Teachers are responsible for creating an attendance record on a certain subject of a certain section. Like students, they can only view most of the menus here and can only create an attendance record for students to press.");
+					
 				} else {
 					roleDesc.setText("Admin are resposible for managing all of the things in the school. They can create departments, sections, subjects, attendance records, edit roles of an user and can remove/kick an user.");
 				}

@@ -52,8 +52,12 @@ public class panelSectionMembers extends JPanel {
 			}
 		});
 		btnDelete.addMouseListener(new PropertiesListener(btnDelete));
-		btnDelete.setBounds(10, 11, 55, 54);
+		btnDelete.setBounds(10, 11, 55, 41);
 		add(btnDelete);
+		
+		JLabel lblDeleteTime = new JLabel("");
+		lblDeleteTime.setBounds(10, 57, 165, 14);
+		add(lblDeleteTime);
 		
 		JButton addMember = new JButton("Add Member");
 		addMember.addActionListener(new ActionListener() {
@@ -76,7 +80,7 @@ public class panelSectionMembers extends JPanel {
 			}
 		});
 		addMember.addMouseListener(new PropertiesListener(addMember));
-		addMember.setBounds(75, 11, 100, 54);
+		addMember.setBounds(75, 11, 100, 41);
 		add(addMember);
 		
 		JButton deleteMember = new JButton("Delete Member");
@@ -84,9 +88,11 @@ public class panelSectionMembers extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(!isDeletingMembers) {
 					isDeletingMembers = true;
+					lblDeleteTime.setText("Click on a member");
 					table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				} else {
 					isDeletingMembers = false;
+					lblDeleteTime.setText("");
 					table.setRowSelectionAllowed(false);
 				}
 				
@@ -98,7 +104,7 @@ public class panelSectionMembers extends JPanel {
 			}
 		});
 		deleteMember.addMouseListener(new PropertiesListener(deleteMember));
-		deleteMember.setBounds(185, 11, 105, 54);
+		deleteMember.setBounds(185, 11, 105, 41);
 		add(deleteMember);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -133,7 +139,7 @@ public class panelSectionMembers extends JPanel {
 		});
 		cbName.setBorder(new LineBorder(new Color(65, 105, 225)));
 		cbName.setBackground(Color.WHITE);
-		cbName.setBounds(300, 43, 120, 22);
+		cbName.setBounds(300, 30, 120, 22);
 		add(cbName);
 		
 		cbOccup = new JComboBox<String>();
@@ -147,20 +153,29 @@ public class panelSectionMembers extends JPanel {
 			}
 		});
 		cbOccup.setBorder(new LineBorder(new Color(65, 105, 225)));
-		cbOccup.setBounds(430, 43, 119, 22);
+		cbOccup.setBounds(430, 30, 119, 22);
 		add(cbOccup);
 		
 		JLabel lblSortName = new JLabel("Sort Name:");
-		lblSortName.setBounds(300, 18, 120, 14);
+		lblSortName.setBounds(300, 11, 120, 14);
 		add(lblSortName);
 		
 		JLabel lblSortOccupation = new JLabel("Sort Occupation:");
-		lblSortOccupation.setBounds(430, 18, 120, 14);
+		lblSortOccupation.setBounds(430, 11, 120, 14);
 		add(lblSortOccupation);
 		
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
+		
+		if(!Login.pubOccupation.equals("Admin")) {
+			addMember.setVisible(false);
+			deleteMember.setVisible(false);
+			lblDeleteTime.setVisible(false);
+			btnDelete.setBounds(10, 11, 55, 60);
+			cbName.setBounds(300, 36, 120, 22);
+			cbOccup.setBounds(430, 36, 119, 22);
+		}
 		
 		revalidate();
 		repaint();

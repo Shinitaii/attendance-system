@@ -53,6 +53,10 @@ public class panelAttendance extends JPanel {
 		setBackground(new Color(255, 255, 255));
 		setLayout(null);
 		
+		JLabel lblInstruction = new JLabel("");
+		lblInstruction.setBounds(385, 14, 164, 14);
+		add(lblInstruction);
+		
 		JButton addAttendance = new JButton("Add Attendance");
 		addAttendance.addMouseListener(new PropertiesListener(addAttendance));
 		addAttendance.addActionListener(new ActionListener() {
@@ -122,7 +126,9 @@ public class panelAttendance extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(!deletingRecords) {
 					deletingRecords = true;
+					lblInstruction.setText("Click on a record to delete");
 				} else {
+					lblInstruction.setText("");
 					deletingRecords = false;
 				}
 			}
@@ -167,6 +173,11 @@ public class panelAttendance extends JPanel {
 		JLabel lblSort = new JLabel("Sort:");
 		lblSort.setBounds(385, 44, 39, 14);
 		add(lblSort);
+		
+		if(!Login.pubOccupation.equals("Admin") && !Login.pubOccupation.equals("Teacher")) {
+			addAttendance.setVisible(false);
+			deleteAttendance.setVisible(false);
+		}
 		
 	}
 	
@@ -230,8 +241,6 @@ public class panelAttendance extends JPanel {
 	}
 	
 	private class AddDeleteListener implements ActionListener {
-
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(!deletingRecords) {
 				MainMenu.menuClicked(MainMenu.records);
@@ -265,4 +274,5 @@ public class panelAttendance extends JPanel {
 			}
 		}
 	}
+		
 }

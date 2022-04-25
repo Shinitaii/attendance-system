@@ -36,6 +36,7 @@ public class MainMenu extends JFrame {
 	public static panelSections panelSections;
 	public static panelSectionMembers panelSectionMembers;
 	public static Records records;
+	public static studentRecords studentRecords;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
 
@@ -97,7 +98,8 @@ public class MainMenu extends JFrame {
 		panelSectionMembers.setBounds(0,0,559,539);
 		records = new Records();
 		records.setBounds(0,0,559,539);
-		
+		studentRecords = new studentRecords();
+		studentRecords.setBounds(0,0,559,539);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225).darker()));
@@ -348,6 +350,7 @@ public class MainMenu extends JFrame {
 		panelMainContent.add(panelSections);
 		panelMainContent.add(panelSectionMembers);
 		panelMainContent.add(records);
+		panelMainContent.add(studentRecords);
 		
 		menuClicked(panelHome);
 		setResizable(false);
@@ -368,6 +371,7 @@ public class MainMenu extends JFrame {
 		panelSections.setVisible(false);
 		panelSectionMembers.setVisible(false);
 		records.setVisible(false);
+		studentRecords.setVisible(false);
 		
 		panel.setVisible(true);		
 	}

@@ -1,6 +1,8 @@
 package main;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.BorderLayout;
@@ -51,7 +53,7 @@ public class panelSections extends JPanel {
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(10, 11, 539, 60);
+		panel.setBounds(10, 11, 539, 50);
 		add(panel);
 		
 		JButton backToDept = new JButton("Back");
@@ -157,7 +159,7 @@ public class panelSections extends JPanel {
 		panel.add(deleteSec);
 		
 		currentDept = new JLabel();
-		currentDept.setBounds(433, 0, 104, 60);
+		currentDept.setBounds(433, 11, 104, 28);
 		currentDept.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(currentDept);
 		
@@ -166,9 +168,24 @@ public class panelSections extends JPanel {
 		sectionScreen.setBorder(new LineBorder(new Color(65, 105, 225)));
 		sectionScreen.setBackground(Color.WHITE);
 		sectionScreen.setBounds(10, 96, 539, 432);
-		add(sectionScreen);
-		sectionScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		sectionScreen.setLayout(new GridLayout(0, 2, 2, 2));
+		
+		JScrollPane scrollPane = new JScrollPane(sectionScreen, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(10,96,539,432);
+		add(scrollPane);
 
+		if(!Login.pubOccupation.equals("Admin")) {
+			panel.remove(backToDept);
+			panel.remove(currentDept);
+			add(backToDept);
+			add(currentDept);
+			panel.setVisible(false);
+			backToDept.setBounds(10, 10, 125, 40);	
+			lblSelectSection.setBounds(145, 25, 200, 14);
+			currentDept.setBounds(400, 25, 200, 14);
+			scrollPane.setBounds(10,60,539,465);
+		}
+		
 		revalidate();
 		repaint();
 	}
