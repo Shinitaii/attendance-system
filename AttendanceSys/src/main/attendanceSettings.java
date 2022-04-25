@@ -244,12 +244,12 @@ public class attendanceSettings extends JDialog {
 								if(resultID.next()) {
 									obtainedRecordID = resultID.getString("recordid");
 								}
-								PreparedStatement getTotalMembers = conn.prepareStatement("select count(concat(firstname, ' ', middlename, ' ', lastname)) as fullname from userinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+								PreparedStatement getTotalMembers = conn.prepareStatement("select count(concat(firstname, ' ', middlename, ' ', lastname)) as fullname from userinfo where occupation='Student' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 								ResultSet obtainedTotalMembers = getTotalMembers.executeQuery();
 								if(obtainedTotalMembers.next()) {
 									totalMembers = obtainedTotalMembers.getInt("fullname");
 								}
-								PreparedStatement getMemberNames = conn.prepareStatement("select firstname, middlename, lastname from userinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+								PreparedStatement getMemberNames = conn.prepareStatement("select firstname, middlename, lastname from userinfo where occupation ='Student' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 								ResultSet obtainedMemberNames = getMemberNames.executeQuery();
 								while(obtainedMemberNames.next()) {
 									String FN = obtainedMemberNames.getString("firstname");

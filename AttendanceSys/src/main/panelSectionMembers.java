@@ -5,9 +5,13 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
@@ -70,8 +74,16 @@ public class panelSectionMembers extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(!isDeletingMembers) {
 					isDeletingMembers = true;
+					table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				} else {
 					isDeletingMembers = false;
+					table.setRowSelectionAllowed(false);
+				}
+				
+				if(isDeletingMembers) {
+					table.getSelectionModel().addListSelectionListener(selectedRow);
+				} else {
+					table.getSelectionModel().removeListSelectionListener(selectedRow);
 				}
 			}
 		});
@@ -113,7 +125,6 @@ public class panelSectionMembers extends JPanel {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = puttingInTable.executeQuery();
-			System.out.println(obtainedDept + obtainedSec);
 			while(result.next()) {
 				String name = result.getString("fullname");
 				String occ = result.getString("occupation");
@@ -125,4 +136,22 @@ public class panelSectionMembers extends JPanel {
 			sql.printStackTrace();
 		}
 	}
+	
+	private ListSelectionListener selectedRow = new ListSelectionListener() {
+		public void valueChanged(ListSelectionEvent e) {
+			if(!e.getValueIsAdjusting()){
+				if (table.getSelectedRow() > -1) {
+		    	   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+		   		   try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+		   			   PreparedStatement getStatement = conn.prepareStatement("update userinfo set hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) = '"+value+"' and schoolname='"+Login.pubSchoolName+"'");
+		   			   getStatement.executeUpdate();
+		   			   model.setRowCount(0);
+		   			   checkList();
+		   		   } catch (SQLException sql) {
+		    		   sql.printStackTrace();
+		    	   }
+		   	   }
+	       }
+		}
+	};
 }

@@ -165,22 +165,22 @@ public class panelMembros extends JPanel {
 		}
 	}
 	
-	public ListSelectionListener selectedRow = new ListSelectionListener() {
+	private ListSelectionListener selectedRow = new ListSelectionListener() {
 		public void valueChanged(ListSelectionEvent e) {
-		       if(!e.getValueIsAdjusting()){
-		    	   if (table.getSelectedRow() > -1) {
-		    		   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
-		    		   try {
-		    			   memberSettings dialog = new memberSettings();
-		    			   dialog.obtainedUser = value;
-		    			   dialog.lblCurrentUserSelected.setText("User: "+dialog.obtainedUser);
-		    			   dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		    			   dialog.setVisible(true);
-		    		   } catch (Exception dialog) {
-		    			   dialog.printStackTrace();
-		    		   }
+			if(!e.getValueIsAdjusting()){
+				if (table.getSelectedRow() > -1) {
+		    	   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+		   		   try {
+		   			   memberSettings dialog = new memberSettings();
+		   			   dialog.obtainedUser = value;
+		   			   dialog.lblCurrentUserSelected.setText("User: "+dialog.obtainedUser);
+	    			   dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    			   dialog.setVisible(true);
+	    		   } catch (Exception dialog) {
+		    		   dialog.printStackTrace();
 		    	   }
-	        }
+		   	   }
+	       	}
 		}
 	};
 	

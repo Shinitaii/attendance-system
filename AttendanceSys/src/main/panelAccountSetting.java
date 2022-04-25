@@ -206,14 +206,16 @@ public class panelAccountSetting extends JPanel {
 							databasePass = checkingPass.getString("pass");
 						}
 						if(databasePass.equals(obtainedPass)) {
+							FileInputStream isPhoto = null;
 							try {
-								File photo = new File(path);
+								String photo = browseAction.pubPath;
 								isPhoto = new FileInputStream(photo);
-								isPhoto.close();
 							} catch (Exception photo) {
 								photo.printStackTrace();
 							}
-							PreparedStatement saveCredentials = conn.prepareStatement("update userInfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"', profilepicture='"+isPhoto+"' where userid ='"+uid+"'");
+							
+							PreparedStatement saveCredentials = conn.prepareStatement("update userInfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"', profilepicture=? where userid ='"+uid+"'");
+							saveCredentials.setBinaryStream(1, isPhoto);
 							int saving = saveCredentials.executeUpdate();
 							if(saving == 1) {
 								JOptionPane.showMessageDialog(null, "Credentials are now updated and saved!");

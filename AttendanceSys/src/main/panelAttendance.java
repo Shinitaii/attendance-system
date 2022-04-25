@@ -65,7 +65,7 @@ public class panelAttendance extends JPanel {
 		addAttendance.setBorder(null);
 		addAttendance.setBackground(new Color(65, 105, 225));
 		addAttendance.addMouseListener(new PropertiesListener(addAttendance));
-		addAttendance.addActionListener(new AddDeleteListener() {
+		addAttendance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				try {
 					deletingRecords = false;
@@ -141,7 +141,7 @@ public class panelAttendance extends JPanel {
 		deleteAttendance.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		deleteAttendance.setForeground(new Color(255, 255, 255));
 		deleteAttendance.addMouseListener(new PropertiesListener(deleteAttendance));
-		deleteAttendance.addActionListener(new AddDeleteListener() {
+		deleteAttendance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!deletingRecords) {
 					deletingRecords = true;
@@ -339,6 +339,7 @@ public class panelAttendance extends JPanel {
 				AdminMenu.records.obtainedDept = obtainedDept;
 				AdminMenu.records.obtainedSec = obtainedSec;
 				AdminMenu.records.obtainedRecord = source.getName();
+				AdminMenu.records.model.setRowCount(0);
 				AdminMenu.records.checkList();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
