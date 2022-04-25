@@ -1,9 +1,10 @@
 package main;
 
 import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+import javax.swing.JButton;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,15 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.GridLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class AttendanceSelectSection extends JPanel {
+public class AttendanceSelectSubject extends JPanel {
 
 	/**
 	 * 
@@ -28,44 +26,43 @@ public class AttendanceSelectSection extends JPanel {
 	private List<JButton> buttonNames = new ArrayList<JButton>();
 	private List<String> listSecNames = new ArrayList<String>();
 	private int count = 0;
-	public String selectedSec, obtainedDept;
-	private JPanel selectionScreen;
+	JPanel subjectScreen;
+	String obtainedDept, obtainedSec, obtainedSub;
 	/**
 	 * Create the panel.
 	 */
-	public AttendanceSelectSection() {
+	public AttendanceSelectSubject() {
 		setBorder(new LineBorder(new Color(65, 105, 225)));
-		setBackground(Color.WHITE);
 		setBounds(0,0,559,539);
+		setBackground(Color.white);
 		setLayout(null);
-		
-		selectionScreen = new JPanel();
-		selectionScreen.setBorder(new LineBorder(new Color(65, 105, 225)));
-		selectionScreen.setBackground(new Color(255, 255, 255));
-		selectionScreen.setBounds(10, 69, 539, 459);
-		add(selectionScreen);
-		selectionScreen.setLayout(new GridLayout(0, 2, 0, 0));
-		
-		JLabel noteLabel = new JLabel("Select a section.");
-		noteLabel.setBounds(93, 44, 97, 14);
-		add(noteLabel);
 		
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.AttendanceSelectDepartment);
+				AdminMenu.menuClicked(AdminMenu.AttendanceSelectSection);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
-		backButton.setBounds(10, 7, 60, 50);
+		backButton.setBounds(10, 11, 64, 50);
 		add(backButton);
-	
+		
+		subjectScreen = new JPanel();
+		subjectScreen.setBorder(new LineBorder(new Color(65, 105, 225)));
+		subjectScreen.setBackground(new Color(255, 255, 255));
+		subjectScreen.setBounds(10, 72, 539, 456);
+		add(subjectScreen);
+		subjectScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		JLabel lblNewLabel = new JLabel("Select a subject:");
+		lblNewLabel.setBounds(84, 47, 178, 14);
+		add(lblNewLabel);
 	}
 	
 	public void execute() {
 		buttonNames.clear();
 		listSecNames.clear();
-		selectionScreen.removeAll();
+		subjectScreen.removeAll();
 		checkCount();
 		checkName();
 		existingRecords();
@@ -75,10 +72,10 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
-				count = checking.getInt("count(sectionname)");
+				count = checking.getInt("count(subjectname)");
 			}
 		} catch (SQLException sql) {
 			sql.printStackTrace();
@@ -87,10 +84,10 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkName = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
-				String deptName = checking.getString("sectionname");
+				String deptName = checking.getString("subjectname");
 				listSecNames.add(deptName);
 			}
 		} catch (SQLException sql) {
@@ -106,17 +103,16 @@ public class AttendanceSelectSection extends JPanel {
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AdminMenu.menuClicked(AdminMenu.AttendanceSelectSubject);
+					AdminMenu.menuClicked(AdminMenu.panelAttendance);
 					JButton source = (JButton) e.getSource();
-					AdminMenu.panelAttendance.obtainedSec = source.getName();
-					AdminMenu.AttendanceSelectSubject.obtainedSec = source.getName();
-					AdminMenu.AttendanceSelectSubject.execute();
+					AdminMenu.records.obtainedSub = source.getName();
+					AdminMenu.panelAttendance.obtainedSub = source.getName();
+					AdminMenu.panelAttendance.execute();
 				}
 			});
-			selectionScreen.add(button);
+			subjectScreen.add(button);
 		}
 		revalidate();
 		repaint();
 	}
-
 }

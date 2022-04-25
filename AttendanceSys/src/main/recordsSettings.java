@@ -125,7 +125,7 @@ public class recordsSettings extends JDialog {
 								if(result == 1) {
 									JOptionPane.showMessageDialog(null, "Successfully set "+obtainedStatus+" to "+obtainedUser+"!");
 									AdminMenu.records.model.setRowCount(0);
-									AdminMenu.records.checkList();
+									AdminMenu.records.execute();
 								} else {
 									JOptionPane.showMessageDialog(null, "Error!");
 								}

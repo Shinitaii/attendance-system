@@ -30,13 +30,13 @@ public class panelAttendance extends JPanel {
 	private static final long serialVersionUID = 1L;
 	List<String> listRecordNames = new ArrayList<String>();
 	List<JButton> buttonNames = new ArrayList<JButton>();
-	public JComboBox<String> cbSub = new JComboBox<String>();
 	JComboBox<String> cbDate = new JComboBox<String>();
 	
 	private int count = 0;
 	public String obtainedSec;
-	private String obtainedSub;
+	public String obtainedSub;
 	public String obtainedDept;
+	public String selectedSub;
 	public boolean addingRecords = false, deletingRecords = false, newRecord;
 	private boolean sortingDate = false;
 	JPanel mainScreen;
@@ -87,16 +87,7 @@ public class panelAttendance extends JPanel {
 							buttonNames.get(count).setName(attendanceSettings.name);
 							buttonNames.get(count).addActionListener(new AddDeleteListener());
 						}
-						if(dialog.cbSub.getSelectedIndex() > 0 && cbSub.getSelectedIndex() == 0) { // will add a button if selected sort is default
-							if(!sortingDate) {
-								mainScreen.removeAll();
-								checkName();
-								checkCount();
-								existingRecords();
-							} else {
-								mainScreen.add(button);	
-							}
-						} else if (dialog.cbSub.getSelectedIndex() == cbSub.getSelectedIndex()) {// will add a button if the created record is the same section as the selected sort
+						if(dialog.cbSub.getSelectedIndex() > 0) { // will add a button if selected sort is default
 							if(!sortingDate) {
 								mainScreen.removeAll();
 								checkName();
@@ -147,7 +138,7 @@ public class panelAttendance extends JPanel {
 		mainScreen.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		cbDate = new JComboBox<String>();
-		cbDate.setBounds(385, 11, 164, 22);
+		cbDate.setBounds(414, 39, 135, 22);
 		cbDate.addItem("Newest To Oldest");
 		cbDate.addItem("Oldest to Newest");
 		cbDate.addItemListener(new ItemListener() {
@@ -163,25 +154,10 @@ public class panelAttendance extends JPanel {
 		});
 		add(cbDate);
 		
-		cbSub = new JComboBox<String>();
-		cbSub.setBounds(434, 39, 115, 22);
-		cbSub.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbSub.getSelectedIndex() > 0) {
-					obtainedSub = cbSub.getSelectedItem().toString();
-					execute();
-				} else {
-					execute();
-				}
-				cbDate.setSelectedIndex(0);
-			}
-		});
-		add(cbSub);
-		
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.AttendanceSelectSection);
+				AdminMenu.menuClicked(AdminMenu.AttendanceSelectSubject);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
@@ -207,14 +183,9 @@ public class panelAttendance extends JPanel {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String sortingDeptAndSec= "select count(record_name) from attendancerecords where departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
 			String sortingDeptSecAndSub = "select count(record_name) from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
 			PreparedStatement checkCount;
-			if (cbSub.getSelectedIndex() == 0) {
-				checkCount = conn.prepareStatement(sortingDeptAndSec);
-			} else {
-				checkCount = conn.prepareStatement(sortingDeptSecAndSub);
-			}
+			checkCount = conn.prepareStatement(sortingDeptSecAndSub);
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
 				count = checking.getInt("count(record_name)");
@@ -226,23 +197,14 @@ public class panelAttendance extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String sortingDeptAndSec= "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
 			String sortingDeptSecAndSub = "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
 			String sortedDate = "order by created";
 			PreparedStatement checkName;
-			if (cbSub.getSelectedIndex() == 0) {
-				if(sortingDate) {
-					checkName = conn.prepareStatement(sortingDeptAndSec + " " + sortedDate + " asc");
-				} else {
-					checkName = conn.prepareStatement(sortingDeptAndSec + " " + sortedDate + " desc");
-				}
+			if(sortingDate) {
+				checkName = conn.prepareStatement(sortingDeptSecAndSub + " " + sortedDate + " asc");
 			} else {
-				if(sortingDate) {
-					checkName = conn.prepareStatement(sortingDeptSecAndSub + " " + sortedDate + " asc");
-				} else {
-					checkName = conn.prepareStatement(sortingDeptSecAndSub + " " + sortedDate + " desc");
-				}
-			} 
+				checkName = conn.prepareStatement(sortingDeptSecAndSub + " " + sortedDate + " desc");
+			}
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String recordNames = checking.getString("record_name");
@@ -267,21 +229,6 @@ public class panelAttendance extends JPanel {
 		repaint();
 	}
 	
-	public void sub(JComboBox<String> cb) {
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
-			ResultSet result = getStatement.executeQuery();
-			cb.removeAllItems();
-			cb.addItem("Subject");
-			while(result.next()) {
-				String obtainedString = result.getString("subjectname");
-				cb.addItem(obtainedString);
-			}
-		} catch (SQLException sql) {
-			sql.printStackTrace();
-		}
-	}
-	
 	private class AddDeleteListener implements ActionListener {
 
 		@Override
@@ -291,9 +238,10 @@ public class panelAttendance extends JPanel {
 				JButton source = (JButton) e.getSource();
 				AdminMenu.records.obtainedDept = obtainedDept;
 				AdminMenu.records.obtainedSec = obtainedSec;
+				AdminMenu.records.obtainedSub = obtainedSub;
 				AdminMenu.records.obtainedRecord = source.getName();
 				AdminMenu.records.model.setRowCount(0);
-				AdminMenu.records.checkList();
+				AdminMenu.records.execute();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();

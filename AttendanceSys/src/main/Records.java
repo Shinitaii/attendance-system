@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,9 +28,10 @@ public class Records extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTable table;
-	public String obtainedDept, obtainedSec, obtainedRecord;
-	private boolean isEditing = false;
+	public String obtainedDept, obtainedSec, obtainedRecord, obtainedSub;
+	private boolean isEditing = false, recordStatusComplete;
 	DefaultTableModel model;
+	JButton disableButton, statusButton;
 
 	public Records() {
 		setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -96,11 +98,21 @@ public class Records extends JPanel {
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
 		
+		statusButton = new JButton();
+		statusButton.addMouseListener(new PropertiesListener(statusButton));
+		statusButton.setBounds(479, 11, 70, 50);
+		add(statusButton);
+		
 		revalidate();
 		repaint();
 	}
 	
-	public void checkList() {
+	public void execute() {
+		checkList();
+		recordStatusChecker();
+	}
+	
+	private void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, studentstatus from attendancestatus where record_name='"+obtainedRecord+"' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = puttingInTable.executeQuery();
@@ -112,6 +124,30 @@ public class Records extends JPanel {
 			revalidate();
 			repaint();
 		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}
+	}
+	
+	private void recordStatusChecker() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+			PreparedStatement getStatement = conn.prepareStatement("select recordcompleted from attendancerecords where record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			ResultSet result = getStatement.executeQuery();
+			if(result.next()) {
+				recordStatusComplete = result.getBoolean("recordcompleted");
+				System.out.println(recordStatusComplete);
+			}
+			if(recordStatusComplete) {
+				statusButton.setText("Enable");
+				statusButton.addActionListener(enabled);
+				statusButton.removeActionListener(disable);
+			} else {
+				statusButton.setText("Disable");
+				statusButton.addActionListener(disable);
+				statusButton.removeActionListener(enabled);
+			}
+			revalidate();
+			repaint();
+		} catch(SQLException sql) {
 			sql.printStackTrace();
 		}
 	}
@@ -133,5 +169,49 @@ public class Records extends JPanel {
 		   	   }
 	       }
 		}
+	};
+	
+	private ActionListener enabled = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to enable the record?\rStudents clicking the attend button from now on will be labelled as \"Present\"! You may still re-enable this by pressing the 'Disable' button.", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
+				if(result == JOptionPane.YES_OPTION) {
+					PreparedStatement getStatement = conn.prepareStatement("update attendancerecords set recordcompleted=false where record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+					int sqlResult = getStatement.executeUpdate();
+						System.out.println(obtainedRecord + " " + obtainedSub + " " + obtainedSec + " " + obtainedDept + " " +Login.pubSchoolName);
+						if(sqlResult == 1) {
+							JOptionPane.showMessageDialog(null, "You enabled the record: "+obtainedRecord+"!");
+							model.setRowCount(0);
+							execute();
+						} else {
+							JOptionPane.showMessageDialog(null, "Error!");
+						}
+					}
+			} catch (SQLException sql) {
+				sql.printStackTrace();
+			}
+		};
+	};
+	
+	private ActionListener disable = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disable the record?\rStudents clicking the attend button from now on will be labelled as \"Present\"! You may still re-enable this by pressing the 'Disable' button.", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
+				if(result == JOptionPane.YES_OPTION) {
+					PreparedStatement getStatement = conn.prepareStatement("update attendancerecords set recordcompleted=true where record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+					int sqlResult = getStatement.executeUpdate();
+						System.out.println(obtainedRecord + " " + obtainedSub + " " + obtainedSec + " " + obtainedDept + " " +Login.pubSchoolName);
+						if(sqlResult == 1) {
+							JOptionPane.showMessageDialog(null, "You disabled the record: "+obtainedRecord+"!");
+							model.setRowCount(0);
+							execute();
+						} else {
+							JOptionPane.showMessageDialog(null, "Error!");
+						}
+					}
+			} catch (SQLException sql) {
+				sql.printStackTrace();
+			}
+		};
 	};
 }

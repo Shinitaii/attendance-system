@@ -31,6 +31,7 @@ public class AdminMenu extends JFrame {
 	public static panelMembros panelMembros;
 	public static AttendanceSelectDepartment AttendanceSelectDepartment;
 	public static AttendanceSelectSection AttendanceSelectSection;
+	public static AttendanceSelectSubject AttendanceSelectSubject;
 	public static panelAttendance panelAttendance;
 	public static panelSections panelSections;
 	public static panelSectionMembers panelSectionMembers;
@@ -77,10 +78,12 @@ public class AdminMenu extends JFrame {
 		panelMembros = new panelMembros();
 		panelMembros.setBounds(0, 0, 559, 539);
 		AttendanceSelectDepartment = new AttendanceSelectDepartment();
-		AttendanceSelectDepartment.setBounds(0,0,559,539);
-		panelAttendance = new panelAttendance();
+		AttendanceSelectDepartment.setBounds(0,0,559,539);		
 		AttendanceSelectSection = new AttendanceSelectSection();
 		AttendanceSelectSection.setBounds(0,0,559,539);
+		AttendanceSelectSubject = new AttendanceSelectSubject();
+		AttendanceSelectSubject.setBounds(0,0,559,539);
+		panelAttendance = new panelAttendance();
 		panelAttendance.setBounds(0, 0, 559, 539);
 		panelSections = new panelSections();
 		panelSections.setBounds(0, 0, 559, 539);
@@ -334,6 +337,7 @@ public class AdminMenu extends JFrame {
 		panelMainContent.add(panelMembros);
 		panelMainContent.add(AttendanceSelectDepartment);
 		panelMainContent.add(AttendanceSelectSection);
+		panelMainContent.add(AttendanceSelectSubject);
 		panelMainContent.add(panelAttendance);
 		panelMainContent.add(panelSections);
 		panelMainContent.add(panelSectionMembers);
@@ -353,6 +357,7 @@ public class AdminMenu extends JFrame {
 		panelMembros.setVisible(false);
 		AttendanceSelectDepartment.setVisible(false);
 		AttendanceSelectSection.setVisible(false);
+		AttendanceSelectSubject.setVisible(false);
 		panelAttendance.setVisible(false);
 		panelSections.setVisible(false);
 		panelSectionMembers.setVisible(false);
