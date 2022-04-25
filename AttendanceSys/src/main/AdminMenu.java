@@ -153,7 +153,6 @@ public class AdminMenu extends JFrame {
 				menuClicked(AttendanceSelectDepartment);
 				panelAttendance.buttonNames.clear();
 				panelAttendance.listRecordNames.clear();
-				panelAttendance.listDates.clear();
 				panelAttendance.mainScreen.removeAll();
 				AttendanceSelectDepartment.execute();
 				revalidate();

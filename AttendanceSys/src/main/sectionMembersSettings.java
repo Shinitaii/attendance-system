@@ -2,9 +2,6 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
-import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -24,8 +21,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-
 import java.awt.GridLayout;
 
 public class sectionMembersSettings extends JDialog {
@@ -136,7 +131,6 @@ public class sectionMembersSettings extends JDialog {
 							dispose();
 							JOptionPane.showMessageDialog(null, "Error!");
 						}
-						AdminMenu.panelSectionMembers.checkList();
 					}
 				});
 				addButton.addMouseListener(new PropertiesListener(addButton));
@@ -149,6 +143,7 @@ public class sectionMembersSettings extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
+						AdminMenu.panelSectionMembers.isCancelled = true;
 					}
 				});
 				cancelButton.addMouseListener(new PropertiesListener(cancelButton));

@@ -1,6 +1,5 @@
 package main;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import java.awt.Rectangle;
@@ -17,16 +16,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
-import java.awt.Font;
 
 public class panelAttendance extends JPanel {
 
@@ -36,9 +30,9 @@ public class panelAttendance extends JPanel {
 	private static final long serialVersionUID = 1L;
 	List<String> listRecordNames = new ArrayList<String>();
 	List<JButton> buttonNames = new ArrayList<JButton>();
-	List<Date> listDates = new ArrayList<Date>();
 	public JComboBox<String> cbSub = new JComboBox<String>();
 	JComboBox<String> cbDate = new JComboBox<String>();
+	
 	private int count = 0;
 	public String obtainedSec;
 	private String obtainedSub;
@@ -46,11 +40,11 @@ public class panelAttendance extends JPanel {
 	public boolean addingRecords = false, deletingRecords = false, newRecord;
 	private boolean sortingDate = false;
 	JPanel mainScreen;
-	
 	JButton button;
-	private JTextField txtSearch;
+	JLabel label;
+	JLabel timerLabel;
 	/**
-	 * Create the panel.
+	 * Create the button.
 	 */
 	public panelAttendance() {
 		setBounds(new Rectangle(0, 0, 559, 539));
@@ -60,10 +54,6 @@ public class panelAttendance extends JPanel {
 		setLayout(null);
 		
 		JButton addAttendance = new JButton("Add Attendance");
-		addAttendance.setForeground(new Color(255, 255, 255));
-		addAttendance.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		addAttendance.setBorder(null);
-		addAttendance.setBackground(new Color(65, 105, 225));
 		addAttendance.addMouseListener(new PropertiesListener(addAttendance));
 		addAttendance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -85,7 +75,7 @@ public class panelAttendance extends JPanel {
 						checkName();
 						button = new JButton(attendanceSettings.name);
 						if(!sortingDate) {
-							buttonNames.add(0, button);						
+							buttonNames.add(0, button);
 							buttonNames.get(0).addMouseListener(new PropertiesListener(buttonNames.get(0)));
 							buttonNames.get(0).setName(attendanceSettings.name);
 							listRecordNames.add(0, button.getName());
@@ -132,14 +122,10 @@ public class panelAttendance extends JPanel {
 				}
 			}
 		});
-		addAttendance.setBounds(10, 11, 135, 50);
+		addAttendance.setBounds(90, 11, 135, 50);
 		add(addAttendance);
 		
 		JButton deleteAttendance = new JButton("Delete Attendance");
-		deleteAttendance.setBorder(null);
-		deleteAttendance.setBackground(new Color(65, 105, 225));
-		deleteAttendance.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		deleteAttendance.setForeground(new Color(255, 255, 255));
 		deleteAttendance.addMouseListener(new PropertiesListener(deleteAttendance));
 		deleteAttendance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -150,7 +136,7 @@ public class panelAttendance extends JPanel {
 				}
 			}
 		});
-		deleteAttendance.setBounds(155, 11, 140, 50);
+		deleteAttendance.setBounds(235, 11, 140, 50);
 		add(deleteAttendance);
 		
 		mainScreen = new JPanel();
@@ -161,7 +147,7 @@ public class panelAttendance extends JPanel {
 		mainScreen.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		cbDate = new JComboBox<String>();
-		cbDate.setBounds(340, 39, 114, 22);
+		cbDate.setBounds(385, 11, 164, 22);
 		cbDate.addItem("Newest To Oldest");
 		cbDate.addItem("Oldest to Newest");
 		cbDate.addItemListener(new ItemListener() {
@@ -178,7 +164,7 @@ public class panelAttendance extends JPanel {
 		add(cbDate);
 		
 		cbSub = new JComboBox<String>();
-		cbSub.setBounds(464, 39, 85, 22);
+		cbSub.setBounds(434, 39, 115, 22);
 		cbSub.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(cbSub.getSelectedIndex() > 0) {
@@ -192,52 +178,19 @@ public class panelAttendance extends JPanel {
 		});
 		add(cbSub);
 		
-		JLabel lblNewLabel = new JLabel("Sort :");
-		lblNewLabel.setBounds(305, 43, 29, 14);
-		add(lblNewLabel);
-		
-		txtSearch = new JTextField();
-		txtSearch.setBorder(new LineBorder(new Color(65, 105, 225)));
-		txtSearch.setBounds(330, 11, 150, 22);
-		add(txtSearch);
-		txtSearch.setColumns(10);
-		
-		JButton searchButton = new JButton("Search");
-		searchButton.setForeground(new Color(255, 255, 255));
-		searchButton.setBorder(null);
-		searchButton.setBackground(new Color(65, 105, 225));
-		searchButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		searchButton.setBounds(484, 11, 65, 23);
-		add(searchButton); 
-		
-		Timer time = new Timer(500, (ActionListener) new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		    	try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-		    		PreparedStatement checkTime = conn.prepareStatement("select timeexpires from attendancerecords where schoolname='"+Login.pubSchoolName+"'");
-		    		ResultSet result = checkTime.executeQuery();
-		    		while(result.next()) {
-		    			Date obtainedTime = result.getTimestamp(("timeexpires"));
-		    			listDates.add(obtainedTime);
-		    		}
-		    		for(int i = 0; i < count; i++) {
-		    			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		    			if(timestamp.after(listDates.get(i))) {
-		    				
-		    			} else {
-		    				long diff = listDates.get(i).getTime() - timestamp.getTime();
-		    				long sec = TimeUnit.MILLISECONDS.toSeconds(diff) % 60;
-		    				long mins = TimeUnit.MILLISECONDS.toMinutes(diff) % 60;
-		    				long hrs = TimeUnit.MILLISECONDS.toHours(diff) % 24;
-		    				System.out.println(hrs + ":" +mins + ":" +sec);
-		    			}
-		    		}
-		    	} catch(SQLException sql) {
-		    		sql.printStackTrace();
-		    	}
-		    }
+		JButton backButton = new JButton("Back");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AdminMenu.menuClicked(AdminMenu.AttendanceSelectSection);
+			}
 		});
-		time.start();
+		backButton.addMouseListener(new PropertiesListener(backButton));
+		backButton.setBounds(10, 11, 70, 50);
+		add(backButton);
+		
+		JLabel lblSort = new JLabel("Sort:");
+		lblSort.setBounds(385, 44, 39, 14);
+		add(lblSort);
 		
 	}
 	
@@ -344,17 +297,19 @@ public class panelAttendance extends JPanel {
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();
-					int select = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+source.getName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
-					if(select == JOptionPane.YES_OPTION) {
-						mainScreen.remove(source);
-						buttonNames.remove(source);
-						PreparedStatement deleteRecord = conn.prepareStatement("delete from attendancerecords where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
-						deleteRecord.executeUpdate();
-						PreparedStatement deleteStatusRecord = conn.prepareStatement("delete from attendancestatus where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
-						deleteStatusRecord.executeUpdate();
-						revalidate();
-						repaint();
-						checkCount();
+					if(deletingRecords) {
+						int select = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+source.getName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
+						if(select == JOptionPane.YES_OPTION) {
+							mainScreen.remove(source);
+							buttonNames.remove(source);
+							PreparedStatement deleteRecord = conn.prepareStatement("delete from attendancerecords where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
+							deleteRecord.executeUpdate();
+							PreparedStatement deleteStatusRecord = conn.prepareStatement("delete from attendancestatus where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
+							deleteStatusRecord.executeUpdate();
+							revalidate();
+							repaint();
+							checkCount();
+						}
 					}
 				} catch (SQLException sql){
 					sql.printStackTrace();

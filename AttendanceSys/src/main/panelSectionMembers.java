@@ -13,23 +13,28 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 public class panelSectionMembers extends JPanel {
 	/**
       	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	JComboBox<String> cbName, cbOccup;
 	private JTable table;
-	private boolean isDeletingMembers = false, isAddingMembers = false;
+	private boolean isDeletingMembers = false;
 	DefaultTableModel model;
 	public String obtainedDept, obtainedSec;
+	public boolean isCancelled = false;
 	/**
 	 * Create the panel.
 	 */
@@ -47,26 +52,31 @@ public class panelSectionMembers extends JPanel {
 			}
 		});
 		btnDelete.addMouseListener(new PropertiesListener(btnDelete));
-		btnDelete.setBounds(10, 11, 100, 40);
+		btnDelete.setBounds(10, 11, 55, 54);
 		add(btnDelete);
 		
 		JButton addMember = new JButton("Add Member");
 		addMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				isAddingMembers = true;
 				isDeletingMembers = false;
 				try {
 					sectionMembersSettings dialog = new sectionMembersSettings();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.execute();
 					dialog.setVisible(true);
+					
+					if(!isCancelled) {
+					model.setRowCount(0);
+					checkList();
+					}
+					isCancelled = false;
 				} catch (Exception dialog) {
 					dialog.printStackTrace();
 				}
 			}
 		});
 		addMember.addMouseListener(new PropertiesListener(addMember));
-		addMember.setBounds(120, 11, 100, 40);
+		addMember.setBounds(75, 11, 100, 54);
 		add(addMember);
 		
 		JButton deleteMember = new JButton("Delete Member");
@@ -88,12 +98,12 @@ public class panelSectionMembers extends JPanel {
 			}
 		});
 		deleteMember.addMouseListener(new PropertiesListener(deleteMember));
-		deleteMember.setBounds(230, 11, 105, 40);
+		deleteMember.setBounds(185, 11, 105, 54);
 		add(deleteMember);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(new Color(65, 105, 225)));
-		scrollPane.setBounds(0, 74, 559, 427);
+		scrollPane.setBounds(0, 76, 559, 452);
 		add(scrollPane);
 		
 		model = new DefaultTableModel(new String[] {"Full Name","Occupation"}, 0) {
@@ -112,6 +122,42 @@ public class panelSectionMembers extends JPanel {
 		table.setBorder(null);
 		table.setModel(model);
 		
+		cbName = new JComboBox<String>();
+		cbName.addItem("Sort Name: A to Z");
+		cbName.addItem("Sort name: Z to A");
+		cbName.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				model.setRowCount(0);
+				checkList();
+			}
+		});
+		cbName.setBorder(new LineBorder(new Color(65, 105, 225)));
+		cbName.setBackground(Color.WHITE);
+		cbName.setBounds(300, 43, 120, 22);
+		add(cbName);
+		
+		cbOccup = new JComboBox<String>();
+		cbOccup.addItem("Teachers first");
+		cbOccup.addItem("Students first");
+		cbOccup.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				cbName.setSelectedIndex(0);
+				model.setRowCount(0);
+				checkList();
+			}
+		});
+		cbOccup.setBorder(new LineBorder(new Color(65, 105, 225)));
+		cbOccup.setBounds(430, 43, 119, 22);
+		add(cbOccup);
+		
+		JLabel lblSortName = new JLabel("Sort Name:");
+		lblSortName.setBounds(300, 18, 120, 14);
+		add(lblSortName);
+		
+		JLabel lblSortOccupation = new JLabel("Sort Occupation:");
+		lblSortOccupation.setBounds(430, 18, 120, 14);
+		add(lblSortOccupation);
+		
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
@@ -123,7 +169,20 @@ public class panelSectionMembers extends JPanel {
 	
 	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			String azTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname asc";
+			String zaTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname desc";
+			String azStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname asc";
+			String zaStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userInfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname desc";
+			PreparedStatement puttingInTable;
+			if(cbName.getSelectedIndex() == 0 && cbOccup.getSelectedIndex() == 0) { // if a-z, teachers first -> default
+				puttingInTable = conn.prepareStatement(azTeachers);
+			} else if (cbName.getSelectedIndex() == 1 && cbOccup.getSelectedIndex() == 0) { // if z-a, teachers first
+				puttingInTable = conn.prepareStatement(zaTeachers);
+			} else if (cbName.getSelectedIndex() == 0 && cbOccup.getSelectedIndex() == 1){ // if a-z, student first
+				puttingInTable = conn.prepareStatement(azStudents);
+			} else { // if z-a, student first
+				puttingInTable = conn.prepareStatement(zaStudents);
+			}
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {
 				String name = result.getString("fullname");
