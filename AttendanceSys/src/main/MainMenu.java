@@ -19,7 +19,7 @@ import javax.swing.UIManager;
 import java.awt.Font;
 
 
-public class AdminMenu extends JFrame {
+public class MainMenu extends JFrame {
 	//test
 	private static final long serialVersionUID = 1L;
 	
@@ -44,7 +44,7 @@ public class AdminMenu extends JFrame {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					AdminMenu frame = new AdminMenu();
+					MainMenu frame = new MainMenu();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -53,9 +53,15 @@ public class AdminMenu extends JFrame {
 		});
 	}
 
-	public AdminMenu() {
+	public MainMenu() {
 		setIconImage(Images.bLogo);
-		setTitle("Attendance");
+		if(Login.pubOccupation.equals("Admin")) {
+			setTitle("Attendance: Admin");
+		} else if (Login.pubOccupation.equals("Teacher")) {
+			setTitle("Attendance: Teacher");
+		} else {
+			setTitle("Attendance: Student");
+		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();

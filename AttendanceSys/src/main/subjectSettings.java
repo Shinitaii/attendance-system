@@ -87,7 +87,7 @@ public class subjectSettings extends JDialog {
 							PreparedStatement getStatement = conn.prepareStatement("insert into subjectinfo (subjectname, subjectdesc, departmentname, schoolname) values (?,?,?,?)");
 							getStatement.setString(1, subjectName);
 							getStatement.setString(2, subjectDesc);
-							getStatement.setString(3, AdminMenu.SubjectSelectDepartment.selectedDept);
+							getStatement.setString(3, MainMenu.SubjectSelectDepartment.selectedDept);
 							getStatement.setString(4, Login.pubSchoolName);
 							int result = getStatement.executeUpdate();
 							if(result == 1) {

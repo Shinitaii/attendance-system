@@ -16,8 +16,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class AttendanceSelectSection extends JPanel {
 
@@ -53,7 +51,7 @@ public class AttendanceSelectSection extends JPanel {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.AttendanceSelectDepartment);
+				MainMenu.menuClicked(MainMenu.AttendanceSelectDepartment);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
@@ -106,11 +104,11 @@ public class AttendanceSelectSection extends JPanel {
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AdminMenu.menuClicked(AdminMenu.AttendanceSelectSubject);
+					MainMenu.menuClicked(MainMenu.AttendanceSelectSubject);
 					JButton source = (JButton) e.getSource();
-					AdminMenu.panelAttendance.obtainedSec = source.getName();
-					AdminMenu.AttendanceSelectSubject.obtainedSec = source.getName();
-					AdminMenu.AttendanceSelectSubject.execute();
+					MainMenu.panelAttendance.obtainedSec = source.getName();
+					MainMenu.AttendanceSelectSubject.obtainedSec = source.getName();
+					MainMenu.AttendanceSelectSubject.execute();
 				}
 			});
 			selectionScreen.add(button);

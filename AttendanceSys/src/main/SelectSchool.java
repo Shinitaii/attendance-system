@@ -109,7 +109,7 @@ public class SelectSchool extends JDialog {
 													EventQueue.invokeLater(new Runnable() {
 														public void run() {
 															try {
-																AdminMenu frame = new AdminMenu();
+																MainMenu frame = new MainMenu();
 																frame.setVisible(true);
 															} catch (Exception e) {
 																e.printStackTrace();
@@ -182,7 +182,7 @@ public class SelectSchool extends JDialog {
 												EventQueue.invokeLater(new Runnable() {
 													public void run() {
 														try {
-															AdminMenu frame = new AdminMenu();
+															MainMenu frame = new MainMenu();
 															frame.setVisible(true);
 														} catch (Exception e) {
 															e.printStackTrace();

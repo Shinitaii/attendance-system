@@ -32,7 +32,7 @@ public class sectionMembersSettings extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tfNumber;
 	private JPanel panelCheckBox;
-	private String obtainedDept = AdminMenu.panelDepartment.whatDept, obtainedSec = AdminMenu.panelSections.whatSec;
+	private String obtainedDept = MainMenu.panelDepartment.whatDept, obtainedSec = MainMenu.panelSections.whatSec;
 	private int count = 0, limitCount = 0, limitCounter = 0;;
 	private JCheckBox cb;
 	List<String> listMemberNames = new ArrayList<String>();
@@ -143,7 +143,7 @@ public class sectionMembersSettings extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
-						AdminMenu.panelSectionMembers.isCancelled = true;
+						MainMenu.panelSectionMembers.isCancelled = true;
 					}
 				});
 				cancelButton.addMouseListener(new PropertiesListener(cancelButton));

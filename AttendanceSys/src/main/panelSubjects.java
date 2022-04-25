@@ -42,7 +42,7 @@ public class panelSubjects extends JPanel {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.SubjectSelectDepartment);
+				MainMenu.menuClicked(MainMenu.SubjectSelectDepartment);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));

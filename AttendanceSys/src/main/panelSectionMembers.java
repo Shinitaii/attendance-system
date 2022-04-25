@@ -47,7 +47,7 @@ public class panelSectionMembers extends JPanel {
 		JButton btnDelete = new JButton("Back");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.panelSections);
+				MainMenu.menuClicked(MainMenu.panelSections);
 				model.setRowCount(0);
 			}
 		});

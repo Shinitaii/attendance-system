@@ -150,7 +150,7 @@ public class Login extends JFrame {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									try {
-										AdminMenu frame = new AdminMenu();
+										MainMenu frame = new MainMenu();
 										frame.setVisible(true);
 									} catch (Exception e) {
 										e.printStackTrace();

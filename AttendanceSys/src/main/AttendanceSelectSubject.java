@@ -40,7 +40,7 @@ public class AttendanceSelectSubject extends JPanel {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.AttendanceSelectSection);
+				MainMenu.menuClicked(MainMenu.AttendanceSelectSection);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
@@ -103,11 +103,11 @@ public class AttendanceSelectSubject extends JPanel {
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AdminMenu.menuClicked(AdminMenu.panelAttendance);
+					MainMenu.menuClicked(MainMenu.panelAttendance);
 					JButton source = (JButton) e.getSource();
-					AdminMenu.records.obtainedSub = source.getName();
-					AdminMenu.panelAttendance.obtainedSub = source.getName();
-					AdminMenu.panelAttendance.execute();
+					MainMenu.records.obtainedSub = source.getName();
+					MainMenu.panelAttendance.obtainedSub = source.getName();
+					MainMenu.panelAttendance.execute();
 				}
 			});
 			subjectScreen.add(button);

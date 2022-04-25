@@ -109,8 +109,8 @@ public class memberSettings extends JDialog {
 								int sqlResult = getStatement.executeUpdate();
 								if(sqlResult == 1) {
 									JOptionPane.showMessageDialog(null, "Successfully changed the role of "+obtainedUser+" to "+cbRoles.getSelectedItem()+"!");
-									AdminMenu.panelMembros.model.setRowCount(0);
-									AdminMenu.panelMembros.checkList();
+									MainMenu.panelMembros.model.setRowCount(0);
+									MainMenu.panelMembros.checkList();
 
 								} else {
 									JOptionPane.showMessageDialog(null, "Error!");

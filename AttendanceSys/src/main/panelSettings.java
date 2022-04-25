@@ -21,7 +21,7 @@ public class panelSettings extends JPanel {
 	panelAccountSetting panelAccountSetting;
 	panelChangePassSetting panelChangePassSetting;	
 	
-	AdminMenu AdminMenu;
+	MainMenu MainMenu;
 	
 	public panelSettings() {
 		setBackground(new Color(255, 255, 255));

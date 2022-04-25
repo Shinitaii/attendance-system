@@ -61,8 +61,8 @@ public class panelAttendance extends JPanel {
 					deletingRecords = false;
 					addingRecords = true;
 					attendanceSettings dialog = new attendanceSettings();
-					dialog.obtainedDept = AdminMenu.panelAttendance.obtainedDept;
-					dialog.obtainedSec = AdminMenu.panelAttendance.obtainedSec;
+					dialog.obtainedDept = MainMenu.panelAttendance.obtainedDept;
+					dialog.obtainedSec = MainMenu.panelAttendance.obtainedSec;
 					dialog.obtainedDeptName.setText(dialog.obtainedDept);
 					dialog.obtainedSecName.setText(dialog.obtainedSec);
 					System.out.println(dialog.obtainedDept);
@@ -157,7 +157,7 @@ public class panelAttendance extends JPanel {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.AttendanceSelectSubject);
+				MainMenu.menuClicked(MainMenu.AttendanceSelectSubject);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
@@ -234,14 +234,14 @@ public class panelAttendance extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(!deletingRecords) {
-				AdminMenu.menuClicked(AdminMenu.records);
+				MainMenu.menuClicked(MainMenu.records);
 				JButton source = (JButton) e.getSource();
-				AdminMenu.records.obtainedDept = obtainedDept;
-				AdminMenu.records.obtainedSec = obtainedSec;
-				AdminMenu.records.obtainedSub = obtainedSub;
-				AdminMenu.records.obtainedRecord = source.getName();
-				AdminMenu.records.model.setRowCount(0);
-				AdminMenu.records.execute();
+				MainMenu.records.obtainedDept = obtainedDept;
+				MainMenu.records.obtainedSec = obtainedSec;
+				MainMenu.records.obtainedSub = obtainedSub;
+				MainMenu.records.obtainedRecord = source.getName();
+				MainMenu.records.model.setRowCount(0);
+				MainMenu.records.execute();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();

@@ -31,7 +31,7 @@ public class panelAccountSetting extends JPanel {
 	private JTextField txtLN;
 	private JTextField txtMN;
 	private JLabel lblpfp;
-	AdminMenu AdminMenu;
+	MainMenu MainMenu;
 	panelProfileDisplay panelProfileDisplay;
 	private int uid = Integer.valueOf(Login.pubUID);
 	String path;

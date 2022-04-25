@@ -42,7 +42,7 @@ public class Records extends JPanel {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.panelAttendance);
+				MainMenu.menuClicked(MainMenu.panelAttendance);
 				model.setRowCount(0);
 			}
 		});

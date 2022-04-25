@@ -192,12 +192,12 @@ public class panelDepartment extends JPanel {
 	private class AddDeleteListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if(!isDeletingDepts) {
-				AdminMenu.menuClicked(AdminMenu.panelSections);
+				MainMenu.menuClicked(MainMenu.panelSections);
 				JButton source = (JButton) e.getSource();
 				whatDept = buttonNames.get(buttonNames.indexOf(source)).getName();
-				AdminMenu.panelSectionMembers.obtainedDept = whatDept;
-				AdminMenu.panelSections.currentDept.setText("Department: "+whatDept);
-				AdminMenu.panelSections.execute();
+				MainMenu.panelSectionMembers.obtainedDept = whatDept;
+				MainMenu.panelSections.currentDept.setText("Department: "+whatDept);
+				MainMenu.panelSections.execute();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();

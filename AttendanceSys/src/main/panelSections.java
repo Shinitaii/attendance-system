@@ -63,7 +63,7 @@ public class panelSections extends JPanel {
 		backToDept.addMouseListener(new PropertiesListener(backToDept));
 		backToDept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminMenu.menuClicked(AdminMenu.panelDepartment);
+				MainMenu.menuClicked(MainMenu.panelDepartment);
 				buttonNames.clear();
 				listSecNames.clear();
 				sectionScreen.removeAll();
@@ -93,7 +93,7 @@ public class panelSections extends JPanel {
 					if(isAddingSec) {
 						try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 							String checkedName = "";
-							PreparedStatement checkDupe = conn.prepareStatement("select sectionname from sectioninfo where sectionname ='"+obtainedSec+"' and departmentname ='"+AdminMenu.panelDepartment.whatDept+"' and schoolname = '"+Login.pubSchoolName+"'");
+							PreparedStatement checkDupe = conn.prepareStatement("select sectionname from sectioninfo where sectionname ='"+obtainedSec+"' and departmentname ='"+MainMenu.panelDepartment.whatDept+"' and schoolname = '"+Login.pubSchoolName+"'");
 							ResultSet checking = checkDupe.executeQuery();
 							while(checking.next()) {
 								checkedName = checking.getString("sectionname");
@@ -107,7 +107,7 @@ public class panelSections extends JPanel {
 								newButton.addMouseListener(new PropertiesListener(newButton));
 								PreparedStatement addSec = conn.prepareStatement("insert into sectioninfo (sectionname, departmentname, schoolname) values (?, ?, ?)");
 								addSec.setString(1, obtainedSec);
-								addSec.setString(2, AdminMenu.panelDepartment.whatDept);
+								addSec.setString(2, MainMenu.panelDepartment.whatDept);
 								addSec.setString(3, Login.pubSchoolName);
 								int result = addSec.executeUpdate();
 								if(result == 1) {
@@ -181,7 +181,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+AdminMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
 			if(checkedCount.next()) {
 				count = checkedCount.getInt("count(sectionname)");
@@ -193,7 +193,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+AdminMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
 			while(checkedNames.next()) {
 				String secName = checkedNames.getString("sectionname");	
@@ -220,11 +220,11 @@ public class panelSections extends JPanel {
 	private class AddAndDeleteListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if(!isDeletingSec) {
-				AdminMenu.menuClicked(AdminMenu.panelSectionMembers);
+				MainMenu.menuClicked(MainMenu.panelSectionMembers);
 				JButton source = (JButton) e.getSource();
 				whatSec = buttonNames.get(buttonNames.indexOf(source)).getName();
-				AdminMenu.panelSectionMembers.obtainedSec = whatSec;
-				AdminMenu.panelSectionMembers.checkList();
+				MainMenu.panelSectionMembers.obtainedSec = whatSec;
+				MainMenu.panelSectionMembers.checkList();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();
@@ -232,7 +232,7 @@ public class panelSections extends JPanel {
 					if(select == JOptionPane.YES_OPTION) {
 						sectionScreen.remove(source);
 						buttonNames.remove(source);
-						PreparedStatement deleteDept = conn.prepareStatement("delete from sectioninfo where sectionname='"+source.getName()+"' and departmentname='"+AdminMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
+						PreparedStatement deleteDept = conn.prepareStatement("delete from sectioninfo where sectionname='"+source.getName()+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
 						deleteDept.executeUpdate();
 						recheckCount();
 					}

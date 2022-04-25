@@ -95,12 +95,12 @@ public class AttendanceSelectDepartment extends JPanel {
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AdminMenu.menuClicked(AdminMenu.AttendanceSelectSection);
+					MainMenu.menuClicked(MainMenu.AttendanceSelectSection);
 					JButton source = (JButton) e.getSource();
-					AdminMenu.AttendanceSelectSection.obtainedDept = source.getName();
-					AdminMenu.AttendanceSelectSubject.obtainedDept = source.getName();
-					AdminMenu.panelAttendance.obtainedDept = source.getName();
-					AdminMenu.AttendanceSelectSection.execute();
+					MainMenu.AttendanceSelectSection.obtainedDept = source.getName();
+					MainMenu.AttendanceSelectSubject.obtainedDept = source.getName();
+					MainMenu.panelAttendance.obtainedDept = source.getName();
+					MainMenu.AttendanceSelectSection.execute();
 				}
 			});
 			selectionScreen.add(button);

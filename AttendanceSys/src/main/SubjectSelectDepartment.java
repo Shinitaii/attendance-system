@@ -95,11 +95,11 @@ public class SubjectSelectDepartment extends JPanel {
 			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
 			buttonNames.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AdminMenu.menuClicked(AdminMenu.panelSubjects);
+					MainMenu.menuClicked(MainMenu.panelSubjects);
 					JButton source = (JButton) e.getSource();
-					AdminMenu.panelSubjects.obtainedDept = source.getName();
+					MainMenu.panelSubjects.obtainedDept = source.getName();
 					selectedDept = source.getName();
-					AdminMenu.panelSubjects.execute();
+					MainMenu.panelSubjects.execute();
 				}
 			});
 			selectionScreen.add(button);
