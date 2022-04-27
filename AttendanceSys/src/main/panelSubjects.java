@@ -3,16 +3,12 @@ import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
-import java.awt.GridLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -38,13 +34,12 @@ public class panelSubjects extends JPanel {
 	DefaultTableModel model;
 	List<JButton> buttonNames = new ArrayList<JButton>();
 	List<String> listSubNames = new ArrayList<String>();
-	private List<String> listSec = new ArrayList<String>();
-	private boolean isAddingSub = false, isDeletingSub = false;
+	private boolean isDeletingSub = false;
 	public static boolean isCancelled = false;
-	private int count = 0;
 	public String obtainedSub, obtainedDept, selectedSec;
 	private JTable table;
-	String nameAoD = "asc";
+	private String nameAoD = "asc";
+	
 	public panelSubjects() {
 		setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 11));
 		setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -99,7 +94,6 @@ public class panelSubjects extends JPanel {
 		JButton addSubject = new JButton("Add Subject");
 		addSubject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				isAddingSub = true;
 				isDeletingSub = false;
 				try {
 					subjectSettings dialog = new subjectSettings();
@@ -163,6 +157,11 @@ public class panelSubjects extends JPanel {
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
+		
+		if(!Login.pubOccupation.equals("Admin")) {
+			addSubject.setVisible(false);
+			deleteSubject.setVisible(false);
+		}
 
 	}
 	
@@ -175,7 +174,15 @@ public class panelSubjects extends JPanel {
 	
 	private void section(JComboBox<String>cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'");
+			String normal = "select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'";
+			String teacher = "select sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'";
+			
+			PreparedStatement getStatement;
+			if(!Login.pubOccupation.equals("Admin")) {
+				getStatement = conn.prepareStatement(teacher);
+			} else {
+				getStatement = conn.prepareStatement(normal);
+			}
 			ResultSet result = getStatement.executeQuery();
 			cb.addItem("Select a section");
 			while(result.next()) {
@@ -189,7 +196,12 @@ public class panelSubjects extends JPanel {
 	
 	private void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){		
-			String query = "select subjectname, sectionname from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+			String query;
+			if(!Login.pubOccupation.equals("Admin")) {
+				query = "select subjectname, sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+			} else {
+				query = "select subjectname, sectionname from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+			}
 			String orderBy = "order by";
 			String selectSec = "sectionname ='"+selectedSec+"' desc, subjectname " + nameAoD;
 			PreparedStatement puttingInTable;

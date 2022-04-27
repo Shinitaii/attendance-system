@@ -15,7 +15,7 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String pubUsername, pubUID = "1", pubFN, pubMN, pubLN, pubOccupation, pubSchoolName, pubDeptName;
+	public static String pubUsername, pubUID, pubFN, pubMN, pubLN, pubFullName, pubOccupation, pubSchoolName, pubDeptName;
 	public static boolean pubHasASchool, pubHasADept;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
@@ -138,6 +138,7 @@ public class Login extends JFrame {
 							pubDeptName = whatInfo.getString("departmentname");
 							pubHasADept = whatInfo.getBoolean("hasADept");
 						}	
+						pubFullName = pubFN+" "+pubMN+" "+pubLN;
 						if(!pubHasASchool) {
 							try {
 								SelectSchool dialog = new SelectSchool();

@@ -222,21 +222,14 @@ public class panelDepartment extends JPanel {
 	
 	private void recountCheckForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from teacherassignedinfo where schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by departmentname) and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
 			if(checkedCount.next()) {
 				count = checkedCount.getInt("count(departmentname)");
 			}
 			if(count == 0) {
 				JButton button = new JButton("Get assigned");
-				button.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						MainMenu.menuClicked(MainMenu.TeacherAssignDept);
-						MainMenu.TeacherAssignDept.obtainedDeptNames.clear();
-						MainMenu.TeacherAssignDept.obtainedSubNames.clear();
-						MainMenu.TeacherAssignDept.getSubjects(MainMenu.TeacherAssignDept.obtainedDeptNames, MainMenu.TeacherAssignDept.obtainedSubNames);
-					}
-				});
+				button.addActionListener(new TeacherAssignListener());
 				button.addMouseListener(new PropertiesListener(button));
 				MainContent.add(button);
 				lblSelectToDelete.setText("You do not have any departments, sections nor subjects assigned. Click the button to be assigned.");	
@@ -249,7 +242,7 @@ public class panelDepartment extends JPanel {
 	
 	private void recheckNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkDeptNames = conn.prepareStatement("select departmentname from teacherassignedinfo where schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkDeptNames = conn.prepareStatement("select departmentname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by departmentname) and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
 			if(!isAddingDepts) {
 				while(checkedNames.next()) {
@@ -275,7 +268,11 @@ public class panelDepartment extends JPanel {
 				whatDept = buttonNames.get(buttonNames.indexOf(source)).getName();
 				MainMenu.panelSectionMembers.obtainedDept = whatDept;
 				MainMenu.panelSections.currentDept.setText("Department: "+whatDept);
-				MainMenu.panelSections.execute();
+				if(!Login.pubOccupation.equals("Admin")) {
+					MainMenu.panelSections.executeForTeachers();
+				} else {
+					MainMenu.panelSections.execute();
+				}
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 					JButton source = (JButton) e.getSource();

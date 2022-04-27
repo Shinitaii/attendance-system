@@ -70,6 +70,17 @@ public class AttendanceSelectSubject extends JPanel {
 		repaint();
 	}
 	
+	public void executeForTeachers() {
+		buttonNames.clear();
+		listSecNames.clear();
+		subjectScreen.removeAll();
+		checkCountForTeachers();
+		checkNameForTeachers();
+		existingRecords();
+		revalidate();
+		repaint();
+	}
+	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
 			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from subjectinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
@@ -114,5 +125,30 @@ public class AttendanceSelectSubject extends JPanel {
 		}
 		revalidate();
 		repaint();
+	}
+	
+	private void checkCountForTeachers() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
+			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by subjectname) and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'");
+			ResultSet checking = checkCount.executeQuery();
+			if(checking.next()) {
+				count = checking.getInt("count(subjectname)");
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}
+	}
+	
+	private void checkNameForTeachers() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
+			PreparedStatement checkName = conn.prepareStatement("select subjectname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by subjectname) and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'");
+			ResultSet checking = checkName.executeQuery();
+			while(checking.next()) {
+				String deptName = checking.getString("subjectname");
+				listSecNames.add(deptName);
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}	
 	}
 }

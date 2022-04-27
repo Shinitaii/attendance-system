@@ -71,6 +71,17 @@ public class AttendanceSelectSection extends JPanel {
 		repaint();
 	}
 	
+	public void executeForTeachers() {
+		buttonNames.clear();
+		listSecNames.clear();
+		selectionScreen.removeAll();
+		checkCountForTeachers();
+		checkNameForTeachers();
+		existingRecords();
+		revalidate();
+		repaint();
+	}
+	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
 			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
@@ -108,7 +119,11 @@ public class AttendanceSelectSection extends JPanel {
 					JButton source = (JButton) e.getSource();
 					MainMenu.panelAttendance.obtainedSec = source.getName();
 					MainMenu.AttendanceSelectSubject.obtainedSec = source.getName();
-					MainMenu.AttendanceSelectSubject.execute();
+					if(!Login.pubOccupation.equals("Admin")) {
+						MainMenu.AttendanceSelectSubject.executeForTeachers();
+					} else {
+						MainMenu.AttendanceSelectSubject.execute();
+					}
 				}
 			});
 			selectionScreen.add(button);
@@ -116,5 +131,30 @@ public class AttendanceSelectSection extends JPanel {
 		revalidate();
 		repaint();
 	}
-
+	
+	private void checkCountForTeachers() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			ResultSet checking = checkCount.executeQuery();
+			if(checking.next()) {
+				count = checking.getInt("count(sectionname)");
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}
+	}
+	
+	private void checkNameForTeachers() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
+			PreparedStatement checkName = conn.prepareStatement("select sectionname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			ResultSet checking = checkName.executeQuery();
+			while(checking.next()) {
+				String deptName = checking.getString("sectionname");
+				listSecNames.add(deptName);
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}	
+	}
+	
 }
