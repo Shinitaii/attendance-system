@@ -72,7 +72,7 @@ public class AttendanceSelectSubject extends JPanel {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from subjectinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
 				count = checking.getInt("count(subjectname)");
@@ -84,7 +84,7 @@ public class AttendanceSelectSubject extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkName = conn.prepareStatement("select subjectname from subjectinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String deptName = checking.getString("subjectname");

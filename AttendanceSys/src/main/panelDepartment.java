@@ -27,6 +27,7 @@ public class panelDepartment extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel MainContent;
+	private JLabel lblSelectToDelete;
 	private List<String> listDeptNames = new ArrayList<String>();
 	private List<JButton> buttonNames = new ArrayList<JButton>();
 	private int count = 0;
@@ -57,7 +58,7 @@ public class panelDepartment extends JPanel {
 		add(buttonSelection);
 		buttonSelection.setLayout(null);
 		
-		JLabel lblSelectToDelete = new JLabel("Click on a department to select its sections.");
+		lblSelectToDelete = new JLabel("Click on a department to select its sections.");
 		lblSelectToDelete.setVisible(true);
 		lblSelectToDelete.setBounds(10, 80, 425, 12);
 		add(lblSelectToDelete);
@@ -136,17 +137,12 @@ public class panelDepartment extends JPanel {
 		deleteDept.setBounds(170, 0, 150, 58);
 		buttonSelection.add(deleteDept);
 		
-		recountCheck();
-		recheckName();
-		checkExistingDepts();
+		
 		
 		if(!Login.pubOccupation.equals("Admin")) {
 			buttonSelection.setVisible(false);
-			lblSelectToDelete.setVisible(false);
-			JLabel lblInstruction = new JLabel("Click on a department to select its sections.");
-			lblInstruction.setVisible(true);
-			lblInstruction.setBounds(10, 11, 425, 12);
-			add(lblInstruction);
+			lblSelectToDelete.setText("Click on a department to select its sections.");
+			lblSelectToDelete.setBounds(10, 11, 425, 12);
 			scrollPane.setBounds(10,30,539,499);
 		}
 		
@@ -154,7 +150,29 @@ public class panelDepartment extends JPanel {
 		repaint();
 	}
 	
-	public void recountCheck() {
+	public void execute() {
+		buttonNames.clear();
+		listDeptNames.clear();
+		MainContent.removeAll();
+		recountCheck();
+		recheckName();
+		checkExistingDepts();
+		revalidate();
+		repaint();
+	}
+	
+	public void executeForTeachers() {
+		buttonNames.clear();
+		listDeptNames.clear();
+		MainContent.removeAll();
+		recountCheckForTeachers();
+		recheckNameForTeachers();
+		checkExistingDepts();
+		revalidate();
+		repaint();
+	}
+	
+	private void recountCheck() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from departmentinfo where schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
@@ -166,7 +184,7 @@ public class panelDepartment extends JPanel {
 		}
 	}
 	
-	public void recheckName() {
+	private void recheckName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
 			PreparedStatement checkDeptNames = conn.prepareStatement("select departmentname from departmentinfo where schoolname='"+Login.pubSchoolName+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
@@ -186,7 +204,7 @@ public class panelDepartment extends JPanel {
 		}
 	}
 	
-	public void checkExistingDepts() {
+	private void checkExistingDepts() {
 		int height = 0;
 		for(int i = 0; i < count; i++){	
 			existingButton = new JButton(listDeptNames.get(i));
@@ -200,6 +218,53 @@ public class panelDepartment extends JPanel {
 			height += 33;
 		}
 		MainContent.setPreferredSize(new Dimension(0, height));
+	}
+	
+	private void recountCheckForTeachers() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from teacherassignedinfo where schoolname='"+Login.pubSchoolName+"'");
+			ResultSet checkedCount = checkCount.executeQuery();
+			if(checkedCount.next()) {
+				count = checkedCount.getInt("count(departmentname)");
+			}
+			if(count == 0) {
+				JButton button = new JButton("Get assigned");
+				button.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						MainMenu.menuClicked(MainMenu.TeacherAssignDept);
+						MainMenu.TeacherAssignDept.obtainedDeptNames.clear();
+						MainMenu.TeacherAssignDept.obtainedSubNames.clear();
+						MainMenu.TeacherAssignDept.getSubjects(MainMenu.TeacherAssignDept.obtainedDeptNames, MainMenu.TeacherAssignDept.obtainedSubNames);
+					}
+				});
+				button.addMouseListener(new PropertiesListener(button));
+				MainContent.add(button);
+				lblSelectToDelete.setText("You do not have any departments, sections nor subjects assigned. Click the button to be assigned.");	
+				lblSelectToDelete.setBounds(10, 11, 425, 12);
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}
+	}
+	
+	private void recheckNameForTeachers() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
+			PreparedStatement checkDeptNames = conn.prepareStatement("select departmentname from teacherassignedinfo where schoolname='"+Login.pubSchoolName+"'");
+			ResultSet checkedNames = checkDeptNames.executeQuery();
+			if(!isAddingDepts) {
+				while(checkedNames.next()) {
+					String deptName = checkedNames.getString("departmentname");	
+					listDeptNames.add(deptName);
+				}
+			} else {
+				if(checkedNames.next()) {
+					String deptName = checkedNames.getString("departmentname");	
+					listDeptNames.add(deptName);
+				}
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}
 	}
 	
 	private class AddDeleteListener implements ActionListener {

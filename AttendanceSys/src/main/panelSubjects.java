@@ -3,8 +3,12 @@ import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -17,7 +21,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.JLabel;
 
 public class panelSubjects extends JPanel {
 	
@@ -25,13 +34,17 @@ public class panelSubjects extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	JComboBox<String> cbName, cbSec;
+	DefaultTableModel model;
 	List<JButton> buttonNames = new ArrayList<JButton>();
 	List<String> listSubNames = new ArrayList<String>();
-	private JPanel subjectScreen;
+	private List<String> listSec = new ArrayList<String>();
 	private boolean isAddingSub = false, isDeletingSub = false;
 	public static boolean isCancelled = false;
 	private int count = 0;
-	public String obtainedSub, obtainedDept;
+	public String obtainedSub, obtainedDept, selectedSec;
+	private JTable table;
+	String nameAoD = "asc";
 	public panelSubjects() {
 		setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 11));
 		setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -39,10 +52,44 @@ public class panelSubjects extends JPanel {
 		setBounds(new Rectangle(0, 0, 559, 539));
 		setLayout(null);
 		
+		cbName = new JComboBox<String>();
+		cbName.addItem("Sort Name: A to Z");
+		cbName.addItem("Sort name: Z to A");
+		cbName.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbName.getSelectedIndex() == 0) {
+					nameAoD = "asc";
+				} else {
+					nameAoD = "desc";
+				}
+				model.setRowCount(0);
+				checkList();
+			}
+		});
+		cbName.setBounds(349, 36, 90, 22);
+		add(cbName);
+		
+		
+		cbSec = new JComboBox<String>();
+		cbSec.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbSec.getSelectedIndex() > 0) {
+					selectedSec = cbSec.getSelectedItem().toString();
+					cbName.setSelectedIndex(0);
+					model.setRowCount(0);
+					checkList();
+				}
+				
+			}
+		});
+		cbSec.setBounds(459, 36, 90, 22);
+		add(cbSec);
+		
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainMenu.menuClicked(MainMenu.SubjectSelectDepartment);
+				model.setRowCount(0);
 			}
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
@@ -50,7 +97,7 @@ public class panelSubjects extends JPanel {
 		add(backButton);
 		
 		JButton addSubject = new JButton("Add Subject");
-		addSubject.addActionListener(new AddDeleteListener() {
+		addSubject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isAddingSub = true;
 				isDeletingSub = false;
@@ -61,18 +108,8 @@ public class panelSubjects extends JPanel {
 				} catch (Exception dialog) {
 					dialog.printStackTrace();
 				}
-				
-				if(!isCancelled) {
-				checkName();
-				JButton button = new JButton(subjectSettings.subjectName);
-				buttonNames.add(button);
-				button = buttonNames.get(count);	
-				buttonNames.get(count).addMouseListener(new PropertiesListener(buttonNames.get(count)));
-				buttonNames.get(count).setName(subjectSettings.subjectName);
-				buttonNames.get(count).addActionListener(new AddDeleteListener());
-				subjectScreen.add(button);
-				}
-				checkCount();
+				model.setRowCount(0);
+				checkList();
 				revalidate();
 				repaint();
 			}
@@ -82,7 +119,7 @@ public class panelSubjects extends JPanel {
 		add(addSubject);
 		
 		JButton deleteSubject = new JButton("Delete Subject");
-		deleteSubject.addActionListener(new AddDeleteListener() {
+		deleteSubject.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				if(!isDeletingSub) {
 					isDeletingSub = true;
@@ -95,97 +132,82 @@ public class panelSubjects extends JPanel {
 		deleteSubject.setBounds(205, 11, 120, 45);
 		add(deleteSubject);
 		
-		subjectScreen = new JPanel();
-		subjectScreen.setBorder(new LineBorder(new Color(65, 105, 225)));
-		subjectScreen.setBackground(new Color(255, 255, 255));
-		subjectScreen.setBounds(10, 67, 539, 461);
-		add(subjectScreen);
-		subjectScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 67, 539, 461);
+		add(scrollPane);
+		
+		model = new DefaultTableModel(new String[] {"Subject ","Section"}, 0) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setBorder(null);
+		table.setModel(model);
+		
+		JLabel lblSortName = new JLabel("Sort Name:");
+		lblSortName.setBounds(349, 11, 90, 14);
+		add(lblSortName);
+		
+		JLabel lblSortSec = new JLabel("Sort Section:");
+		lblSortSec.setBounds(459, 11, 90, 14);
+		add(lblSortSec);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table.getColumnModel().getColumn(0).setMinWidth(150);
+		table.getTableHeader().setReorderingAllowed(false);
 
 	}
 	
 	public void execute() {
-		checkCount();
-		checkName();
-		existingSub();
+		section(cbSec);
+		checkList();
 		revalidate();
 		repaint();
 	}
 	
-	private void checkCount() {
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement getStatement = conn.prepareStatement("select count(subjectname) from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+	private void section(JComboBox<String>cb) {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
+			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'");
 			ResultSet result = getStatement.executeQuery();
-			if(result.next()) {
-				count = result.getInt("count(subjectname)");
+			cb.addItem("Select a section");
+			while(result.next()) {
+				String obtainedSec = result.getString("sectionname");
+				cbSec.addItem(obtainedSec);
 			}
-			result.close();
-			getStatement.close();
-			conn.close();
-		} catch (SQLException sql) {
+		} catch(SQLException sql) {
 			sql.printStackTrace();
 		}
 	}
 	
-	private void checkName() {
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement getStatement = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
-			ResultSet result = getStatement.executeQuery();
-			if(isAddingSub) {
-				if(result.next()) {
-					String obtainedSub = result.getString("subjectname");
-					listSubNames.add(obtainedSub);
-				}
+	private void checkList() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){		
+			String query = "select subjectname, sectionname from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+			String orderBy = "order by";
+			String selectSec = "sectionname ='"+selectedSec+"' desc, subjectname " + nameAoD;
+			PreparedStatement puttingInTable;
+			if(cbSec.getSelectedIndex() == 0) {
+				puttingInTable = conn.prepareStatement(query + " " + orderBy + " subjectname " + nameAoD);
 			} else {
-				while(result.next()) {
-					String obtainedSub = result.getString("subjectname");
-					listSubNames.add(obtainedSub);
-				}
+				puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + selectSec);
 			}
-			result.close();
-			getStatement.close();
-			conn.close();
+			ResultSet result = puttingInTable.executeQuery();
+			while(result.next()) {
+				String sub = result.getString("subjectname");
+				String sec = result.getString("sectionname");
+				model.addRow(new Object[] {sub, sec});
+			}
+			revalidate();
+			repaint();
 		} catch (SQLException sql) {
 			sql.printStackTrace();
-		}
-	}
-	
-	private void existingSub() {
-		for(int i = 0; i < count; i++) {
-			JButton button = new JButton(listSubNames.get(i));
-			buttonNames.add(button);
-			button = buttonNames.get(i);
-			buttonNames.get(i).setName(listSubNames.get(i));
-			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
-			buttonNames.get(i).addActionListener(new AddDeleteListener());
-			subjectScreen.add(button);
-		}
-		revalidate();
-		repaint();
-	}
-	
-	private class AddDeleteListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			JButton source = (JButton) e.getSource();
-			if(!isDeletingSub) {
-				
-			} else {
-				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-					int select = JOptionPane.showConfirmDialog(null, "You sure you want to delete "+source.getName()+"?", "Warning!", JOptionPane.YES_NO_OPTION);
-					if(select == JOptionPane.YES_OPTION) {
-						buttonNames.remove(source);
-						subjectScreen.remove(source);
-						PreparedStatement getStatement = conn.prepareStatement("delete subjectinfo where subjectname ='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
-						getStatement.executeUpdate();
-						checkCount();
-						getStatement.close();
-					}
-					
-					conn.close();
-				} catch (SQLException sql) {
-					sql.printStackTrace();
-				}
-			}
 		}
 	}
 }

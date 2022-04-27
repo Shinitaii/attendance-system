@@ -9,7 +9,10 @@ import javax.swing.border.EmptyBorder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -23,6 +26,7 @@ public class subjectSettings extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private List<String> cbSub = new ArrayList<String>();
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tfSubj;
 	public static String subjectName;
@@ -81,22 +85,27 @@ public class subjectSettings extends JDialog {
 				createButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
+							int result = 0;
+							section();
 							subjectName = tfSubj.getText();
 							subjectDesc = taSubjDesc.getText();
-							
-							PreparedStatement getStatement = conn.prepareStatement("insert into subjectinfo (subjectname, subjectdesc, departmentname, schoolname) values (?,?,?,?)");
+							for(int i = 0; i < cbSub.size(); i ++) {
+							PreparedStatement getStatement = conn.prepareStatement("insert into subjectinfo (subjectname, subjectdesc, departmentname, sectionname, schoolname) values (?,?,?,?,?)");
 							getStatement.setString(1, subjectName);
 							getStatement.setString(2, subjectDesc);
 							getStatement.setString(3, MainMenu.SubjectSelectDepartment.selectedDept);
-							getStatement.setString(4, Login.pubSchoolName);
-							int result = getStatement.executeUpdate();
-							if(result == 1) {
+							getStatement.setString(4, cbSub.get(i));
+							getStatement.setString(5, Login.pubSchoolName);
+							result = getStatement.executeUpdate();
+							result++;
+							getStatement.close();
+							}
+							if(result >= 1) {
 								dispose();
 								JOptionPane.showMessageDialog(null, "Successfully created!");
 								revalidate();
 								repaint();
 							}
-							getStatement.close();
 							conn.close();						
 						} catch (SQLException sql) {
 							sql.printStackTrace();
@@ -120,6 +129,19 @@ public class subjectSettings extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+	}
+	
+	private void section() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
+			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'");
+			ResultSet result = getStatement.executeQuery();
+			while(result.next()) {
+				String obtainedSec = result.getString("sectionname");
+				cbSub.add(obtainedSec);
+			}
+		} catch(SQLException sql) {
+			sql.printStackTrace();
 		}
 	}
 }

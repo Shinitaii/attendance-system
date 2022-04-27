@@ -23,7 +23,7 @@ public class MainMenu extends JFrame {
 	//test
 	private static final long serialVersionUID = 1L;
 	
-	private static panelHome panelHome;
+	public static panelHome panelHome;
 	public static panelSubjects panelSubjects;
 	public static SubjectSelectDepartment SubjectSelectDepartment;
 	private static panelSettings panelSettings;
@@ -37,6 +37,7 @@ public class MainMenu extends JFrame {
 	public static panelSectionMembers panelSectionMembers;
 	public static Records records;
 	public static studentRecords studentRecords;
+	public static TeacherAssignDept TeacherAssignDept;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
 
@@ -100,6 +101,8 @@ public class MainMenu extends JFrame {
 		records.setBounds(0,0,559,539);
 		studentRecords = new studentRecords();
 		studentRecords.setBounds(0,0,559,539);
+		TeacherAssignDept = new TeacherAssignDept();
+		TeacherAssignDept.setBounds(0,0,559,539);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225).darker()));
@@ -132,6 +135,11 @@ public class MainMenu extends JFrame {
 				panelSections.buttonNames.clear();
 				panelSections.listSecNames.clear();
 				panelSections.sectionScreen.removeAll();
+				if(!Login.pubOccupation.equals("Teacher")) {
+					panelDepartment.execute();
+				} else {
+					panelDepartment.executeForTeachers();
+				}
 				revalidate();
 				repaint();
 			}
@@ -159,17 +167,19 @@ public class MainMenu extends JFrame {
 		JPanel panelAttend = new JPanel();
 		panelAttend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
-			@Override
 			public void mouseClicked(MouseEvent e) {
 				menuClicked(AttendanceSelectDepartment);
 				panelAttendance.buttonNames.clear();
 				panelAttendance.listRecordNames.clear();
 				panelAttendance.mainScreen.removeAll();
-				AttendanceSelectDepartment.execute();
+				if(!Login.pubOccupation.equals("Teacher")) {
+					AttendanceSelectDepartment.execute();
+				} else {
+					AttendanceSelectDepartment.executeForTeachers();
+				}
 				revalidate();
 				repaint();
 			}
-			
 		});
 		panelAttend.setLayout(null);
 		panelAttend.setBorder(new LineBorder(new Color(65, 105, 225).darker()));
@@ -311,7 +321,11 @@ public class MainMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				menuClicked(SubjectSelectDepartment);
-				SubjectSelectDepartment.execute();
+				if(!Login.pubOccupation.equals("Teacher")) {
+					SubjectSelectDepartment.execute();
+				} else {
+					SubjectSelectDepartment.executeForTeachers();
+				}
 			}
 			
 		});
@@ -351,6 +365,7 @@ public class MainMenu extends JFrame {
 		panelMainContent.add(panelSectionMembers);
 		panelMainContent.add(records);
 		panelMainContent.add(studentRecords);
+		panelMainContent.add(TeacherAssignDept);
 		
 		menuClicked(panelHome);
 		setResizable(false);
@@ -372,6 +387,7 @@ public class MainMenu extends JFrame {
 		panelSectionMembers.setVisible(false);
 		records.setVisible(false);
 		studentRecords.setVisible(false);
+		TeacherAssignDept.setVisible(false);
 		
 		panel.setVisible(true);		
 	}

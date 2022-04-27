@@ -35,11 +35,12 @@ public class panelMembros extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	List<String> listDeptNames = new ArrayList<String>();
-	JComboBox<String> cbName,cbOccup,cbDept;
+	JComboBox<String> cbName,cbOccup,cbDept,cbSec;
 	private JTable table;
 	private boolean isEditing = false;
 	public DefaultTableModel model;
-	private String selectedDept, nameAoD = "asc";
+	private String selectedDept, selectedSec, nameAoD = "asc";
+	private JLabel lblTotalNum;
 	/**
 	 * Create the panel.
 	 */
@@ -79,30 +80,32 @@ public class panelMembros extends JPanel {
 		panel.add(editButton);
 		
 		cbName = new JComboBox<String>();
-		cbName.addItem("Sort Name: A to Z");
-		cbName.addItem("Sort name: Z to A");
+		cbName.addItem("A to Z");
+		cbName.addItem("Z to A");
 		cbName.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if(cbName.getSelectedIndex() == 0) {
-					nameAoD = "asc";
-				} else {
-					nameAoD = "desc";
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					if(cbName.getSelectedIndex() == 0) {
+						nameAoD = "asc";
+					} else {
+						nameAoD = "desc";
+					}
+					model.setRowCount(0);
+					checkList();
 				}
-				model.setRowCount(0);
-				checkList();
 			}
 		});
 		cbName.setBorder(new LineBorder(new Color(65, 105, 225)));
 		cbName.setBackground(Color.WHITE);
-		cbName.setBounds(299, 36, 120, 22);
+		cbName.setBounds(369, 36, 70, 22);
 		panel.add(cbName);
 		
 		JLabel lblSortName = new JLabel("Sort Name:");
-		lblSortName.setBounds(299, 11, 120, 14);
+		lblSortName.setBounds(369, 11, 70, 14);
 		panel.add(lblSortName);
 		
 		JLabel lblSortOccupation = new JLabel("Sort Occupation:");
-		lblSortOccupation.setBounds(429, 11, 120, 14);
+		lblSortOccupation.setBounds(449, 11, 100, 14);
 		panel.add(lblSortOccupation);
 		
 		cbOccup = new JComboBox<String>();
@@ -111,35 +114,65 @@ public class panelMembros extends JPanel {
 		cbOccup.addItem("Admins first");
 		cbOccup.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				cbName.setSelectedIndex(0);
-				model.setRowCount(0);
-				checkList();
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					cbName.setSelectedIndex(0);
+					model.setRowCount(0);
+					checkList();
+				}	
 			}
 		});
 		cbOccup.setBorder(new LineBorder(new Color(65, 105, 225)));
-		cbOccup.setBounds(429, 36, 119, 22);
+		cbOccup.setBounds(449, 36, 100, 22);
 		panel.add(cbOccup);
 		
 		JLabel lblSortDept = new JLabel("Sort Department:");
-		lblSortDept.setBounds(169, 11, 120, 14);
+		lblSortDept.setBounds(169, 11, 90, 14);
 		panel.add(lblSortDept);
 		
 		cbDept = new JComboBox<String>();
-		cbDept.addItem("No Department");
+		cbDept.addItem("None");
 		dept(cbDept);
 		cbDept.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				selectedDept = cbDept.getSelectedItem().toString();
-				model.setRowCount(0);
-				cbName.setSelectedIndex(0);
-				cbOccup.setSelectedIndex(0);
-				checkList();
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					selectedDept = cbDept.getSelectedItem().toString();
+					model.setRowCount(0);
+					cbSec.setSelectedIndex(0);
+					cbName.setSelectedIndex(0);
+					cbOccup.setSelectedIndex(0);
+					sec(cbSec);
+					checkList();
+				}
 			}
 		});
 		cbDept.setBorder(new LineBorder(new Color(65, 105, 225)));
 		cbDept.setBackground(Color.WHITE);
-		cbDept.setBounds(169, 36, 120, 22);
+		cbDept.setBounds(169, 36, 90, 22);
 		panel.add(cbDept);
+		
+		cbSec = new JComboBox<String>();
+		cbSec.addItem("Need department");
+		cbSec.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					if(cbSec.getSelectedIndex() > 0) {
+						selectedSec = cbSec.getSelectedItem().toString();
+						model.setRowCount(0);
+						cbName.setSelectedIndex(0);
+						cbOccup.setSelectedIndex(0);
+						checkList();
+					}
+				}
+			}
+		});
+		cbSec.setBorder(new LineBorder(new Color(65, 105, 225)));
+		cbSec.setBackground(Color.WHITE);
+		cbSec.setBounds(269, 36, 90, 22);
+		panel.add(cbSec);
+		
+		JLabel lblSortSec = new JLabel("Sort Section:");
+		lblSortSec.setBounds(269, 11, 90, 14);
+		panel.add(lblSortSec);
 		
 		JLabel lblTotalMem = new JLabel("Total Members :");
 		lblTotalMem.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -149,8 +182,7 @@ public class panelMembros extends JPanel {
 		lblTotalMem.setBounds(397, 500, 125, 39);
 		add(lblTotalMem);
 		
-		JLabel lblTotalNum = new JLabel();
-		checkTotalMembers(lblTotalNum);
+		lblTotalNum = new JLabel();
 		lblTotalNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		lblTotalNum.setForeground(new Color(65, 105, 225));
 		lblTotalNum.setBounds(524, 500, 35, 42);
@@ -161,7 +193,7 @@ public class panelMembros extends JPanel {
 		scrollPane.setBounds(0, 67, 559, 434);
 		add(scrollPane);
 		
-		model = new DefaultTableModel(new String[] {"Full Name","Department","Occupation"}, 0) {
+		model = new DefaultTableModel(new String[] {"Full Name","Department","Section","Occupation"}, 0) {
 			/**
 			 * 
 			 */
@@ -188,12 +220,13 @@ public class panelMembros extends JPanel {
 	
 	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			String query = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, departmentname, occupation from userInfo where schoolname='"+Login.pubSchoolName+"'";
+			String query = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, departmentname, sectionname, occupation from userInfo where schoolname='"+Login.pubSchoolName+"'";
 			String orderBy = "order by";
 			String teachers = "occupation = 'Teacher' desc, occupation = 'Student' desc, fullname "+nameAoD+"";
 			String students = "occupation = 'Student' desc, occupation = 'Teacher' desc, fullname "+nameAoD+"";
 			String admins = "occupation = 'Admin' desc, occupation = 'Teacher' desc, fullname "+nameAoD+"";
 			String orderDept = "departmentname ='"+selectedDept+"' desc,";
+			String orderSec = "sectionname ='"+selectedSec+"' desc,";
 			PreparedStatement puttingInTable;
 			if(cbDept.getSelectedIndex() == 0) {
 				if(cbOccup.getSelectedIndex() == 0) {
@@ -204,21 +237,33 @@ public class panelMembros extends JPanel {
 					puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + admins);
 				}
 			} else {
-				if(cbOccup.getSelectedIndex() == 0) {
-					puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + teachers);
-				} else if (cbOccup.getSelectedIndex() == 1) {
-					puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + students);
+				if(cbSec.getSelectedIndex() == 0) {
+					if(cbOccup.getSelectedIndex() == 0) {
+						puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + teachers);
+					} else if (cbOccup.getSelectedIndex() == 1) {
+						puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + students);
+					} else {
+						puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + admins);
+					}
 				} else {
-					puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + admins);
+					if(cbOccup.getSelectedIndex() == 0) {
+						puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + orderSec + " " + teachers);
+					} else if (cbOccup.getSelectedIndex() == 1) {
+						puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + orderSec + " " + students);
+					} else {
+						puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + orderDept + " " + orderSec + " " + admins);
+					}
 				}
 			}
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {
 				String name = result.getString("fullname");
 				String dept = result.getString("departmentname");
+				String sec = result.getString("sectionname");
 				String occ = result.getString("occupation");
-				model.addRow(new Object[] {name, dept, occ});
+				model.addRow(new Object[] {name, dept, sec, occ});
 			}
+			checkTotalMembers(lblTotalNum);
 			revalidate();
 			repaint();
 		} catch (SQLException sql) {
@@ -251,7 +296,22 @@ public class panelMembros extends JPanel {
 			ResultSet result = getStatement.executeQuery();
 			while(result.next()) {
 				String obtainedDept = result.getString("departmentname");
-				cbDept.addItem(obtainedDept);
+				cb.addItem(obtainedDept);
+			}
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		}
+	}
+	
+	private void sec(JComboBox<String> cb) {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+selectedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			ResultSet result = getStatement.executeQuery();
+			cb.removeAllItems();
+			cb.addItem("Select a section");
+			while(result.next()) {
+				String obtainedSec = result.getString("sectionname");
+				cb.addItem(obtainedSec);
 			}
 		} catch (SQLException sql) {
 			sql.printStackTrace();
@@ -270,5 +330,4 @@ public class panelMembros extends JPanel {
 			
 		}
 	}
-	
 }

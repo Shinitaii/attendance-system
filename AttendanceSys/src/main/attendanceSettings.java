@@ -229,7 +229,7 @@ public class attendanceSettings extends JDialog {
 	
 	public void sub(JComboBox<String> cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select subjectname from subjectinfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select subjectname from subjectinfo where sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
 			ResultSet result = getStatement.executeQuery();
 			cb.removeAllItems();
 			cb.addItem("Select a subject");
