@@ -5,7 +5,16 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -41,6 +50,25 @@ public class panelSettings extends JPanel {
 		panelEditPf.setBackground(new Color(65, 105, 225));
 		panelEditPf.addMouseListener(new PropertiesListener(panelEditPf) {
 			public void mouseClicked(MouseEvent e) {
+				panelAccountSetting.txtUser.setText(Login.pubUsername);
+				panelAccountSetting.txtFN.setText(Login.pubFN);
+				panelAccountSetting.txtMN.setText(Login.pubMN);
+				panelAccountSetting.txtLN.setText(Login.pubLN);
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
+					PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+Login.pubUID+"'");
+					ResultSet get = getPhoto.executeQuery();
+					Blob photo = null;
+					while(get.next()) {
+						photo = get.getBlob("profilePicture");
+						
+					}
+					byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+					BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+					panelAccountSetting.lblpfp.setIcon(new ImageIcon(image));
+					conn.close();
+				} catch (Exception sql) {
+					sql.printStackTrace();
+				}
 				menuClicked(panelAccountSetting);
 			}
 		});

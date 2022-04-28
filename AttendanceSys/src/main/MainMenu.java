@@ -131,14 +131,24 @@ public class MainMenu extends JFrame {
 		panelDept.addMouseListener(new PropertiesListener(panelDept) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(panelDepartment);
-				panelSections.buttonNames.clear();
-				panelSections.listSecNames.clear();
-				panelSections.sectionScreen.removeAll();
-				if(!Login.pubOccupation.equals("Teacher")) {
-					panelDepartment.execute();
-				} else {
+				if(Login.pubOccupation.equals("Admin")) {
+					menuClicked(panelDepartment);
+					panelSections.buttonNames.clear();
+					panelSections.listSecNames.clear();
+					panelSections.sectionScreen.removeAll();
+					panelDepartment.execute();					
+				} else if (Login.pubOccupation.equals("Teacher")){
+					menuClicked(panelDepartment);
+					panelSections.buttonNames.clear();
+					panelSections.listSecNames.clear();
+					panelSections.sectionScreen.removeAll();
 					panelDepartment.executeForTeachers();
+				} else {
+					menuClicked(panelSectionMembers);
+					panelSectionMembers.obtainedSec = Login.pubSecName;
+					panelSectionMembers.obtainedDept = Login.pubDeptName;
+					panelSectionMembers.model.setRowCount(0);
+					panelSectionMembers.checkList();
 				}
 				revalidate();
 				repaint();
@@ -151,7 +161,12 @@ public class MainMenu extends JFrame {
 		panelDept.setBounds(0, 166, 205, 64);
 		panel.add(panelDept);
 		
-		JLabel lblDepartment = new JLabel("Department");
+		JLabel lblDepartment;
+		if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Teacher")) {
+			lblDepartment = new JLabel("Department");
+		} else {
+			lblDepartment = new JLabel("Section");
+		}
 		lblDepartment.setForeground(Color.WHITE);
 		lblDepartment.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
 		lblDepartment.setBounds(54, 11, 141, 42);
@@ -168,14 +183,23 @@ public class MainMenu extends JFrame {
 		panelAttend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(AttendanceSelectDepartment);
-				panelAttendance.buttonNames.clear();
-				panelAttendance.listRecordNames.clear();
-				panelAttendance.mainScreen.removeAll();
-				if(!Login.pubOccupation.equals("Teacher")) {
+				if(Login.pubOccupation.equals("Admin")) {
+					menuClicked(AttendanceSelectDepartment);
+					panelAttendance.buttonNames.clear();
+					panelAttendance.listRecordNames.clear();
+					panelAttendance.mainScreen.removeAll();
 					AttendanceSelectDepartment.execute();
-				} else {
+				} else if(Login.pubOccupation.equals("Teacher")) {
+					menuClicked(AttendanceSelectDepartment);
+					panelAttendance.buttonNames.clear();
+					panelAttendance.listRecordNames.clear();
+					panelAttendance.mainScreen.removeAll();
 					AttendanceSelectDepartment.executeForTeachers();
+				} else {
+					menuClicked(AttendanceSelectSubject);
+					AttendanceSelectSubject.obtainedDept = Login.pubDeptName;
+					AttendanceSelectSubject.obtainedSec = Login.pubSecName;
+					MainMenu.AttendanceSelectSubject.execute();
 				}
 				revalidate();
 				repaint();
@@ -320,11 +344,16 @@ public class MainMenu extends JFrame {
 		panelSched.addMouseListener(new PropertiesListener(panelSched) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				menuClicked(SubjectSelectDepartment);
-				if(!Login.pubOccupation.equals("Teacher")) {
+				if(Login.pubOccupation.equals("Admin")) {
+					menuClicked(SubjectSelectDepartment);
 					SubjectSelectDepartment.execute();
-				} else {
+				} else if (Login.pubOccupation.equals("Teacher")){
+					menuClicked(SubjectSelectDepartment);
 					SubjectSelectDepartment.executeForTeachers();
+				} else {
+					menuClicked(panelSubjects);
+					MainMenu.panelSubjects.model.setRowCount(0);
+					MainMenu.panelSubjects.executeForStudents();
 				}
 			}
 			

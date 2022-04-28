@@ -216,6 +216,10 @@ public class panelMembros extends JPanel {
 		
 		revalidate();
 		repaint();
+		
+		if(!Login.pubOccupation.equals("Admin")) {
+			editButton.setVisible(false);
+		}
 	}
 	
 	public void checkList() {

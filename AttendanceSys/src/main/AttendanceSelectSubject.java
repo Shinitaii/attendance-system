@@ -57,6 +57,12 @@ public class AttendanceSelectSubject extends JPanel {
 		JLabel lblNewLabel = new JLabel("Select a subject:");
 		lblNewLabel.setBounds(84, 47, 178, 14);
 		add(lblNewLabel);
+		
+		if(Login.pubOccupation.equals("Student")) {
+			backButton.setVisible(false);
+			lblNewLabel.setBounds(10,11,178,14);
+			subjectScreen.setBounds(10,30,539,496);
+		}
 	}
 	
 	public void execute() {
@@ -118,6 +124,12 @@ public class AttendanceSelectSubject extends JPanel {
 					JButton source = (JButton) e.getSource();
 					MainMenu.records.obtainedSub = source.getName();
 					MainMenu.panelAttendance.obtainedSub = source.getName();
+					if(Login.pubOccupation.equals("Student")) {
+						MainMenu.records.obtainedDept = Login.pubDeptName;
+						MainMenu.panelAttendance.obtainedDept = Login.pubDeptName;
+						MainMenu.records.obtainedSec = Login.pubSecName;
+						MainMenu.panelAttendance.obtainedSec = Login.pubSecName;
+					}
 					MainMenu.panelAttendance.execute();
 				}
 			});

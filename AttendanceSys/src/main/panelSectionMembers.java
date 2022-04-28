@@ -168,10 +168,18 @@ public class panelSectionMembers extends JPanel {
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
 		
-		if(!Login.pubOccupation.equals("Admin")) {
+		if(Login.pubOccupation.equals("Teacher")) {
 			addMember.setVisible(false);
 			deleteMember.setVisible(false);
 			lblDeleteTime.setVisible(false);
+			btnDelete.setBounds(10, 11, 55, 60);
+			cbName.setBounds(300, 36, 120, 22);
+			cbOccup.setBounds(430, 36, 119, 22);
+		} else if(Login.pubOccupation.equals("Student")) {
+			addMember.setVisible(false);
+			deleteMember.setVisible(false);
+			lblDeleteTime.setVisible(false);
+			btnDelete.setVisible(false);
 			btnDelete.setBounds(10, 11, 55, 60);
 			cbName.setBounds(300, 36, 120, 22);
 			cbOccup.setBounds(430, 36, 119, 22);

@@ -130,16 +130,30 @@ public class panelSubjects extends JPanel {
 		scrollPane.setBounds(10, 67, 539, 461);
 		add(scrollPane);
 		
-		model = new DefaultTableModel(new String[] {"Subject ","Section"}, 0) {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+		if(!Login.pubOccupation.equals("Student")) {
+			model = new DefaultTableModel(new String[] {"Subject ","Section"}, 0) {
+				/**
+			 	* 
+			 	*/
+				private static final long serialVersionUID = 1L;
 
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			};
+		} else {
+			model = new DefaultTableModel(new String[] {"Subject "}, 0) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+				
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			};
+		}
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
@@ -158,9 +172,16 @@ public class panelSubjects extends JPanel {
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
 		
-		if(!Login.pubOccupation.equals("Admin")) {
+		if(Login.pubOccupation.equals("Teacher")) {
 			addSubject.setVisible(false);
 			deleteSubject.setVisible(false);
+		} else if(Login.pubOccupation.equals("Student")) {
+			addSubject.setVisible(false);
+			deleteSubject.setVisible(false);
+			backButton.setVisible(false);
+			lblSortSec.setVisible(false);
+			lblSortName.setBounds(459, 11, 90, 14);
+			cbName.setBounds(459, 36, 90, 22);
 		}
 
 	}
@@ -172,16 +193,23 @@ public class panelSubjects extends JPanel {
 		repaint();
 	}
 	
+	public void executeForStudents() {
+		cbSec.setVisible(false);
+		checkList();
+		revalidate();
+		repaint();
+	}
+	
 	private void section(JComboBox<String>cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 			String normal = "select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'";
 			String teacher = "select sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'";
 			
 			PreparedStatement getStatement;
-			if(!Login.pubOccupation.equals("Admin")) {
-				getStatement = conn.prepareStatement(teacher);
-			} else {
+			if(Login.pubOccupation.equals("Admin")) {
 				getStatement = conn.prepareStatement(normal);
+			} else {
+				getStatement = conn.prepareStatement(teacher);
 			}
 			ResultSet result = getStatement.executeQuery();
 			cb.addItem("Select a section");
@@ -197,24 +225,34 @@ public class panelSubjects extends JPanel {
 	private void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){		
 			String query;
-			if(!Login.pubOccupation.equals("Admin")) {
+			if(Login.pubOccupation.equals("Teacher")) {
 				query = "select subjectname, sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
-			} else {
+			} else if (Login.pubOccupation.equals("Admin")) {
 				query = "select subjectname, sectionname from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+			} else {
+				query = "select subjectname from subjectinfo where sectionname='"+Login.pubSecName+"' and departmentname='"+Login.pubDeptName+"' and schoolname='"+Login.pubSchoolName+"'";
 			}
 			String orderBy = "order by";
 			String selectSec = "sectionname ='"+selectedSec+"' desc, subjectname " + nameAoD;
 			PreparedStatement puttingInTable;
 			if(cbSec.getSelectedIndex() == 0) {
-				puttingInTable = conn.prepareStatement(query + " " + orderBy + " subjectname " + nameAoD);
+				if(cbSec.isVisible()) {
+					puttingInTable = conn.prepareStatement(query + " " + orderBy + " subjectname " + nameAoD);
+				} else {
+					puttingInTable = conn.prepareStatement(query);
+				}
 			} else {
 				puttingInTable = conn.prepareStatement(query + " " + orderBy + " " + selectSec);
 			}
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {
 				String sub = result.getString("subjectname");
-				String sec = result.getString("sectionname");
-				model.addRow(new Object[] {sub, sec});
+				if(!Login.pubOccupation.equals("Student")) {
+					String sec = result.getString("sectionname");
+					model.addRow(new Object[] {sub, sec});
+				} else {
+					model.addRow(new Object[] {sub});	
+				}
 			}
 			revalidate();
 			repaint();

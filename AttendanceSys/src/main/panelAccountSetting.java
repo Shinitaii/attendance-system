@@ -26,11 +26,8 @@ import javax.swing.JTextField;
 public class panelAccountSetting extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	private JTextField txtUser;
-	private JTextField txtFN;
-	private JTextField txtLN;
-	private JTextField txtMN;
-	private JLabel lblpfp;
+	public JTextField txtUser, txtFN, txtLN, txtMN;
+	public JLabel lblpfp;
 	MainMenu MainMenu;
 	panelProfileDisplay panelProfileDisplay;
 	private int uid = Integer.valueOf(Login.pubUID);

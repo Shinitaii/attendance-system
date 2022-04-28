@@ -1,4 +1,4 @@
-package main;
+	package main;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -117,6 +117,18 @@ public class Records extends JPanel {
 		statusButton.setBounds(479, 11, 70, 50);
 		add(statusButton);
 		
+		if(Login.pubOccupation.equals("Teacher")) {
+			editButton.setVisible(false);
+		} else if(Login.pubOccupation.equals("Student")) {
+			editButton.setVisible(false);
+			statusButton.setVisible(false);
+			JButton attendButton = new JButton("Attend");
+			attendButton.addActionListener(attend);
+			attendButton.addMouseListener(new PropertiesListener(attendButton));
+			attendButton.setBounds(90, 11, 70, 50);
+			add(attendButton);
+		}
+		
 		revalidate();
 		repaint();
 	}
@@ -233,5 +245,37 @@ public class Records extends JPanel {
 				sql.printStackTrace();
 			}
 		};
+	};
+	
+	private ActionListener attend = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+				boolean ifRecordCompleted = false;
+				PreparedStatement getStatement = conn.prepareStatement("select recordcompleted from attendancerecords where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");	
+				ResultSet result = getStatement.executeQuery();
+				if(result.next()) {
+					ifRecordCompleted = result.getBoolean("recordcompleted");
+					String status ="";
+					if(ifRecordCompleted) {
+						status = "Late";
+					} else {
+						status = "Present";
+					}
+					PreparedStatement attend = conn.prepareStatement("update attendancestatus set studentstatus='"+status+"' where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+					int attendResult = attend.executeUpdate();
+					if(attendResult == 1) {
+						if(ifRecordCompleted) {
+							JOptionPane.showMessageDialog(null, "You have attended but you are labelled as \"Late\"!");
+						} else {
+							JOptionPane.showMessageDialog(null, "You have successfully attended!");
+						}
+					}
+				}
+				model.setRowCount(0);
+				checkList();
+			} catch(SQLException sql) {
+				sql.printStackTrace();
+			}
+		}
 	};
 }
