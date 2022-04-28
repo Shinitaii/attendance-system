@@ -26,9 +26,9 @@ public class panelSettings extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	panelProfileDisplay panelProfileDisplay;
-	panelAccountSetting panelAccountSetting;
-	panelChangePassSetting panelChangePassSetting;	
+	public panelProfileDisplay panelProfileDisplay;
+	public panelAccountSetting panelAccountSetting;
+	public panelChangePassSetting panelChangePassSetting;	
 	
 	MainMenu MainMenu;
 	
@@ -54,21 +54,7 @@ public class panelSettings extends JPanel {
 				panelAccountSetting.txtFN.setText(Login.pubFN);
 				panelAccountSetting.txtMN.setText(Login.pubMN);
 				panelAccountSetting.txtLN.setText(Login.pubLN);
-				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
-					PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+Login.pubUID+"'");
-					ResultSet get = getPhoto.executeQuery();
-					Blob photo = null;
-					while(get.next()) {
-						photo = get.getBlob("profilePicture");
-						
-					}
-					byte[] imagebytes = photo.getBytes(1, (int) photo.length());
-					BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
-					panelAccountSetting.lblpfp.setIcon(new ImageIcon(image));
-					conn.close();
-				} catch (Exception sql) {
-					sql.printStackTrace();
-				}
+				Images.pfp(panelAccountSetting.lblpfp);
 				menuClicked(panelAccountSetting);
 			}
 		});
@@ -132,6 +118,5 @@ public class panelSettings extends JPanel {
 		panelChangePassSetting.setVisible(false);
 		
 		panel.setVisible(true);
-		
 	}
 }

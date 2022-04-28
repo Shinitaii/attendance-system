@@ -49,8 +49,8 @@ public class browseAction implements ActionListener {
 					getPhoto.printStackTrace();
 				}
 				if(photoSizeCheck) {
-					Images.profile = new ImageIcon(path).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
-					label.setIcon(new ImageIcon(Images.profile));
+					Image profile = new ImageIcon(path).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+					label.setIcon(new ImageIcon(profile));
 				} else {
 					JOptionPane.showMessageDialog(null, "The photo you selected is higher than 16 MB!");
 				}

@@ -26,7 +26,7 @@ public class MainMenu extends JFrame {
 	public static panelHome panelHome;
 	public static panelSubjects panelSubjects;
 	public static SubjectSelectDepartment SubjectSelectDepartment;
-	private static panelSettings panelSettings;
+	public static panelSettings panelSettings;
 	public static panelDepartment panelDepartment;
 	public static panelMembros panelMembros;
 	public static AttendanceSelectDepartment AttendanceSelectDepartment;
@@ -238,6 +238,9 @@ public class MainMenu extends JFrame {
 		panelMembers.setBackground(new Color(65, 105, 225));
 		panelMembers.setBounds(0, 357, 205, 64);
 		panel.add(panelMembers);
+		if(Login.pubOccupation.equals("Student")) {
+			panelMembers.setVisible(false);
+		}
 		
 		JLabel lblMembers = new JLabel("Members");
 		lblMembers.setForeground(Color.WHITE);
@@ -281,7 +284,15 @@ public class MainMenu extends JFrame {
 		panelSett.addMouseListener(new PropertiesListener(panelSett) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				panelSettings.panelProfileDisplay.lblUID.setText(uid);
 				menuClicked(panelSettings);
+				panelSettings.panelProfileDisplay.lblFN.setText("Name: "+Login.pubFullName);
+				panelSettings.panelProfileDisplay.lblUID.setText("UID: "+uid);
+				Images.pfp(panelSettings.panelProfileDisplay.lblpfp);
+				panelSettings.panelProfileDisplay.lblDept.setText("Department: "+Login.pubDeptName);
+				panelSettings.panelProfileDisplay.lblSecs.setText("Section: "+Login.pubSecName);
+				panelSettings.panelProfileDisplay.lblOccup.setText("Occupation: "+Login.pubOccupation);
+				panelSettings.menuClicked(panelSettings.panelProfileDisplay);
 			}
 		});
 		panelSett.setBackground(new Color(65, 105, 225));

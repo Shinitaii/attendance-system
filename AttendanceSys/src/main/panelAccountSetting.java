@@ -28,7 +28,6 @@ public class panelAccountSetting extends JPanel {
 	private static final long serialVersionUID = 1L;
 	public JTextField txtUser, txtFN, txtLN, txtMN;
 	public JLabel lblpfp;
-	MainMenu MainMenu;
 	panelProfileDisplay panelProfileDisplay;
 	private int uid = Integer.valueOf(Login.pubUID);
 	String path;
@@ -89,7 +88,7 @@ public class panelAccountSetting extends JPanel {
 		JPanel panelLN = new JPanel();
 		panelLN.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelLN.setBackground(Color.WHITE);
-		panelLN.setBounds(10, 230, 265, 40);
+		panelLN.setBounds(10, 284, 265, 40);
 		add(panelLN);
 		panelLN.setLayout(null);
 		
@@ -105,7 +104,7 @@ public class panelAccountSetting extends JPanel {
 		JPanel panelMN = new JPanel();
 		panelMN.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelMN.setBackground(Color.WHITE);
-		panelMN.setBounds(10, 310, 265, 40);
+		panelMN.setBounds(10, 213, 265, 40);
 		add(panelMN);
 		panelMN.setLayout(null);
 		
@@ -127,19 +126,14 @@ public class panelAccountSetting extends JPanel {
 		JLabel lblLname = new JLabel("Last Name :");
 		lblLname.setForeground(new Color(65, 105, 225));
 		lblLname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		lblLname.setBounds(10, 200, 150, 29);
+		lblLname.setBounds(10, 256, 150, 29);
 		add(lblLname);
 		
 		JLabel lblMname = new JLabel("Middle Name :");
 		lblMname.setForeground(new Color(65, 105, 225));
 		lblMname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
-		lblMname.setBounds(10, 281, 150, 29);
+		lblMname.setBounds(10, 186, 150, 29);
 		add(lblMname);
-		
-		JLabel userid = new JLabel("UID : "+uid);
-		userid.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
-		userid.setBounds(323, 273, 151, 40);
-		add(userid);
 		
 		JPanel panelUserN = new JPanel();
 		panelUserN.setBorder(new LineBorder(new Color(65, 105, 225)));
@@ -233,20 +227,15 @@ public class panelAccountSetting extends JPanel {
 		});
 		add(btnSave);
 		
-		JLabel Dept = new JLabel("Department : ");
-		Dept.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
-		Dept.setBounds(324, 310, 151, 40);
-		add(Dept);
-		
-		JLabel Occup = new JLabel("Occupation :");
-		Occup.setFont(new Font("Yu Gothic UI", Font.ITALIC, 20));
-		Occup.setBounds(323, 350, 151, 40);
-		add(Occup);
-		
-		
-	
-		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainMenu.panelSettings.menuClicked(MainMenu.panelSettings.panelProfileDisplay);
+			}
+		});
+		cancelButton.addMouseListener(new PropertiesListener(cancelButton));
+		cancelButton.setBounds(10, 11, 89, 23);
+		add(cancelButton);
 
-		
 	}
 }

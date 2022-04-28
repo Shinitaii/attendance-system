@@ -1,6 +1,16 @@
 package main;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 public class Images {	
 	
@@ -24,6 +34,24 @@ public class Images {
 	public static final Image school = new ImageIcon(Images.class.getResource("/res/school.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	public static final Image members = new ImageIcon(Images.class.getResource("/res/members.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	public static final Image schedule = new ImageIcon(Images.class.getResource("/res/Schedul.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-	public static Image profile;
 	public static final Image subject = new ImageIcon(Images.class.getResource("/res/subject.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+
+	public static void pfp (JLabel label) {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
+			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+Login.pubUID+"'");
+			ResultSet get = getPhoto.executeQuery();
+			Blob photo = null;
+			while(get.next()) {
+				photo = get.getBlob("profilePicture");
+				
+			}
+			byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+			Image img = new ImageIcon(image).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+			label.setIcon(new ImageIcon(img));
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

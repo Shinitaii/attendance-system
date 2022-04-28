@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -20,6 +21,7 @@ import java.util.Date;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 public class panelHome extends JPanel {
@@ -56,21 +58,7 @@ public class panelHome extends JPanel {
 		lblpfp.setBorder(new LineBorder(new Color(65, 105, 225)));
 		lblpfp.setBounds(0, 0, 150, 150);
 		lblpfp.setBounds(0, 0, 153, 153);
-		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
-			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+uid+"'");
-			ResultSet get = getPhoto.executeQuery();
-			Blob photo = null;
-			while(get.next()) {
-				photo = get.getBlob("profilePicture");
-				
-			}
-			byte[] imagebytes = photo.getBytes(1, (int) photo.length());
-			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
-			lblpfp.setIcon(new ImageIcon(image));
-			conn.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Images.pfp(lblpfp);
 		panelpfp.add(lblpfp);
 		
 		JLabel lblAccountS = new JLabel(username);
