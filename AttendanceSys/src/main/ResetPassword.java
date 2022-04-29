@@ -111,7 +111,7 @@ public class ResetPassword extends JFrame {
 		CheckA.addMouseListener(new PropertiesListener(CheckA));
 		CheckA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 					char[] getPassword = pwdPassword.getPassword(), getCPassword = pwdCPassword.getPassword();
 					String password = String.valueOf(getPassword), cPassword = String.valueOf(getCPassword);
 					int delay = 3000;
@@ -122,7 +122,6 @@ public class ResetPassword extends JFrame {
 					};
 					Timer tick = new Timer(delay, lblStatusClearer);
 					tick.setRepeats(false);
-					Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6476155","sql6476155","HHHLDqnNka");
 					PreparedStatement changePassword = conn.prepareStatement("update userInfo set pass='"+password+"' where userid ='"+uid+"';");
 					if(password.isEmpty() || cPassword.isEmpty()) {
 						lblStatus.setText("Enter all of the credentials!");

@@ -106,16 +106,31 @@ public class memberSettings extends JDialog {
 						int result = JOptionPane.showConfirmDialog(null, "Are you sure you're going to make "+obtainedUser+" as "+cbRoles.getSelectedItem()+"?", "Note!", JOptionPane.YES_NO_OPTION);
 						if(result == JOptionPane.YES_OPTION) {
 							try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-								PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='"+cbRoles.getSelectedItem()+"' where concat(firstname, \" \", middlename, \" \", lastname)='"+obtainedUser+"'");
+								PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='"+cbRoles.getSelectedItem()+"' where concat(firstname, \" \", middlename, \" \", lastname)='"+obtainedUser+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
 								int sqlResult = getStatement.executeUpdate();
 								if(sqlResult == 1) {
 									JOptionPane.showMessageDialog(null, "Successfully changed the role of "+obtainedUser+" to "+cbRoles.getSelectedItem()+"!");
 									MainMenu.panelMembros.model.setRowCount(0);
 									MainMenu.panelMembros.checkList();
-
+									if(cbRoles.getSelectedItem() == "Teacher") {
+										MainMenu.menuClicked(MainMenu.TeacherAssignDept);
+										MainMenu.TeacherAssignDept.obtainedTeacherName = obtainedUser;
+										MainMenu.TeacherAssignDept.lblSec.setText("How many subjects will "+obtainedUser+" handle?");
+										MainMenu.TeacherAssignDept.listCB.clear();
+										MainMenu.TeacherAssignDept.obtainedDeptNames.clear();
+										MainMenu.TeacherAssignDept.obtainedSecNames.clear();
+										MainMenu.TeacherAssignDept.obtainedSubNames.clear();
+										MainMenu.TeacherAssignDept.execute();
+									} else {										
+										PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
+										deleteExisting.setString(1, obtainedUser);
+										deleteExisting.executeUpdate();
+									}
 								} else {
 									JOptionPane.showMessageDialog(null, "Error!");
 								}
+								revalidate();
+								repaint();
 							} catch (SQLException sql) {
 								sql.printStackTrace();
 							}

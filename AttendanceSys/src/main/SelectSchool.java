@@ -50,6 +50,7 @@ public class SelectSchool extends JDialog {
 	 * Create the dialog.
 	 */
 	public SelectSchool() {
+		super(null, ModalityType.TOOLKIT_MODAL);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SelectSchool.class.getResource("/res/attendance.png")));
 		setTitle("School");
 		
@@ -65,88 +66,81 @@ public class SelectSchool extends JDialog {
 				JPanel createSchool = new JPanel();
 				createSchool.setBorder(new LineBorder(new Color(65, 105, 225)));
 				createSchool.setBackground(new Color(65, 105, 225));
-				if(Login.pubOccupation.equals("Admin")) {
-					tabbedPane.addTab("Create School", null, createSchool, "Create School!");
-					tabbedPane.setBackgroundAt(0, new Color(65, 105, 225));
-					createSchool.setLayout(new BorderLayout(0, 0));
+				tabbedPane.addTab("Create School", null, createSchool, "Create School!");
+				tabbedPane.setBackgroundAt(0, new Color(65, 105, 225));
+				createSchool.setLayout(new BorderLayout(0, 0));
+				{
+					JPanel csButtonPanel = new JPanel();
+					createSchool.add(csButtonPanel, BorderLayout.SOUTH);
+					csButtonPanel.setLayout(new GridLayout(0, 2, 0, 0));
 					{
-						JPanel csButtonPanel = new JPanel();
-						createSchool.add(csButtonPanel, BorderLayout.SOUTH);
-						csButtonPanel.setLayout(new GridLayout(0, 2, 0, 0));
-						{
-							JButton createButton = new JButton("Create");
-							createButton.addMouseListener(new PropertiesListener(createButton) {
-								@Override
-								public void mouseClicked(MouseEvent e) {
-									try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl")) {
-										obtainedSchool = txtSchool.getText();
-										if(obtainedSchool.isEmpty()) {
-											JOptionPane.showMessageDialog(null, "Input name!");
-										} else {
-											PreparedStatement checkingSameSchoolName = conn.prepareStatement("select schoolname from schoolInfo where schoolname='"+obtainedSchool+"'");
-											ResultSet checking = checkingSameSchoolName.executeQuery();
-											if(checking.next()) {
-													JOptionPane.showMessageDialog(null, "School already exists!");
-											} else {
-												String obtainedInviteCode = getInviteCode(5);
-												PreparedStatement addSchool = conn.prepareStatement("insert into schoolInfo (schoolname, creator, inviteCode) values (?, ?, ?)");
-												addSchool.setString(1, obtainedSchool);
-												addSchool.setString(2, Login.pubUID);
-												addSchool.setString(3, obtainedInviteCode);
-												int addedSchool = addSchool.executeUpdate();
-												if(addedSchool == 1) {
-													Login.pubSchoolName = obtainedSchool;
-													JOptionPane.showMessageDialog(null, "School added!");
-													JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
-													PreparedStatement inSchool = conn.prepareStatement("update userInfo set hasASchool = true, schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
-													inSchool.executeUpdate();
-														
-													conn.close();
-													checkingSameSchoolName.close();
-													addSchool.close();
-													inSchool.close(); 
-													
-													EventQueue.invokeLater(new Runnable() {
-														public void run() {
-															try {
-																MainMenu frame = new MainMenu();
-																frame.setVisible(true);
-															} catch (Exception e) {
-																e.printStackTrace();
-															}
-														}
-													});
-													dispose();
-												} else {
-													JOptionPane.showMessageDialog(null, "Failed to add school!");
+						JButton createButton = new JButton("Create");
+						createButton.addMouseListener(new PropertiesListener(createButton) {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL,MySQLConnectivity.user,MySQLConnectivity.pass)) {
+									obtainedSchool = txtSchool.getText();
+									if(obtainedSchool.isEmpty()) {
+										JOptionPane.showMessageDialog(null, "Input name!");
+									} else {
+										String obtainedInviteCode = getInviteCode(5);
+										PreparedStatement addSchool = conn.prepareStatement("insert into schoolInfo (schoolname, creator, inviteCode) values (?, ?, ?)");
+										addSchool.setString(1, obtainedSchool);
+										addSchool.setString(2, Login.pubUID);
+										addSchool.setString(3, obtainedInviteCode);
+										int addedSchool = addSchool.executeUpdate();
+										if(addedSchool == 1) {
+											Login.pubSchoolName = obtainedSchool;
+											setVisible(false);
+											JOptionPane.showMessageDialog(null, "School added!");
+											JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
+											PreparedStatement inSchool = conn.prepareStatement("update userInfo set occupation='Admin', hasASchool = true, inviteCodeOfSchool ='"+obtainedInviteCode+"', schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
+											inSchool.executeUpdate();
+												
+											conn.close();
+											addSchool.close();
+											inSchool.close(); 
+											
+											EventQueue.invokeLater(new Runnable() {
+												public void run() {
+													try {
+														MainMenu frame = new MainMenu();
+														frame.setVisible(true);
+													} catch (Exception e) {
+														e.printStackTrace();
+													}
 												}
-											}
-										} 
-									} catch (SQLException sql) {
-										sql.printStackTrace();
+											});
+											dispose();
+										} else {
+											setVisible(false);
+											JOptionPane.showMessageDialog(null, "Failed to add school!");
+											setVisible(true);
+										}
 									}
-								}
-							});
-							csButtonPanel.add(createButton);
+							} catch (SQLException sql) {
+								sql.printStackTrace();
+							}
 						}
-					}
-					{
-						JPanel csContentPanel = new JPanel();
-						csContentPanel.setBackground(Color.WHITE);
-						createSchool.add(csContentPanel, BorderLayout.CENTER);
-						csContentPanel.setLayout(null);
-						
-						JLabel lblSchool = new JLabel("Enter School Name:");
-						lblSchool.setBounds(10, 50, 94, 14);
-						csContentPanel.add(lblSchool);
-						
-						txtSchool = new JTextField();
-						txtSchool.setBounds(114, 47, 150, 20);
-						csContentPanel.add(txtSchool);
-						txtSchool.setColumns(10);
-					}
+					});
+					csButtonPanel.add(createButton);
 				}
-				
+			}
+			{
+					JPanel csContentPanel = new JPanel();
+					csContentPanel.setBackground(Color.WHITE);
+					createSchool.add(csContentPanel, BorderLayout.CENTER);
+					csContentPanel.setLayout(null);
+						
+					JLabel lblSchool = new JLabel("Enter School Name:");
+					lblSchool.setBounds(10, 50, 94, 14);
+					csContentPanel.add(lblSchool);
+					
+					txtSchool = new JTextField();
+					txtSchool.setBounds(114, 47, 150, 20);
+					csContentPanel.add(txtSchool);
+					txtSchool.setColumns(10);
+				}
 			}
 			{
 				JPanel inviteSchool = new JPanel();
@@ -178,6 +172,7 @@ public class SelectSchool extends JDialog {
 											PreparedStatement joined = conn.prepareStatement("update userInfo set schoolname ='"+obtainedSchool+"', hasASchool = 1 where userid="+Login.pubUID);
 											int joinedResult = joined.executeUpdate();
 											if(joinedResult == 1) {
+												setVisible(false);
 												JOptionPane.showMessageDialog(null, "You have joined to "+obtainedSchool+"!");
 												EventQueue.invokeLater(new Runnable() {
 													public void run() {
@@ -193,7 +188,9 @@ public class SelectSchool extends JDialog {
 
 											}
 										} else {
+											setVisible(false);
 											JOptionPane.showMessageDialog(null, "Invite Code does not exist!");
+											setVisible(true);
 										}
 									}
 								} catch (SQLException sql) {

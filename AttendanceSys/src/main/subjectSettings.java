@@ -90,12 +90,13 @@ public class subjectSettings extends JDialog {
 							subjectName = tfSubj.getText();
 							subjectDesc = taSubjDesc.getText();
 							for(int i = 0; i < cbSub.size(); i ++) {
-							PreparedStatement getStatement = conn.prepareStatement("insert into subjectinfo (subjectname, subjectdesc, departmentname, sectionname, schoolname) values (?,?,?,?,?)");
+							PreparedStatement getStatement = conn.prepareStatement("insert into subjectinfo (subjectname, subjectdesc, departmentname, sectionname, schoolname, schoolid) values (?,?,?,?,?,?)");
 							getStatement.setString(1, subjectName);
 							getStatement.setString(2, subjectDesc);
 							getStatement.setString(3, MainMenu.SubjectSelectDepartment.selectedDept);
 							getStatement.setString(4, cbSub.get(i));
 							getStatement.setString(5, Login.pubSchoolName);
+							getStatement.setString(6, Login.pubSchoolID);
 							result = getStatement.executeUpdate();
 							result++;
 							getStatement.close();
@@ -134,7 +135,7 @@ public class subjectSettings extends JDialog {
 	
 	private void section() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet result = getStatement.executeQuery();
 			while(result.next()) {
 				String obtainedSec = result.getString("sectionname");

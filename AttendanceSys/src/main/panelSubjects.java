@@ -202,8 +202,8 @@ public class panelSubjects extends JPanel {
 	
 	private void section(JComboBox<String>cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-			String normal = "select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'";
-			String teacher = "select sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"'";
+			String normal = "select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
+			String teacher = "select sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			
 			PreparedStatement getStatement;
 			if(Login.pubOccupation.equals("Admin")) {
@@ -226,11 +226,11 @@ public class panelSubjects extends JPanel {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){		
 			String query;
 			if(Login.pubOccupation.equals("Teacher")) {
-				query = "select subjectname, sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+				query = "select subjectname, sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			} else if (Login.pubOccupation.equals("Admin")) {
-				query = "select subjectname, sectionname from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"'";
+				query = "select subjectname, sectionname from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			} else {
-				query = "select subjectname from subjectinfo where sectionname='"+Login.pubSecName+"' and departmentname='"+Login.pubDeptName+"' and schoolname='"+Login.pubSchoolName+"'";
+				query = "select subjectname from subjectinfo where sectionname='"+Login.pubSecName+"' and departmentname='"+Login.pubDeptName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			}
 			String orderBy = "order by";
 			String selectSec = "sectionname ='"+selectedSec+"' desc, subjectname " + nameAoD;

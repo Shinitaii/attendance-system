@@ -84,7 +84,7 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
 				count = checking.getInt("count(sectionname)");
@@ -96,7 +96,7 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkName = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String deptName = checking.getString("sectionname");
@@ -134,7 +134,7 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkCountForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
 				count = checking.getInt("count(sectionname)");
@@ -146,7 +146,7 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select sectionname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkName = conn.prepareStatement("select sectionname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String deptName = checking.getString("sectionname");

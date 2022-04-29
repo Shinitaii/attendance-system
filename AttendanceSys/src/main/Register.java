@@ -254,7 +254,7 @@ public class Register extends JFrame {
 										} catch (IOException photo) {
 											JOptionPane.showMessageDialog(null, "No photo!");
 										}
-										PreparedStatement register = conn.prepareStatement("INSERT INTO userInfo (firstName, middlename, lastname, username, pass, gender, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
+										PreparedStatement register = conn.prepareStatement("INSERT INTO userInfo (firstName, middlename, lastname, username, pass, gender, occupation, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
 										register.setString(1, firstName);
 										register.setString(2, middleName);
 										register.setString(3, lastName);

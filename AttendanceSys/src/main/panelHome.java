@@ -79,12 +79,6 @@ public class panelHome extends JPanel {
 		lblName.setBounds(162, 74, 366, 42);
 		add(lblName);
 		
-		JLabel lblUsername = new JLabel("*Account Status*");
-		lblUsername.setForeground(new Color(255, 0, 0));
-		lblUsername.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 30));
-		lblUsername.setBounds(173, 232, 376, 52);
-		add(lblUsername);
-		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panel.setBackground(new Color(255, 255, 255));

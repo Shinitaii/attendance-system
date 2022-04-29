@@ -44,8 +44,9 @@ public class TeacherAssignDept extends JPanel {
 	private JTextField deptTF;
 	private JPanel deptContent;
 	private JButton doneButton;
+	public JLabel lblSec;
 	public int count, limitCounter = 0, limitCount;
-	
+	public String obtainedTeacherName = "";
 	/**
 	 * Create the panel.
 	 */
@@ -68,7 +69,11 @@ public class TeacherAssignDept extends JPanel {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainMenu.menuClicked(MainMenu.panelMembros);
+				if(Login.pubOccupation.equals("Teacher")) {
+					MainMenu.menuClicked(MainMenu.panelSettings);
+				} else {
+					MainMenu.menuClicked(MainMenu.panelMembros);
+				}
 			}		
 		});
 		backButton.addMouseListener(new PropertiesListener(backButton));
@@ -79,16 +84,32 @@ public class TeacherAssignDept extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				boolean selected;
 				int result = 0;
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+					PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
+					if(Login.pubOccupation.equals("Admin")) {
+						deleteExisting.setString(1, obtainedTeacherName);
+					} else {
+						deleteExisting.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);
+					}
+					deleteExisting.executeUpdate();
+				} catch (SQLException sql) {
+					sql.printStackTrace();
+				}
 				for(int i = 0; i < listCB.size(); i++) {
 					selected = listCB.get(i).isSelected();
 					if(selected) {
 						try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-							PreparedStatement getStatement = conn.prepareStatement("insert into teacherassignedinfo (teachername, subjectname, sectionname, departmentname, schoolname) values (?,?,?,?,?)");
-							getStatement.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);
+							PreparedStatement getStatement = conn.prepareStatement("insert into teacherassignedinfo (teachername, subjectname, sectionname, departmentname, schoolname, schoolid) values (?,?,?,?,?,?)");
+							if(Login.pubOccupation.equals("Admin")) {
+								getStatement.setString(1, obtainedTeacherName);
+							} else {
+								getStatement.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);
+							}
 							getStatement.setString(2, obtainedSubNames.get(i));
 							getStatement.setString(3, obtainedSecNames.get(i));
 							getStatement.setString(4, obtainedDeptNames.get(i));
 							getStatement.setString(5, Login.pubSchoolName);
+							getStatement.setString(6, Login.pubSchoolID);
 							int success = getStatement.executeUpdate();
 							if(success == 1) {
 								result++;
@@ -109,7 +130,7 @@ public class TeacherAssignDept extends JPanel {
 		doneButton.setVisible(false);
 		deptAsk.add(doneButton, BorderLayout.EAST);
 		
-		JLabel lblSec = new JLabel("How many subjects are you tasked to handle?");
+		lblSec = new JLabel("How many subjects are you tasked to handle?");
 		panel.add(lblSec);
 		
 		deptTF = new JTextField();
@@ -147,7 +168,7 @@ public class TeacherAssignDept extends JPanel {
 	
 	private void getSubjects(List<String> list, List<String> list2, List<String> list3) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement getStatement = conn.prepareStatement("select subjectname, sectionname ,departmentname from subjectinfo where schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select subjectname, sectionname ,departmentname from subjectinfo where schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet result = getStatement.executeQuery();
 			while(result.next()) {
 				String obtainedSub = result.getString("subjectname");

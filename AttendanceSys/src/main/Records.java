@@ -141,7 +141,7 @@ public class Records extends JPanel {
 	
 	private void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, studentstatus from attendancestatus where record_name='"+obtainedRecord+"' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname, studentstatus from attendancestatus where record_name='"+obtainedRecord+"' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {
 				String name = result.getString("fullname");
@@ -157,7 +157,7 @@ public class Records extends JPanel {
 	
 	private void getRecordID() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement getStatement = conn.prepareStatement("select recordid from attendancerecords where record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select recordid from attendancerecords where record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet result = getStatement.executeQuery();
 			if(result.next()) {
 				obtainedID = result.getInt("recordid");
@@ -169,7 +169,7 @@ public class Records extends JPanel {
 	
 	private void recordStatusChecker() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement getStatement = conn.prepareStatement("select recordcompleted from attendancerecords where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select recordcompleted from attendancerecords where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet result = getStatement.executeQuery();
 			if(result.next()) {
 				recordStatusComplete = result.getBoolean("recordcompleted");
@@ -208,9 +208,9 @@ public class Records extends JPanel {
 	private ActionListener enabled = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to enable the record?\rStudents clicking the attend button from now on will be labelled as \"Present\"! You may still re-enable this by pressing the 'Disable' button.", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
+				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to enable the record?\r\nStudents clicking the attend button from now on will be labelled as \"Present\"!\r\nYou may still re-enable this by pressing the 'Disable' button.", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
 				if(result == JOptionPane.YES_OPTION) {
-					PreparedStatement getStatement = conn.prepareStatement("update attendancerecords set recordcompleted=false where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+					PreparedStatement getStatement = conn.prepareStatement("update attendancerecords set recordcompleted=false where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 					int sqlResult = getStatement.executeUpdate();
 						if(sqlResult == 1) {
 							JOptionPane.showMessageDialog(null, "You enabled the record: "+obtainedRecord+"!");
@@ -229,9 +229,9 @@ public class Records extends JPanel {
 	private ActionListener disable = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disable the record?\rStudents clicking the attend button from now on will be labelled as \"Present\"! You may still re-enable this by pressing the 'Disable' button.", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
+				int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disable the record?\r\nStudents clicking the attend button from now on will be labelled as \"Late\"!\r\nYou may still re-enable this by pressing the 'Disable' button.", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
 				if(result == JOptionPane.YES_OPTION) {
-					PreparedStatement getStatement = conn.prepareStatement("update attendancerecords set recordcompleted=true where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+					PreparedStatement getStatement = conn.prepareStatement("update attendancerecords set recordcompleted=true where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 					int sqlResult = getStatement.executeUpdate();
 						if(sqlResult == 1) {
 							JOptionPane.showMessageDialog(null, "You disabled the record: "+obtainedRecord+"!");
@@ -251,7 +251,7 @@ public class Records extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 				boolean ifRecordCompleted = false;
-				PreparedStatement getStatement = conn.prepareStatement("select recordcompleted from attendancerecords where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");	
+				PreparedStatement getStatement = conn.prepareStatement("select recordcompleted from attendancerecords where recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");	
 				ResultSet result = getStatement.executeQuery();
 				if(result.next()) {
 					ifRecordCompleted = result.getBoolean("recordcompleted");
@@ -261,7 +261,7 @@ public class Records extends JPanel {
 					} else {
 						status = "Present";
 					}
-					PreparedStatement attend = conn.prepareStatement("update attendancestatus set studentstatus='"+status+"' where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"'");
+					PreparedStatement attend = conn.prepareStatement("update attendancestatus set studentstatus='"+status+"' where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 					int attendResult = attend.executeUpdate();
 					if(attendResult == 1) {
 						if(ifRecordCompleted) {

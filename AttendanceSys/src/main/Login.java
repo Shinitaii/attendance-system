@@ -15,7 +15,7 @@ public class Login extends JFrame {
 	private JPasswordField pwdPassword;
 	private JButton login;
 	public static JLabel logo, logoUsername, logoPassword, forgotPass, register, lblLogin;
-	public static String pubUsername, pubUID, pubFN, pubMN, pubLN, pubFullName, pubOccupation, pubSchoolName, pubDeptName, pubSecName;
+	public static String pubUsername, pubUID, pubFN, pubMN, pubLN, pubFullName, pubOccupation, pubSchoolName, pubSchoolID, pubInviteCode, pubDeptName, pubSecName;
 	public static boolean pubHasASchool, pubHasADept, pubHasASec;
 	private JLabel lblUsername;
 	private JLabel lblPassword;
@@ -125,7 +125,7 @@ public class Login extends JFrame {
 					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec from userInfo where username='"+username+"'");
+						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec, inviteCodeOfSchool from userInfo where username='"+username+"'");
 						ResultSet whatInfo = checkInfo.executeQuery();
 						while (whatInfo.next()) {
 							pubUID = whatInfo.getString("userid");
@@ -139,7 +139,13 @@ public class Login extends JFrame {
 							pubHasADept = whatInfo.getBoolean("hasADept");
 							pubSecName = whatInfo.getString("sectionname");
 							pubHasASec = whatInfo.getBoolean("hasASec");
+							pubInviteCode = whatInfo.getString("inviteCodeOfSchool");
 						}	
+						PreparedStatement checkSchoolInfo = conn.prepareStatement("select schoolid from schoolinfo where schoolname='"+pubSchoolName+"' and inviteCode='"+pubInviteCode+"'");
+						ResultSet whatSchoolInfo = checkSchoolInfo.executeQuery();
+						if(whatSchoolInfo.next()) {
+						pubSchoolID = whatSchoolInfo.getString("schoolid");
+						}
 						pubFullName = pubFN+" "+pubMN+" "+pubLN;
 						if(!pubHasASchool) {
 							try {
@@ -253,6 +259,7 @@ public class Login extends JFrame {
 		setLocationRelativeTo(null);
 		revalidate();
 		repaint();
+
 	}
 	
 }

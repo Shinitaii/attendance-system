@@ -4,6 +4,9 @@ import javax.swing.border.LineBorder;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -12,13 +15,22 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Cursor;
+import java.awt.GridLayout;
+import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class panelSettings extends JPanel {
 
@@ -29,12 +41,11 @@ public class panelSettings extends JPanel {
 	public panelProfileDisplay panelProfileDisplay;
 	public panelAccountSetting panelAccountSetting;
 	public panelChangePassSetting panelChangePassSetting;	
-	
-	MainMenu MainMenu;
+	public panelLeaveSchool panelLeaveSchool;
 	
 	public panelSettings() {
 		setBackground(new Color(255, 255, 255));
-		setBounds(new Rectangle(0, 0, 559, 439));
+		setBounds(new Rectangle(0, 0, 559, 539));
 		setBorder(new LineBorder(new Color(65, 105, 225)));
 		setLayout(null);
 		
@@ -43,13 +54,11 @@ public class panelSettings extends JPanel {
 		panel.setBackground(new Color(255, 255, 255));
 		panel.setBounds(0, 0, 559, 70);
 		add(panel);
-		panel.setLayout(null);
 		
-		JPanel panelEditPf = new JPanel();
-		panelEditPf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelEditPf.setBackground(new Color(65, 105, 225));
-		panelEditPf.addMouseListener(new PropertiesListener(panelEditPf) {
-			public void mouseClicked(MouseEvent e) {
+		JButton buttonEditPf = new JButton("Edit Profile");
+		buttonEditPf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		buttonEditPf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				panelAccountSetting.txtUser.setText(Login.pubUsername);
 				panelAccountSetting.txtFN.setText(Login.pubFN);
 				panelAccountSetting.txtMN.setText(Login.pubMN);
@@ -58,41 +67,64 @@ public class panelSettings extends JPanel {
 				menuClicked(panelAccountSetting);
 			}
 		});
+		panel.setLayout(new GridLayout(0, 4, 0, 0));
+		buttonEditPf.addMouseListener(new PropertiesListener(buttonEditPf));
+		panel.add(buttonEditPf);
+		buttonEditPf.setLayout(null);
 		
-		panelEditPf.setBounds(10, 10, 150, 50);
-		panel.add(panelEditPf);
-		panelEditPf.setLayout(null);
-		
-		JLabel lblEditPf = new JLabel("Edit Profile");
-		lblEditPf.setForeground(new Color(255, 255, 255));
-		lblEditPf.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
-		lblEditPf.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEditPf.setBounds(10, 11, 130, 28);
-		panelEditPf.add(lblEditPf);
-		
-		JPanel panelChangePass = new JPanel();
-		panelChangePass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelChangePass.setBackground(new Color(65, 105, 225));
-		panelChangePass.addMouseListener(new PropertiesListener(panelChangePass) {
-			public void mouseClicked(MouseEvent e) {
+		JButton buttonChangePass = new JButton("Change Password");
+		buttonChangePass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		buttonChangePass.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				menuClicked(panelChangePassSetting);
 			}
 		});
-		panelChangePass.setLayout(null);
-		panelChangePass.setBounds(170, 10, 150, 50);
-		panel.add(panelChangePass);
+		buttonChangePass.addMouseListener(new PropertiesListener(buttonChangePass));
+		buttonChangePass.setLayout(null);
+		panel.add(buttonChangePass);
 		
-		JLabel lblChangePass = new JLabel("Change Password");
-		lblChangePass.setHorizontalAlignment(SwingConstants.CENTER);
-		lblChangePass.setForeground(Color.WHITE);
-		lblChangePass.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
-		lblChangePass.setBounds(10, 11, 130, 28);
-		panelChangePass.add(lblChangePass);
+		if(!Login.pubOccupation.equals("Student") && !(Login.pubOccupation.equals("Admin"))) {
+		JButton changeSubjects = new JButton("Change Subjects");
+		changeSubjects.addActionListener(new TeacherAssignListener());
+		changeSubjects.addMouseListener(new PropertiesListener(changeSubjects));
+		panel.add(changeSubjects);
+		}
+		
+		JButton leaveSchool = new JButton("Leave School");
+		leaveSchool.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int result = JOptionPane.showConfirmDialog(null,"Are you sure you want to leave "+Login.pubSchoolName+"?","Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if(result == JOptionPane.YES_OPTION) {
+					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+						PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
+						deleteExisting.setString(1, Login.pubFullName);
+						deleteExisting.executeUpdate();
+						PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='Student', schoolname=null, hasASchool=false, inviteCodeOfSchool=null , departmentname=null , hasADept=false , sectionname=null , hasASec=false where userid='"+Login.pubUID+"'");
+						int leaving = getStatement.executeUpdate();
+						if(leaving == 1) {
+							((Window) getRootPane().getParent()).dispose();
+							JOptionPane.showMessageDialog(null, "You successfully left "+Login.pubSchoolName+"!");
+							SelectSchool school = new SelectSchool();
+							school.setVisible(true);
+						}
+					} catch(SQLException sql) {
+						sql.printStackTrace();
+					}
+				}
+			}
+		});
+		leaveSchool.addMouseListener(new PropertiesListener(leaveSchool));
+		panel.add(leaveSchool);
 		
 		JPanel panelMain = new JPanel();
 		panelMain.setBounds(10, 80, 539, 450);
 		add(panelMain);
 		panelMain.setLayout(null);
+		
+		panelProfileDisplay = new panelProfileDisplay();
+		panelProfileDisplay.setBounds(0,0,539,450);
+		panelMain.add(panelProfileDisplay);
+		panelProfileDisplay.setLayout(null);
 		
 		panelAccountSetting = new panelAccountSetting();
 		panelAccountSetting.setBounds(0, 0, 539, 450);
@@ -104,11 +136,10 @@ public class panelSettings extends JPanel {
 		panelMain.add(panelChangePassSetting);
 		panelChangePassSetting.setLayout(null);
 		
-		panelProfileDisplay = new panelProfileDisplay();
-		panelProfileDisplay.setBounds(0,0,539,450);
-		panelMain.add(panelProfileDisplay);
-		panelProfileDisplay.setLayout(null);
-		
+		panelLeaveSchool = new panelLeaveSchool();
+		panelLeaveSchool.setBounds(0,0,539,450);
+		panelMain.add(panelLeaveSchool);
+		panelLeaveSchool.setLayout(null);
 		menuClicked(panelProfileDisplay);
 	}
 	

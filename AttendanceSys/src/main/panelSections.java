@@ -107,10 +107,11 @@ public class panelSections extends JPanel {
 								newButton.setLayout(new BorderLayout());
 								buttonNames.add(newButton);
 								newButton.addMouseListener(new PropertiesListener(newButton));
-								PreparedStatement addSec = conn.prepareStatement("insert into sectioninfo (sectionname, departmentname, schoolname) values (?, ?, ?)");
+								PreparedStatement addSec = conn.prepareStatement("insert into sectioninfo (sectionname, departmentname, schoolname, schoolid) values (?, ?, ?, ?)");
 								addSec.setString(1, obtainedSec);
 								addSec.setString(2, MainMenu.panelDepartment.whatDept);
 								addSec.setString(3, Login.pubSchoolName);
+								addSec.setString(4, Login.pubSchoolID);
 								int result = addSec.executeUpdate();
 								if(result == 1) {
 									recheckName();
@@ -204,7 +205,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from sectioninfo where departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
 			if(checkedCount.next()) {
 				count = checkedCount.getInt("count(sectionname)");
@@ -216,7 +217,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from sectioninfo where departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
 			while(checkedNames.next()) {
 				String secName = checkedNames.getString("sectionname");	
@@ -242,7 +243,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckCountForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
 			if(checkedCount.next()) {
 				count = checkedCount.getInt("count(sectionname)");
@@ -254,7 +255,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
 			while(checkedNames.next()) {
 				String secName = checkedNames.getString("sectionname");	
@@ -280,7 +281,7 @@ public class panelSections extends JPanel {
 					if(select == JOptionPane.YES_OPTION) {
 						sectionScreen.remove(source);
 						buttonNames.remove(source);
-						PreparedStatement deleteDept = conn.prepareStatement("delete from sectioninfo where sectionname='"+source.getName()+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"'");
+						PreparedStatement deleteDept = conn.prepareStatement("delete from sectioninfo where sectionname='"+source.getName()+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 						deleteDept.executeUpdate();
 						recheckCount();
 					}

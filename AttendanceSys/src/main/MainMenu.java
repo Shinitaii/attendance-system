@@ -36,11 +36,11 @@ public class MainMenu extends JFrame {
 	public static panelSections panelSections;
 	public static panelSectionMembers panelSectionMembers;
 	public static Records records;
-	public static studentRecords studentRecords;
 	public static TeacherAssignDept TeacherAssignDept;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
-
+	String title = "Attendance: "+Login.pubOccupation;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -57,13 +57,7 @@ public class MainMenu extends JFrame {
 
 	public MainMenu() {
 		setIconImage(Images.bLogo);
-		if(Login.pubOccupation.equals("Admin")) {
-			setTitle("Attendance: Admin");
-		} else if (Login.pubOccupation.equals("Teacher")) {
-			setTitle("Attendance: Teacher");
-		} else {
-			setTitle("Attendance: Student");
-		}
+		setTitle(title+" - Home");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
@@ -99,8 +93,6 @@ public class MainMenu extends JFrame {
 		panelSectionMembers.setBounds(0,0,559,539);
 		records = new Records();
 		records.setBounds(0,0,559,539);
-		studentRecords = new studentRecords();
-		studentRecords.setBounds(0,0,559,539);
 		TeacherAssignDept = new TeacherAssignDept();
 		TeacherAssignDept.setBounds(0,0,559,539);
 		
@@ -117,6 +109,7 @@ public class MainMenu extends JFrame {
 		lblLogo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				setTitle(title+" - Home");
 				menuClicked(panelHome);
 			}
 		});
@@ -131,6 +124,7 @@ public class MainMenu extends JFrame {
 		panelDept.addMouseListener(new PropertiesListener(panelDept) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				setTitle(title+" - Department");
 				if(Login.pubOccupation.equals("Admin")) {
 					menuClicked(panelDepartment);
 					panelSections.buttonNames.clear();
@@ -144,6 +138,7 @@ public class MainMenu extends JFrame {
 					panelSections.sectionScreen.removeAll();
 					panelDepartment.executeForTeachers();
 				} else {
+					setTitle(title+" - Section");
 					menuClicked(panelSectionMembers);
 					panelSectionMembers.obtainedSec = Login.pubSecName;
 					panelSectionMembers.obtainedDept = Login.pubDeptName;
@@ -183,6 +178,7 @@ public class MainMenu extends JFrame {
 		panelAttend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
 			public void mouseClicked(MouseEvent e) {
+				setTitle(title+" - Attendance");
 				if(Login.pubOccupation.equals("Admin")) {
 					menuClicked(AttendanceSelectDepartment);
 					panelAttendance.buttonNames.clear();
@@ -229,6 +225,9 @@ public class MainMenu extends JFrame {
 		panelMembers.addMouseListener(new PropertiesListener(panelMembers) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				setTitle(title+" - Members");
+				panelMembros.model.setRowCount(0);
+				panelMembros.checkList();
 				menuClicked(panelMembros);
 			}
 			
@@ -284,6 +283,7 @@ public class MainMenu extends JFrame {
 		panelSett.addMouseListener(new PropertiesListener(panelSett) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				setTitle(title+" - Settings");
 				panelSettings.panelProfileDisplay.lblUID.setText(uid);
 				menuClicked(panelSettings);
 				panelSettings.panelProfileDisplay.lblFN.setText("Name: "+Login.pubFullName);
@@ -355,6 +355,7 @@ public class MainMenu extends JFrame {
 		panelSched.addMouseListener(new PropertiesListener(panelSched) {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				setTitle(title+" - Subject");
 				if(Login.pubOccupation.equals("Admin")) {
 					menuClicked(SubjectSelectDepartment);
 					SubjectSelectDepartment.execute();
@@ -404,11 +405,11 @@ public class MainMenu extends JFrame {
 		panelMainContent.add(panelSections);
 		panelMainContent.add(panelSectionMembers);
 		panelMainContent.add(records);
-		panelMainContent.add(studentRecords);
 		panelMainContent.add(TeacherAssignDept);
 		
 		menuClicked(panelHome);
 		setResizable(false);
+
 	}
 	
 	
@@ -426,10 +427,13 @@ public class MainMenu extends JFrame {
 		panelSections.setVisible(false);
 		panelSectionMembers.setVisible(false);
 		records.setVisible(false);
-		studentRecords.setVisible(false);
 		TeacherAssignDept.setVisible(false);
 		
 		panel.setVisible(true);		
+	}
+	
+	public void disposeMenu() {
+		dispose();
 	}
 }
 

@@ -194,7 +194,7 @@ public class panelAttendance extends JPanel {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String sortingDeptSecAndSub = "select count(record_name) from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
+			String sortingDeptSecAndSub = "select count(record_name) from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			PreparedStatement checkCount;
 			checkCount = conn.prepareStatement(sortingDeptSecAndSub);
 			ResultSet checking = checkCount.executeQuery();
@@ -208,7 +208,7 @@ public class panelAttendance extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String sortingDeptSecAndSub = "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"'";
+			String sortingDeptSecAndSub = "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			String sortedDate = "order by created";
 			PreparedStatement checkName;
 			if(sortingDate) {
@@ -259,9 +259,9 @@ public class panelAttendance extends JPanel {
 						if(select == JOptionPane.YES_OPTION) {
 							mainScreen.remove(source);
 							buttonNames.remove(source);
-							PreparedStatement deleteRecord = conn.prepareStatement("delete from attendancerecords where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
+							PreparedStatement deleteRecord = conn.prepareStatement("delete from attendancerecords where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 							deleteRecord.executeUpdate();
-							PreparedStatement deleteStatusRecord = conn.prepareStatement("delete from attendancestatus where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"'");
+							PreparedStatement deleteStatusRecord = conn.prepareStatement("delete from attendancestatus where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 							deleteStatusRecord.executeUpdate();
 							revalidate();
 							repaint();

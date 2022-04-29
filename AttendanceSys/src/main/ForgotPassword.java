@@ -123,9 +123,8 @@ public class ForgotPassword extends JFrame {
 		CheckA.addMouseListener(new PropertiesListener(CheckA));
 		CheckA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 					String username = txtUsername.getText(), uid = txtUid.getText();
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
 					PreparedStatement check = conn.prepareStatement("select userid from userInfo where username='"+username+"' and userid='"+uid+"'");					
 					if(username.isEmpty() || uid.isEmpty()) {
 						JOptionPane.showMessageDialog(null, "Enter all the required credentials!");
