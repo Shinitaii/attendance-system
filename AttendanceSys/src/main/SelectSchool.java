@@ -91,6 +91,7 @@ public class SelectSchool extends JDialog {
 										int addedSchool = addSchool.executeUpdate();
 										if(addedSchool == 1) {
 											Login.pubSchoolName = obtainedSchool;
+											Login.pubOccupation = "Admin";
 											setVisible(false);
 											JOptionPane.showMessageDialog(null, "School added!");
 											JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
