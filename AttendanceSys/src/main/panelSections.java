@@ -76,6 +76,10 @@ public class panelSections extends JPanel {
 		panel.setLayout(null);
 		panel.add(backToDept);
 		
+		JLabel lblSelectSection = new JLabel("Select a section.");
+		lblSelectSection.setBounds(10, 71, 328, 14);
+		add(lblSelectSection);
+		
 		JButton addSec = new JButton("Add Section");
 		addSec.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		addSec.setBackground(new Color(65, 105, 225));
@@ -87,6 +91,7 @@ public class panelSections extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				isDeletingSec = false;
 				isAddingSec = true;
+				lblSelectSection.setText("Click on a Section to select its sections.");
 				String obtainedSec = JOptionPane.showInputDialog(null, "Input Section Name:");
 				if(obtainedSec == null) {
 					JOptionPane.showMessageDialog(null,"Input Section Name!");
@@ -134,10 +139,6 @@ public class panelSections extends JPanel {
 			}
 		});
 		panel.add(addSec);
-		
-		JLabel lblSelectSection = new JLabel("Select a section.");
-		lblSelectSection.setBounds(10, 71, 328, 14);
-		add(lblSelectSection);
 		
 		JButton deleteSec = new JButton("Delete Section");
 		deleteSec.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));

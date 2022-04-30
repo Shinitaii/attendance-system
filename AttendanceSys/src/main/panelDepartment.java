@@ -69,6 +69,7 @@ public class panelDepartment extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				isDeletingDepts = false;
 				isAddingDepts = true;
+				lblSelectToDelete.setText("Click on a department to select its sections.");
 				String obtainedDept = "";
 				obtainedDept = JOptionPane.showInputDialog(null, "Input Department Name: ");
 				if(obtainedDept == null) {

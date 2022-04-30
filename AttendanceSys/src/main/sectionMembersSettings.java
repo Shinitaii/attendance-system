@@ -55,6 +55,8 @@ public class sectionMembersSettings extends JDialog {
 	 */
 	public sectionMembersSettings() {
 		super(null, ModalityType.TOOLKIT_MODAL);
+		setIconImage(Images.bLogo);
+		setTitle("Add members in "+obtainedSec);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -79,8 +81,9 @@ public class sectionMembersSettings extends JDialog {
 		JButton enterButton = new JButton("Enter");
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				limitCounter = 0;
 				String text = tfNumber.getText();
-				if(tfNumber.getText().matches("[0-9]")) {
+				if(text.matches("[0-9]")) {
 					int value = Integer.valueOf(text);
 					if(value > 0) {
 						executeSettings();

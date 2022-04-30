@@ -62,14 +62,15 @@ public class panelSectionMembers extends JPanel {
 		btnDelete.setBounds(10, 11, 55, 41);
 		add(btnDelete);
 		
-		JLabel lblDeleteTime = new JLabel("");
-		lblDeleteTime.setBounds(10, 57, 165, 14);
+		JLabel lblDeleteTime = new JLabel("Click on a member to check their info");
+		lblDeleteTime.setBounds(10, 57, 250, 14);
 		add(lblDeleteTime);
 		
 		JButton addMember = new JButton("Add Member");
 		addMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isDeletingMembers = false;
+				lblDeleteTime.setText("Click on a member to check their info");
 				try {
 					sectionMembersSettings dialog = new sectionMembersSettings();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -95,11 +96,11 @@ public class panelSectionMembers extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(!isDeletingMembers) {
 					isDeletingMembers = true;
-					lblDeleteTime.setText("Click on a member");
+					lblDeleteTime.setText("Click on a member to delete");
 					table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				} else {
 					isDeletingMembers = false;
-					lblDeleteTime.setText("");
+					lblDeleteTime.setText("Click on a member to check their info");
 					table.setRowSelectionAllowed(false);
 				}
 				

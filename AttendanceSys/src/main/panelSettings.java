@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -80,17 +81,29 @@ public class panelSettings extends JPanel {
 				int result = JOptionPane.showConfirmDialog(null,"Are you sure you want to leave "+Login.pubSchoolName+"?","Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if(result == JOptionPane.YES_OPTION) {
 					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-						PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
-						deleteExisting.setString(1, Login.pubFullName);
-						deleteExisting.executeUpdate();
-						PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='Student', schoolname=null, hasASchool=false, inviteCodeOfSchool=null , departmentname=null , hasADept=false , sectionname=null , hasASec=false where userid='"+Login.pubUID+"'");
-						int leaving = getStatement.executeUpdate();
-						if(leaving == 1) {
-							((Window) getRootPane().getParent()).dispose();
-							JOptionPane.showMessageDialog(null, "You successfully left "+Login.pubSchoolName+"!");
-							SelectSchool school = new SelectSchool();
-							school.setVisible(true);
+						if(Login.pubOccupation.equals("Admin")) {
+							PreparedStatement checkAdminCount = conn.prepareStatement("select count(*) from userinfo where occupation='Admin' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+							ResultSet sqlResult = checkAdminCount.executeQuery();
+							if(sqlResult.next()) {
+								int obtainedNum = sqlResult.getInt("count(*)");
+								if(obtainedNum > 1) {
+									PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
+									deleteExisting.setString(1, Login.pubFullName);
+									deleteExisting.executeUpdate();
+									PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='Student', schoolname=null, hasASchool=false, inviteCodeOfSchool=null , departmentname=null , hasADept=false , sectionname=null , hasASec=false where userid='"+Login.pubUID+"'");
+									int leaving = getStatement.executeUpdate();
+									if(leaving == 1) {
+										((Window) getRootPane().getParent()).dispose();
+										JOptionPane.showMessageDialog(null, "You successfully left "+Login.pubSchoolName+"!");
+										SelectSchool school = new SelectSchool();
+										school.setVisible(true);
+									}
+								} else {
+									JOptionPane.showMessageDialog(null, "You have to give someone an Admin role first before you leave.\r\nYou're the only admin in this school.");
+								}
+							}
 						}
+						
 					} catch(SQLException sql) {
 						sql.printStackTrace();
 					}
