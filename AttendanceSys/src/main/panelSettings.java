@@ -7,30 +7,15 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import java.awt.Font;
 import java.awt.Cursor;
 import java.awt.GridLayout;
-import javax.swing.BoxLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+
 
 public class panelSettings extends JPanel {
 
@@ -41,7 +26,6 @@ public class panelSettings extends JPanel {
 	public panelProfileDisplay panelProfileDisplay;
 	public panelAccountSetting panelAccountSetting;
 	public panelChangePassSetting panelChangePassSetting;	
-	public panelLeaveSchool panelLeaveSchool;
 	
 	public panelSettings() {
 		setBackground(new Color(255, 255, 255));
@@ -135,12 +119,6 @@ public class panelSettings extends JPanel {
 		panelChangePassSetting.setBounds(0,0,539,450);
 		panelMain.add(panelChangePassSetting);
 		panelChangePassSetting.setLayout(null);
-		
-		panelLeaveSchool = new panelLeaveSchool();
-		panelLeaveSchool.setBounds(0,0,539,450);
-		panelMain.add(panelLeaveSchool);
-		panelLeaveSchool.setLayout(null);
-		menuClicked(panelProfileDisplay);
 	}
 	
 	public void menuClicked(JPanel panel) {
