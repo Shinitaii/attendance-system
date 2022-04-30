@@ -37,6 +37,7 @@ public class MainMenu extends JFrame {
 	public static panelSectionMembers panelSectionMembers;
 	public static Records records;
 	public static TeacherAssignDept TeacherAssignDept;
+	public static ViewOtherStudents ViewOtherStudents;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
 	String title = "Attendance: "+Login.pubOccupation;
@@ -95,6 +96,8 @@ public class MainMenu extends JFrame {
 		records.setBounds(0,0,559,539);
 		TeacherAssignDept = new TeacherAssignDept();
 		TeacherAssignDept.setBounds(0,0,559,539);
+		ViewOtherStudents = new ViewOtherStudents();
+		ViewOtherStudents.setBounds(0,0,559,539);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225).darker()));
@@ -130,12 +133,14 @@ public class MainMenu extends JFrame {
 					panelSections.buttonNames.clear();
 					panelSections.listSecNames.clear();
 					panelSections.sectionScreen.removeAll();
+					panelSectionMembers.model.setRowCount(0);
 					panelDepartment.execute();					
 				} else if (Login.pubOccupation.equals("Teacher")){
 					menuClicked(panelDepartment);
 					panelSections.buttonNames.clear();
 					panelSections.listSecNames.clear();
 					panelSections.sectionScreen.removeAll();
+					panelSectionMembers.model.setRowCount(0);
 					panelDepartment.executeForTeachers();
 				} else {
 					setTitle(title+" - Section");
@@ -406,6 +411,7 @@ public class MainMenu extends JFrame {
 		panelMainContent.add(panelSectionMembers);
 		panelMainContent.add(records);
 		panelMainContent.add(TeacherAssignDept);
+		panelMainContent.add(ViewOtherStudents);
 		
 		menuClicked(panelHome);
 		setResizable(false);
@@ -428,6 +434,7 @@ public class MainMenu extends JFrame {
 		panelSectionMembers.setVisible(false);
 		records.setVisible(false);
 		TeacherAssignDept.setVisible(false);
+		ViewOtherStudents.setVisible(false);
 		
 		panel.setVisible(true);		
 	}

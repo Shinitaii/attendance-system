@@ -45,10 +45,12 @@ public class Images {
 				photo = get.getBlob("profilePicture");
 				
 			}
-			byte[] imagebytes = photo.getBytes(1, (int) photo.length());
-			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
-			Image img = new ImageIcon(image).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
-			label.setIcon(new ImageIcon(img));
+			if(photo != null) {
+				byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+				Image img = new ImageIcon(image).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+				label.setIcon(new ImageIcon(img));
+			}
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();

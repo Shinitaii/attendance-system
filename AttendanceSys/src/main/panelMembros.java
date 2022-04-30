@@ -5,6 +5,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Rectangle;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,8 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.ListSelectionModel;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +32,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 
 public class panelMembros extends JPanel {
 
@@ -70,8 +77,10 @@ public class panelMembros extends JPanel {
 				
 				if(isEditing) {
 					table.getSelectionModel().addListSelectionListener(selectedRow);
+					table.getSelectionModel().removeListSelectionListener(viewRow);
 				} else {
 					table.getSelectionModel().removeListSelectionListener(selectedRow);
+					table.getSelectionModel().addListSelectionListener(viewRow);
 				}
 			}
 		});
@@ -135,12 +144,14 @@ public class panelMembros extends JPanel {
 		cbDept.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
+					if(cbDept.getSelectedIndex() > 0) {
 					selectedDept = cbDept.getSelectedItem().toString();
-					model.setRowCount(0);
 					cbSec.setSelectedIndex(0);
 					cbName.setSelectedIndex(0);
 					cbOccup.setSelectedIndex(0);
 					sec(cbSec);
+					}
+					model.setRowCount(0);
 					checkList();
 				}
 			}
@@ -157,11 +168,11 @@ public class panelMembros extends JPanel {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
 					if(cbSec.getSelectedIndex() > 0) {
 						selectedSec = cbSec.getSelectedItem().toString();
-						model.setRowCount(0);
 						cbName.setSelectedIndex(0);
 						cbOccup.setSelectedIndex(0);
-						checkList();
 					}
+					model.setRowCount(0);
+					checkList();
 				}
 			}
 		});
@@ -213,6 +224,7 @@ public class panelMembros extends JPanel {
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
+		table.getSelectionModel().addListSelectionListener(viewRow);
 		
 		revalidate();
 		repaint();
@@ -294,6 +306,47 @@ public class panelMembros extends JPanel {
 		}
 	};
 	
+	private ListSelectionListener viewRow = new ListSelectionListener() {
+		public void valueChanged(ListSelectionEvent e) {
+			if(!e.getValueIsAdjusting()){
+				if (table.getSelectedRow() > -1) {	
+					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+						MainMenu.ViewOtherStudents.remove(MainMenu.ViewOtherStudents.backButton);
+						MainMenu.ViewOtherStudents.lblpfp.setIcon(null);
+						String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+						String getDept = "", getSec = "", getOcc = "";
+						Blob photo = null;
+						PreparedStatement getStatement = conn.prepareStatement("select occupation, departmentname, sectionname, profilePicture from userinfo where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+						ResultSet result = getStatement.executeQuery();
+						while(result.next()) {
+							photo = result.getBlob("profilePicture");
+							getOcc = result.getString("occupation");
+							getDept = result.getString("departmentname");
+							getSec = result.getString("sectionname");
+						}
+						pfp(MainMenu.ViewOtherStudents.lblpfp, photo);
+						MainMenu.ViewOtherStudents.lblFN.setText("Name: "+value);
+						MainMenu.ViewOtherStudents.lblDept.setText("Department: "+getDept);
+						MainMenu.ViewOtherStudents.lblOccup.setText("Occupation: "+getOcc);
+						MainMenu.ViewOtherStudents.lblSecs.setText("Section: "+getSec);		
+						MainMenu.menuClicked(MainMenu.ViewOtherStudents);
+						MainMenu.ViewOtherStudents.backButton = new JButton("Back");
+						MainMenu.ViewOtherStudents.backButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								MainMenu.menuClicked(MainMenu.panelMembros);
+							}
+						});
+						MainMenu.ViewOtherStudents.backButton.addMouseListener(new PropertiesListener(MainMenu.ViewOtherStudents.backButton));
+						MainMenu.ViewOtherStudents.backButton.setBounds(10, 11, 89, 23);
+						MainMenu.ViewOtherStudents.add(MainMenu.ViewOtherStudents.backButton);
+					} catch(SQLException sql) {
+						sql.printStackTrace();
+					}
+				}
+	       	}
+		}
+	};
+	
 	private void dept(JComboBox<String> cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 			PreparedStatement getStatement = conn.prepareStatement("select departmentname from departmentinfo where schoolname='"+Login.pubSchoolName+"'");
@@ -332,6 +385,19 @@ public class panelMembros extends JPanel {
 			}
 		} catch(SQLException sql) {
 			
+		}
+	}
+	
+	private void pfp (JLabel label, Blob photo) {
+		try {
+			if(photo != null) {
+				byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+				Image img = new ImageIcon(image).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+				label.setIcon(new ImageIcon(img));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

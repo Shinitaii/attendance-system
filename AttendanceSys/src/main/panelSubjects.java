@@ -3,6 +3,8 @@ import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.Font;
@@ -119,6 +121,12 @@ public class panelSubjects extends JPanel {
 					isDeletingSub = true;
 				} else {
 					isDeletingSub = false;
+				}
+				
+				if(isDeletingSub) {
+					table.getSelectionModel().addListSelectionListener(deleteRow);
+				} else {
+					table.getSelectionModel().removeListSelectionListener(deleteRow);
 				}
 			}
 		});
@@ -260,4 +268,24 @@ public class panelSubjects extends JPanel {
 			sql.printStackTrace();
 		}
 	}
+	
+	private ListSelectionListener deleteRow = new ListSelectionListener() {
+		public void valueChanged(ListSelectionEvent e) {
+			if(!e.getValueIsAdjusting()){
+				if (table.getSelectedRow() > -1) {
+		    	   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+		    	   try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+		    		   PreparedStatement getStatement = conn.prepareStatement("delete from subjectinfo where subjectname='"+value+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+		    		   PreparedStatement getSecondStatement = conn.prepareStatement("delete from teacherassignedinfo where subjectname='"+value+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+		    		   getStatement.executeUpdate();
+		    		   getSecondStatement.executeUpdate();
+		    		   model.setRowCount(0);
+		    		   checkList();
+		    	   } catch (SQLException sql) {
+		    		   sql.printStackTrace();
+		    	   }
+		   	   }
+	       	}
+		}
+	};
 }

@@ -2,6 +2,10 @@ package main;
 
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Image;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTable;
@@ -15,7 +19,10 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.awt.event.ActionEvent;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -98,8 +105,10 @@ public class panelSectionMembers extends JPanel {
 				
 				if(isDeletingMembers) {
 					table.getSelectionModel().addListSelectionListener(selectedRow);
+					table.getSelectionModel().removeListSelectionListener(viewRow);
 				} else {
 					table.getSelectionModel().removeListSelectionListener(selectedRow);
+					table.getSelectionModel().addListSelectionListener(viewRow);
 				}
 			}
 		});
@@ -167,6 +176,7 @@ public class panelSectionMembers extends JPanel {
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
 		table.getTableHeader().setReorderingAllowed(false);
+		table.getSelectionModel().addListSelectionListener(viewRow);
 		
 		if(Login.pubOccupation.equals("Teacher")) {
 			addMember.setVisible(false);
@@ -236,4 +246,58 @@ public class panelSectionMembers extends JPanel {
 	       }
 		}
 	};
+	
+	private ListSelectionListener viewRow = new ListSelectionListener() {
+		public void valueChanged(ListSelectionEvent e) {
+			if(!e.getValueIsAdjusting()){
+				if (table.getSelectedRow() > -1) {	
+					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+						MainMenu.ViewOtherStudents.remove(MainMenu.ViewOtherStudents.backButton);
+						MainMenu.ViewOtherStudents.lblpfp.setIcon(null);
+						String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+						String getDept = "", getSec = "", getOcc = "";
+						Blob photo = null;
+						PreparedStatement getStatement = conn.prepareStatement("select occupation, departmentname, sectionname, profilePicture from userinfo where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+						ResultSet result = getStatement.executeQuery();
+						while(result.next()) {
+							photo = result.getBlob("profilePicture");
+							getOcc = result.getString("occupation");
+							getDept = result.getString("departmentname");
+							getSec = result.getString("sectionname");
+						}
+						pfp(MainMenu.ViewOtherStudents.lblpfp, photo);
+						MainMenu.ViewOtherStudents.lblFN.setText("Name: "+value);
+						MainMenu.ViewOtherStudents.lblDept.setText("Department: "+getDept);
+						MainMenu.ViewOtherStudents.lblOccup.setText("Occupation: "+getOcc);
+						MainMenu.ViewOtherStudents.lblSecs.setText("Section: "+getSec);		
+						MainMenu.menuClicked(MainMenu.ViewOtherStudents);
+						MainMenu.ViewOtherStudents.backButton = new JButton("Back");
+						MainMenu.ViewOtherStudents.backButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								MainMenu.menuClicked(MainMenu.panelSectionMembers);
+							}
+						});
+						MainMenu.ViewOtherStudents.backButton.addMouseListener(new PropertiesListener(MainMenu.ViewOtherStudents.backButton));
+						MainMenu.ViewOtherStudents.backButton.setBounds(10, 11, 89, 23);
+						MainMenu.ViewOtherStudents.add(MainMenu.ViewOtherStudents.backButton);
+					} catch(SQLException sql) {
+						sql.printStackTrace();
+					}
+				}
+	       	}
+		}
+	};
+	
+	private void pfp (JLabel label, Blob photo) {
+		try {
+			if(photo != null) {
+				byte[] imagebytes = photo.getBytes(1, (int) photo.length());
+				BufferedImage image = ImageIO.read(new ByteArrayInputStream(imagebytes));
+				Image img = new ImageIcon(image).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+				label.setIcon(new ImageIcon(img));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
