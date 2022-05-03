@@ -122,10 +122,10 @@ public class Login extends JFrame {
 					char[] getPassword = pwdPassword.getPassword();
 					String username = txtUsername.getText(), password = String.valueOf(getPassword);
 					pubUsername = username;
-					PreparedStatement checkAccount = conn.prepareStatement("select * from userInfo where username='"+username+"' and pass='"+password+"'");
+					PreparedStatement checkAccount = conn.prepareStatement("select * from userinfo where username='"+username+"' and pass='"+password+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
-						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec, inviteCodeOfSchool from userInfo where username='"+username+"'");
+						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec, inviteCodeOfSchool from userinfo where username='"+username+"'");
 						ResultSet whatInfo = checkInfo.executeQuery();
 						while (whatInfo.next()) {
 							pubUID = whatInfo.getString("userid");

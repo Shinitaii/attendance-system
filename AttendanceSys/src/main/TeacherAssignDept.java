@@ -82,7 +82,7 @@ public class TeacherAssignDept extends JPanel {
 				boolean selected;
 				int result = 0;
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-					PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
+					PreparedStatement deleteExisting = conn.prepareStatement("update subjectinfo set hasATeacher=false, teachername=null where hasATeacher=true and teachername=?");
 					if(Login.pubOccupation.equals("Admin")) {
 						deleteExisting.setString(1, obtainedTeacherName);
 					} else {
@@ -96,7 +96,7 @@ public class TeacherAssignDept extends JPanel {
 					selected = listCB.get(i).isSelected();
 					if(selected) {
 						try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-							PreparedStatement getStatement = conn.prepareStatement("insert into teacherassignedinfo (teachername, subjectname, sectionname, departmentname, schoolname, schoolid) values (?,?,?,?,?,?)");
+							PreparedStatement getStatement = conn.prepareStatement("update subjectinfo set hasATeacher = true, teachername =? where subjectname=? and sectionname=? and departmentname=? and schoolname=? and schoolid=?");
 							if(Login.pubOccupation.equals("Admin")) {
 								getStatement.setString(1, obtainedTeacherName);
 							} else {
@@ -165,7 +165,7 @@ public class TeacherAssignDept extends JPanel {
 	
 	private void getSubjects(List<String> list, List<String> list2, List<String> list3) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement getStatement = conn.prepareStatement("select subjectname, sectionname ,departmentname from subjectinfo where schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement getStatement = conn.prepareStatement("select subjectname, sectionname ,departmentname from subjectinfo where schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"' and hasATeacher = false");
 			ResultSet result = getStatement.executeQuery();
 			while(result.next()) {
 				String obtainedSub = result.getString("subjectname");

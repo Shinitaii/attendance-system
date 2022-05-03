@@ -74,6 +74,13 @@ public class panelHome extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
+		JLabel lblCode = new JLabel(" Invite Code: "+Login.pubInviteCode);
+		lblCode.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCode.setForeground(new Color(65, 105, 225));
+		lblCode.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		lblCode.setBounds(0, 0, 559, 60);
+		panel.add(lblCode);
+		
 		JLabel lblTime = new JLabel();
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTime.setForeground(new Color(65, 105, 225));

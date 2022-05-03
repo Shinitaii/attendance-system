@@ -38,7 +38,7 @@ public class Images {
 
 	public static void pfp (JLabel label) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
-			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userInfo where userid='"+Login.pubUID+"'");
+			PreparedStatement getPhoto = conn.prepareStatement("select profilePicture from userinfo where userid='"+Login.pubUID+"'");
 			ResultSet get = getPhoto.executeQuery();
 			Blob photo = null;
 			while(get.next()) {

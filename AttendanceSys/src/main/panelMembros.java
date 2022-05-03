@@ -236,7 +236,7 @@ public class panelMembros extends JPanel {
 	
 	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			String query = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, departmentname, sectionname, occupation from userInfo where schoolname='"+Login.pubSchoolName+"'";
+			String query = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, departmentname, sectionname, occupation from userinfo where schoolname='"+Login.pubSchoolName+"'";
 			String orderBy = "order by";
 			String teachers = "occupation = 'Teacher' desc, occupation = 'Student' desc, fullname "+nameAoD+"";
 			String students = "occupation = 'Student' desc, occupation = 'Teacher' desc, fullname "+nameAoD+"";
