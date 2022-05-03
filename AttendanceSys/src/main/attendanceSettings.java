@@ -37,8 +37,8 @@ public class attendanceSettings extends JDialog {
 	public String obtainedDept;
 	int deptCount;
 	int secCount;
-	String month;
-	public static String name;
+	int month;
+	public String name;
 	int day, year;
 	public static int currentRecordCount = 0;
 	public String obtainedSub, obtainedSec;
@@ -99,7 +99,7 @@ public class attendanceSettings extends JDialog {
 						Date date = new Date();
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(date);
-						month = new SimpleDateFormat("MMM").format(cal.getTime());
+						month = cal.get(Calendar.MONTH);
 						day = cal.get(Calendar.DAY_OF_MONTH);
 						year = cal.get(Calendar.YEAR);
 						name = obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount;

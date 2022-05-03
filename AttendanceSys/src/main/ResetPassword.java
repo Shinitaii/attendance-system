@@ -122,7 +122,7 @@ public class ResetPassword extends JFrame {
 					};
 					Timer tick = new Timer(delay, lblStatusClearer);
 					tick.setRepeats(false);
-					PreparedStatement changePassword = conn.prepareStatement("update userInfo set pass='"+password+"' where userid ='"+uid+"';");
+					PreparedStatement changePassword = conn.prepareStatement("update userinfo set pass='"+password+"' where userid ='"+uid+"';");
 					if(password.isEmpty() || cPassword.isEmpty()) {
 						lblStatus.setText("Enter all of the credentials!");
 					} else {

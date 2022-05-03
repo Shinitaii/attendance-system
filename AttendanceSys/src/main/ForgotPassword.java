@@ -125,7 +125,7 @@ public class ForgotPassword extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 					String username = txtUsername.getText(), uid = txtUid.getText();
-					PreparedStatement check = conn.prepareStatement("select userid from userInfo where username='"+username+"' and userid='"+uid+"'");					
+					PreparedStatement check = conn.prepareStatement("select userid from userinfo where username='"+username+"' and userid='"+uid+"'");					
 					if(username.isEmpty() || uid.isEmpty()) {
 						JOptionPane.showMessageDialog(null, "Enter all the required credentials!");
 					} else {

@@ -224,7 +224,7 @@ public class panelDepartment extends JPanel {
 	
 	private void recountCheckForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by departmentname) and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from subjectinfo where teachername='"+Login.pubFullName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
 			if(checkedCount.next()) {
 				count = checkedCount.getInt("count(departmentname)");
@@ -244,7 +244,7 @@ public class panelDepartment extends JPanel {
 	
 	private void recheckNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkDeptNames = conn.prepareStatement("select departmentname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by departmentname) and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkDeptNames = conn.prepareStatement("select departmentname from subjectinfo where teachername='"+Login.pubFullName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
 			if(!isAddingDepts) {
 				while(checkedNames.next()) {

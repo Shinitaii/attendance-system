@@ -240,7 +240,7 @@ public class panelSubjects extends JPanel {
 	private void section(JComboBox<String>cb) {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
 			String normal = "select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
-			String teacher = "select sectionname from teacherassignedinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
+			String teacher = "select sectionname from subjectinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			PreparedStatement getStatement;
 			if(Login.pubOccupation.equals("Admin")) {
 				getStatement = conn.prepareStatement(normal);
@@ -308,11 +308,9 @@ public class panelSubjects extends JPanel {
 						int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+value+"?\r\nDeleting the subject will also delete all the records and teachers assigned inside of the subject!\r\nIt will also get deleted from all sections!", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 						if(result == JOptionPane.YES_OPTION) {
 							PreparedStatement getStatement = conn.prepareStatement("delete from subjectinfo where subjectname='"+value+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
-							PreparedStatement getSecondStatement = conn.prepareStatement("delete from teacherassignedinfo where subjectname='"+value+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
-							PreparedStatement getThirdStatement = conn.prepareStatement("delete from attendancerecords where subjectname='"+value+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+							PreparedStatement getSecondStatement = conn.prepareStatement("delete from attendancerecords where subjectname='"+value+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 							getStatement.executeUpdate();
 							getSecondStatement.executeUpdate();
-							getThirdStatement.executeUpdate();
 						}
 						model.setRowCount(0);
 						checkList();

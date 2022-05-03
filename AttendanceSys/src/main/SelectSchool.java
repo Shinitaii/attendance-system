@@ -84,7 +84,7 @@ public class SelectSchool extends JDialog {
 										JOptionPane.showMessageDialog(null, "Input name!");
 									} else {
 										String obtainedInviteCode = getInviteCode(5);
-										PreparedStatement addSchool = conn.prepareStatement("insert into schoolInfo (schoolname, creator, inviteCode) values (?, ?, ?)");
+										PreparedStatement addSchool = conn.prepareStatement("insert into schoolinfo (schoolname, creator, inviteCode) values (?, ?, ?)");
 										addSchool.setString(1, obtainedSchool);
 										addSchool.setString(2, Login.pubUID);
 										addSchool.setString(3, obtainedInviteCode);
@@ -95,7 +95,7 @@ public class SelectSchool extends JDialog {
 											setVisible(false);
 											JOptionPane.showMessageDialog(null, "School added!");
 											JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
-											PreparedStatement inSchool = conn.prepareStatement("update userInfo set occupation='Admin', hasASchool = true, inviteCodeOfSchool ='"+obtainedInviteCode+"', schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
+											PreparedStatement inSchool = conn.prepareStatement("update userinfo set occupation='Admin', hasASchool = true, inviteCodeOfSchool ='"+obtainedInviteCode+"', schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
 											inSchool.executeUpdate();
 												
 											conn.close();
@@ -162,7 +162,7 @@ public class SelectSchool extends JDialog {
 									if(inviteCode.isEmpty()) {
 										JOptionPane.showMessageDialog(null, "Input code!");
 									} else {
-										PreparedStatement checkInvite = conn.prepareStatement("select inviteCode, schoolname from schoolInfo where inviteCode='"+inviteCode+"'");
+										PreparedStatement checkInvite = conn.prepareStatement("select inviteCode, schoolname from schoolinfo where inviteCode='"+inviteCode+"'");
 										ResultSet obtainedInvite = checkInvite.executeQuery();
 										while(obtainedInvite.next()) {
 											obtainedInviteCode = obtainedInvite.getString("inviteCode");
@@ -170,7 +170,7 @@ public class SelectSchool extends JDialog {
 										}
 										if(inviteCode.equals(obtainedInviteCode)) {
 											Login.pubSchoolName = obtainedSchool;
-											PreparedStatement joined = conn.prepareStatement("update userInfo set schoolname ='"+obtainedSchool+"', hasASchool = 1 where userid="+Login.pubUID);
+											PreparedStatement joined = conn.prepareStatement("update userinfo set schoolname ='"+obtainedSchool+"', hasASchool = 1 where userid="+Login.pubUID);
 											int joinedResult = joined.executeUpdate();
 											if(joinedResult == 1) {
 												setVisible(false);

@@ -141,7 +141,7 @@ public class AttendanceSelectSubject extends JPanel {
 	
 	private void checkCountForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from subjectname where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(subjectname) from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
 				count = checking.getInt("count(subjectname)");
@@ -153,7 +153,7 @@ public class AttendanceSelectSubject extends JPanel {
 	
 	private void checkNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select subjectname from subjectname where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkName = conn.prepareStatement("select subjectname from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String deptName = checking.getString("subjectname");

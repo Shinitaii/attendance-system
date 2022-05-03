@@ -172,7 +172,7 @@ public class sectionMembersSettings extends JDialog {
 	
 	private void checkCount() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement puttingInTable = conn.prepareStatement("select count(concat(firstname, ' ', middlename, ' ', lastname)) as fullname from userInfo where occupation !='Admin' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement puttingInTable = conn.prepareStatement("select count(concat(firstname, ' ', middlename, ' ', lastname)) as fullname from userinfo where occupation = 'Student' and schoolname='"+Login.pubSchoolName+"' and hasASec= false and hasADept = false");
 			ResultSet result = puttingInTable.executeQuery();
 			if(result.next()) {
 				count = result.getInt("fullname");
@@ -186,7 +186,7 @@ public class sectionMembersSettings extends JDialog {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname from userInfo where occupation !='Admin' and schoolname='"+Login.pubSchoolName+"'");
+			PreparedStatement puttingInTable = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname from userinfo where occupation = 'Student' and schoolname='"+Login.pubSchoolName+"' and hasASec = false and hasADept = false");
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {
 				String obtainedName = result.getString("fullname");

@@ -184,17 +184,22 @@ public class MainMenu extends JFrame {
 		panelAttend.addMouseListener(new PropertiesListener(panelAttend) {
 			public void mouseClicked(MouseEvent e) {
 				setTitle(title+" - Attendance");
+				if(!Login.pubOccupation.equals("Student")) {
+					panelAttendance.listRecordNames.clear();
+					panelAttendance.listSubNames.clear();
+					panelAttendance.listSecNames.clear();
+					panelAttendance.listDeptNames.clear();
+					panelAttendance.listDateNames.clear();
+					panelAttendance.listTeacherNames.clear();
+					panelAttendance.panelNames.clear();
+					panelAttendance.mainScreen.removeAll();
+				}
+				
 				if(Login.pubOccupation.equals("Admin")) {
 					menuClicked(AttendanceSelectDepartment);
-					panelAttendance.buttonNames.clear();
-					panelAttendance.listRecordNames.clear();
-					panelAttendance.mainScreen.removeAll();
 					AttendanceSelectDepartment.execute();
 				} else if(Login.pubOccupation.equals("Teacher")) {
 					menuClicked(AttendanceSelectDepartment);
-					panelAttendance.buttonNames.clear();
-					panelAttendance.listRecordNames.clear();
-					panelAttendance.mainScreen.removeAll();
 					AttendanceSelectDepartment.executeForTeachers();
 				} else {
 					menuClicked(AttendanceSelectSubject);

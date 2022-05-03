@@ -244,7 +244,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckCountForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from teacherassignedinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedCount = checkCount.executeQuery();
 			if(checkedCount.next()) {
 				count = checkedCount.getInt("count(sectionname)");
@@ -256,7 +256,7 @@ public class panelSections extends JPanel {
 	
 	private void recheckNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from teacherassignedinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and teacherid in (select max(teacherid) from teacherassignedinfo group by sectionname) and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkDeptNames = conn.prepareStatement("select sectionname from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+MainMenu.panelDepartment.whatDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checkedNames = checkDeptNames.executeQuery();
 			while(checkedNames.next()) {
 				String secName = checkedNames.getString("sectionname");	

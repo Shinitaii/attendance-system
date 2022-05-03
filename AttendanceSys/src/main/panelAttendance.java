@@ -1,6 +1,8 @@
 package main;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.border.LineBorder;
 import java.awt.Rectangle;
 import javax.swing.JButton;
@@ -11,16 +13,20 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 public class panelAttendance extends JPanel {
 
@@ -28,9 +34,14 @@ public class panelAttendance extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	List<String> listSubNames = new ArrayList<String>();
+	List<String> listSecNames = new ArrayList<String>();
+	List<String> listDeptNames = new ArrayList<String>();
+	List<String> listTeacherNames = new ArrayList<String>();
 	List<String> listRecordNames = new ArrayList<String>();
-	List<JButton> buttonNames = new ArrayList<JButton>();
+	List<Date> listDateNames = new ArrayList<Date>();
 	JComboBox<String> cbDate = new JComboBox<String>();
+	List<JPanel> panelNames = new ArrayList<JPanel>();
 	
 	private int count = 0;
 	public String obtainedSec;
@@ -40,7 +51,7 @@ public class panelAttendance extends JPanel {
 	public boolean addingRecords = false, deletingRecords = false, newRecord;
 	private boolean sortingDate = false;
 	JPanel mainScreen;
-	JButton button;
+	JPanel panel;
 	JLabel label;
 	JLabel timerLabel;
 	/**
@@ -77,19 +88,34 @@ public class panelAttendance extends JPanel {
 					
 					if(!dialog.isCancelled) {
 						checkName();
-						button = new JButton(attendanceSettings.name);
+						panel = new JPanel(new GridLayout(0,1,2,2));
+						JLabel label = new JLabel(dialog.obtainedDept+"-"+dialog.obtainedSec+"-"+dialog.obtainedSub);
+						label.setForeground(Color.white);
+						label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+						label.setHorizontalAlignment(SwingConstants.CENTER);
+						JLabel label2 = new JLabel(dialog.year+"-"+dialog.month+"-"+dialog.day);
+						label2.setForeground(Color.white);
+						label2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+						label2.setHorizontalAlignment(SwingConstants.CENTER);
+						JLabel label3 = new JLabel(Login.pubFullName);
+						label3.setForeground(Color.white);
+						label3.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+						label3.setHorizontalAlignment(SwingConstants.CENTER);
+						panel.add(label);
+						panel.add(label2);
+						panel.add(label3);
+
 						if(!sortingDate) {
-							buttonNames.add(0, button);
-							buttonNames.get(0).addMouseListener(new PropertiesListener(buttonNames.get(0)));
-							buttonNames.get(0).setName(attendanceSettings.name);
-							listRecordNames.add(0, button.getName());
-							buttonNames.get(0).addActionListener(new AddDeleteListener());
+							panelNames.add(0, panel);
+							panelNames.get(0).addMouseListener(new PropertiesListener(panelNames.get(0)));
+							panelNames.get(0).addMouseListener(new AddDelete());
+							panelNames.get(0).setName(dialog.name);
 						} else {
-							buttonNames.add(button);
-							button = buttonNames.get(count);	
-							buttonNames.get(count).addMouseListener(new PropertiesListener(buttonNames.get(count)));
-							buttonNames.get(count).setName(attendanceSettings.name);
-							buttonNames.get(count).addActionListener(new AddDeleteListener());
+							panelNames.add(panel);
+							panel = panelNames.get(count);	
+							panelNames.get(count).addMouseListener(new PropertiesListener(panelNames.get(count)));
+							panelNames.get(count).addMouseListener(new AddDelete());
+							panelNames.get(count).setName(dialog.name);
 						}
 						if(dialog.cbSub.getSelectedIndex() > 0) { // will add a button if selected sort is default
 							if(!sortingDate) {
@@ -98,13 +124,13 @@ public class panelAttendance extends JPanel {
 								checkCount();
 								existingRecords();
 							} else {
-								mainScreen.add(button);	
+								mainScreen.add(panel);	
 							}
 						} else { // will always secretly remove the created record section isn't the same as the selected sort
 							if(!sortingDate) {
-								buttonNames.remove(0);
+								panelNames.remove(0);
 							} else {
-								buttonNames.remove(count);
+								panelNames.remove(count);
 							}
 						}
 						addingRecords = false;
@@ -184,7 +210,12 @@ public class panelAttendance extends JPanel {
 	public void execute() {
 		mainScreen.removeAll();
 		listRecordNames.clear();
-		buttonNames.clear();
+		listSubNames.clear();
+		listSecNames.clear();
+		listDeptNames.clear();
+		listDateNames.clear();
+		listTeacherNames.clear();
+		panelNames.clear();
 		checkCount();
 		checkName();
 		existingRecords();
@@ -208,7 +239,7 @@ public class panelAttendance extends JPanel {
 	
 	private void checkName() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			String sortingDeptSecAndSub = "select record_name, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
+			String sortingDeptSecAndSub = "select record_name, subjectname, sectionname, departmentname, timecreated, creator, UNIX_TIMESTAMP(timecreated) as created from attendancerecords where subjectname='"+obtainedSub+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			String sortedDate = "order by created";
 			PreparedStatement checkName;
 			if(sortingDate) {
@@ -218,8 +249,18 @@ public class panelAttendance extends JPanel {
 			}
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
-				String recordNames = checking.getString("record_name");
-				listRecordNames.add(recordNames);
+				String rec = checking.getString("record_name");
+				String sub = checking.getString("subjectname");
+				String sec = checking.getString("sectionname");
+				String dept = checking.getString("departmentname");
+				Date date = checking.getDate("timecreated");
+				String teacher = checking.getString("creator");
+				listRecordNames.add(rec);
+				listSubNames.add(sub);
+				listSecNames.add(sec);
+				listDeptNames.add(dept);
+				listDateNames.add(date);
+				listTeacherNames.add(teacher);
 			}
 		} catch (SQLException sql) {
 			sql.printStackTrace();
@@ -228,23 +269,42 @@ public class panelAttendance extends JPanel {
 	
 	private void existingRecords() {
 		for(int i = 0; i < count; i++) {
-			JButton button = new JButton(listRecordNames.get(i));
-			buttonNames.add(button);
-			button = buttonNames.get(i);
-			buttonNames.get(i).setName(listRecordNames.get(i));
-			buttonNames.get(i).addMouseListener(new PropertiesListener(buttonNames.get(i)));
-			buttonNames.get(i).addActionListener(new AddDeleteListener());
-			mainScreen.add(button);
+			JPanel panel = new JPanel(new GridLayout(0,1,2,2));
+			JLabel label = new JLabel(listDeptNames.get(i)+"-"+listSecNames.get(i)+"-"+listSubNames.get(i));
+			label.setForeground(Color.white);
+			label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+			label.setHorizontalAlignment(SwingConstants.CENTER);
+			JLabel label2 = new JLabel(listDateNames.get(i).toString());
+			label2.setForeground(Color.white);
+			label2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+			label2.setHorizontalAlignment(SwingConstants.CENTER);
+			JLabel label3 = new JLabel(listTeacherNames.get(i));
+			label3.setForeground(Color.white);
+			label3.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+			label3.setHorizontalAlignment(SwingConstants.CENTER);
+			panel.add(label);
+			panel.add(label2);
+			panel.add(label3);
+			
+			
+			panelNames.add(panel);
+			panel = panelNames.get(i);
+			panelNames.get(i).addMouseListener(new PropertiesListener(panelNames.get(i)));
+			panelNames.get(i).addMouseListener(new AddDelete());
+			panelNames.get(i).setName(listRecordNames.get(i));
+			mainScreen.add(panel);
 		}
 		revalidate();
 		repaint();
 	}
 	
-	private class AddDeleteListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
+	private class AddDelete implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			JPanel source = (JPanel) e.getSource();
 			if(!deletingRecords) {
 				MainMenu.menuClicked(MainMenu.records);
-				JButton source = (JButton) e.getSource();
 				MainMenu.records.obtainedDept = obtainedDept;
 				MainMenu.records.obtainedSec = obtainedSec;
 				MainMenu.records.obtainedSub = obtainedSub;
@@ -253,12 +313,11 @@ public class panelAttendance extends JPanel {
 				MainMenu.records.execute();
 			} else {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){	
-					JButton source = (JButton) e.getSource();
 					if(deletingRecords) {
 						int select = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+source.getName()+"?", "Delete", JOptionPane.YES_NO_OPTION);
 						if(select == JOptionPane.YES_OPTION) {
 							mainScreen.remove(source);
-							buttonNames.remove(source);
+							panelNames.remove(source);
 							PreparedStatement deleteRecord = conn.prepareStatement("delete from attendancerecords where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 							deleteRecord.executeUpdate();
 							PreparedStatement deleteStatusRecord = conn.prepareStatement("delete from attendancestatus where record_name='"+source.getName()+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
@@ -273,6 +332,30 @@ public class panelAttendance extends JPanel {
 				}
 			}
 		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+	
 	}
-		
 }

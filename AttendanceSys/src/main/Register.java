@@ -224,7 +224,7 @@ public class Register extends JFrame {
 						lblStatus.setText("Enter all of the credentials!");
 						tick.start();
 					} else {
-						PreparedStatement exist = conn.prepareStatement("select * from userInfo where username='"+username+"'");
+						PreparedStatement exist = conn.prepareStatement("select * from userinfo where username='"+username+"'");
 						ResultSet getUsername = exist.executeQuery();
 						String obtainedUsername = "";
 						while(getUsername.next()) {
@@ -254,7 +254,7 @@ public class Register extends JFrame {
 										} catch (IOException photo) {
 											JOptionPane.showMessageDialog(null, "No photo!");
 										}
-										PreparedStatement register = conn.prepareStatement("INSERT INTO userInfo (firstName, middlename, lastname, username, pass, gender, occupation, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
+										PreparedStatement register = conn.prepareStatement("INSERT INTO userinfo (firstName, middlename, lastname, username, pass, gender, occupation, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
 										register.setString(1, firstName);
 										register.setString(2, middleName);
 										register.setString(3, lastName);
@@ -266,7 +266,7 @@ public class Register extends JFrame {
 										int creation = register.executeUpdate();
 											if(creation == 1) {
 												String userID = "";
-												PreparedStatement checkUserID = conn.prepareStatement("SELECT userid FROM userInfo WHERE username='"+username+"'");
+												PreparedStatement checkUserID = conn.prepareStatement("SELECT userid FROM userinfo WHERE username='"+username+"'");
 												ResultSet confirmUserID = checkUserID.executeQuery();
 												while(confirmUserID.next()) {
 													userID = confirmUserID.getString("userid");
