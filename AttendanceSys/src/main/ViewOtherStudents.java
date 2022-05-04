@@ -3,7 +3,6 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,7 +15,7 @@ public class ViewOtherStudents extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public JLabel lblpfp, lblFN, lblDept, lblSecs, lblOccup;
-	public JButton backButton;
+	public JButton backButton, kickButton;
 	/**
 	 * Create the panel.
 	 */

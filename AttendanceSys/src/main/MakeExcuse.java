@@ -12,13 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.Toolkit;
 import javax.swing.JTextPane;
-import javax.swing.JFormattedTextField;
-import javax.swing.JTextArea;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,6 +21,10 @@ import java.sql.SQLException;
 
 public class MakeExcuse extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JTextPane textPane;
@@ -47,6 +46,7 @@ public class MakeExcuse extends JDialog {
 	 * Create the dialog.
 	 */
 	public MakeExcuse() {
+		super(null, ModalityType.TOOLKIT_MODAL);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MakeExcuse.class.getResource("/res/attendance.png")));
 		setTitle("Letter Request\r\n");
 		setBounds(100, 100, 600, 300);
@@ -120,7 +120,7 @@ public class MakeExcuse extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
+						dispose();
 					}
 				});
 				cancelButton.addMouseListener(new PropertiesListener(cancelButton));

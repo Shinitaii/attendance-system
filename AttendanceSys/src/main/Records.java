@@ -41,7 +41,7 @@ public class Records extends JPanel {
 	List<String> listTime = new ArrayList<String>();
 	private JTable table;
 	public String obtainedDept, obtainedSec, obtainedRecord, obtainedSub;
-	private int obtainedID;
+	public int obtainedID;
 	private boolean isEditing = false, recordStatusComplete;
 	DefaultTableModel model;
 	JButton disableButton, statusButton;
@@ -162,7 +162,12 @@ public class Records extends JPanel {
 		JButton viewExcused = new JButton("View Excuse Requests");
 		viewExcused.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				MainMenu.ViewExcuseRequest.obtainedRecord = obtainedRecord;
+				MainMenu.ViewExcuseRequest.obtainedDept = obtainedDept;
+				MainMenu.ViewExcuseRequest.obtainedSec = obtainedSec;
+				MainMenu.ViewExcuseRequest.obtainedSub = obtainedSub;
+				MainMenu.ViewExcuseRequest.execute();
+				MainMenu.menuClicked(MainMenu.ViewExcuseRequest);
 			}
 		});
 		viewExcused.addMouseListener(new PropertiesListener(viewExcused));
@@ -171,6 +176,7 @@ public class Records extends JPanel {
 		
 		if(Login.pubOccupation.equals("Teacher")) {
 			editButton.setVisible(false);
+			viewExcused.setBounds(90, 11, 70, 50);
 		} else if(Login.pubOccupation.equals("Student")) {
 			editButton.setVisible(false);
 			statusButton.setVisible(false);
@@ -184,7 +190,9 @@ public class Records extends JPanel {
 			JButton excusedButton = new JButton("Request Excuse");
 			excusedButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+					MakeExcuse dialog = new MakeExcuse();
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
 				}
 			});
 			excusedButton.addMouseListener(new PropertiesListener(excusedButton));
@@ -372,8 +380,12 @@ public class Records extends JPanel {
 			FileWriter fw = new FileWriter(file);
 			BufferedWriter bw = new BufferedWriter(fw);
 	
-			for(int i = 0; i < tm.getColumnCount() - 1; i++) { // columns
-				bw.write(tm.getColumnName(i) + "\t\t\t");
+			for(int i = 0; i < tm.getColumnCount() - 1; i++) {
+				if(i==0){// columns
+					bw.write(tm.getColumnName(i) + "\t\t\t");
+				} else {
+					bw.write(tm.getColumnName(i) + "\t");
+				}
 			}
 			
 			bw.write(tm.getColumnName(2));
@@ -384,7 +396,7 @@ public class Records extends JPanel {
 					if(j<1) {
 						bw.write(tm.getValueAt(i,j).toString()+"\t\t\t");
 					} else {
-						bw.write(tm.getValueAt(i,j).toString());
+						bw.write(tm.getValueAt(i,j).toString() + "\t");
 					}
 				}
 				bw.write(listDates.get(i)+"\t"+listTime.get(i));

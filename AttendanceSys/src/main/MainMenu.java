@@ -38,6 +38,8 @@ public class MainMenu extends JFrame {
 	public static Records records;
 	public static TeacherAssignDept TeacherAssignDept;
 	public static ViewOtherStudents ViewOtherStudents;
+	public static ViewExcuseRequest ViewExcuseRequest;
+	public static ViewExcuseLetter ViewExcuseLetter;
 	private JPanel contentPane;
 	private String username = Login.pubUsername,uid = Login.pubUID;
 	String title = "Attendance: "+Login.pubOccupation;
@@ -98,6 +100,10 @@ public class MainMenu extends JFrame {
 		TeacherAssignDept.setBounds(0,0,559,539);
 		ViewOtherStudents = new ViewOtherStudents();
 		ViewOtherStudents.setBounds(0,0,559,539);
+		ViewExcuseRequest = new ViewExcuseRequest();
+		ViewExcuseRequest.setBounds(0,0,559,539);
+		ViewExcuseLetter = new ViewExcuseLetter();
+		ViewExcuseLetter.setBounds(0,0,559,539);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(65, 105, 225).darker()));
@@ -417,6 +423,8 @@ public class MainMenu extends JFrame {
 		panelMainContent.add(records);
 		panelMainContent.add(TeacherAssignDept);
 		panelMainContent.add(ViewOtherStudents);
+		panelMainContent.add(ViewExcuseRequest);
+		panelMainContent.add(ViewExcuseLetter);
 		
 		menuClicked(panelHome);
 		setResizable(false);
@@ -440,6 +448,8 @@ public class MainMenu extends JFrame {
 		records.setVisible(false);
 		TeacherAssignDept.setVisible(false);
 		ViewOtherStudents.setVisible(false);
+		ViewExcuseRequest.setVisible(false);
+		ViewExcuseLetter.setVisible(false);
 		
 		panel.setVisible(true);		
 	}

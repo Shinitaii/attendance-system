@@ -97,7 +97,7 @@ public class panelAttendance extends JPanel {
 						label2.setForeground(Color.white);
 						label2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 						label2.setHorizontalAlignment(SwingConstants.CENTER);
-						JLabel label3 = new JLabel(Login.pubFullName);
+						JLabel label3 = new JLabel("Teacher: "+Login.pubFullName);
 						label3.setForeground(Color.white);
 						label3.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 						label3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -278,7 +278,7 @@ public class panelAttendance extends JPanel {
 			label2.setForeground(Color.white);
 			label2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 			label2.setHorizontalAlignment(SwingConstants.CENTER);
-			JLabel label3 = new JLabel(listTeacherNames.get(i));
+			JLabel label3 = new JLabel("Teacher: "+listTeacherNames.get(i));
 			label3.setForeground(Color.white);
 			label3.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 			label3.setHorizontalAlignment(SwingConstants.CENTER);
