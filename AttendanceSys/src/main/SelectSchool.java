@@ -97,7 +97,7 @@ public class SelectSchool extends JDialog {
 											JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
 											PreparedStatement inSchool = conn.prepareStatement("update userinfo set occupation='Owner', hasASchool = true, inviteCodeOfSchool ='"+obtainedInviteCode+"', schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
 											inSchool.executeUpdate();
-												
+											Login.pubInviteCode = obtainedInviteCode;
 											conn.close();
 											addSchool.close();
 											inSchool.close(); 
