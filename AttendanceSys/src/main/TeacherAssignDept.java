@@ -83,7 +83,7 @@ public class TeacherAssignDept extends JPanel {
 				int result = 0;
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 					PreparedStatement deleteExisting = conn.prepareStatement("update subjectinfo set hasATeacher=false, teachername=null where hasATeacher=true and teachername=?");
-					if(Login.pubOccupation.equals("Admin")) {
+					if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 						deleteExisting.setString(1, obtainedTeacherName);
 					} else {
 						deleteExisting.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);
@@ -97,7 +97,7 @@ public class TeacherAssignDept extends JPanel {
 					if(selected) {
 						try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 							PreparedStatement getStatement = conn.prepareStatement("update subjectinfo set hasATeacher = true, teachername =? where subjectname=? and sectionname=? and departmentname=? and schoolname=? and schoolid=?");
-							if(Login.pubOccupation.equals("Admin")) {
+							if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 								getStatement.setString(1, obtainedTeacherName);
 							} else {
 								getStatement.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);

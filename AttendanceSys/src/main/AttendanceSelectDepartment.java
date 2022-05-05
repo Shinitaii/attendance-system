@@ -112,7 +112,7 @@ public class AttendanceSelectDepartment extends JPanel {
 					MainMenu.AttendanceSelectSection.obtainedDept = source.getName();
 					MainMenu.AttendanceSelectSubject.obtainedDept = source.getName();
 					MainMenu.panelAttendance.obtainedDept = source.getName();
-					if(!Login.pubOccupation.equals("Admin")) {
+					if(Login.pubOccupation.equals("Teacher")) {
 						MainMenu.AttendanceSelectSection.executeForTeachers();
 					} else {
 						MainMenu.AttendanceSelectSection.execute();

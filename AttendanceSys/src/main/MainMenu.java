@@ -134,7 +134,7 @@ public class MainMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				setTitle(title+" - Department");
-				if(Login.pubOccupation.equals("Admin")) {
+				if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 					menuClicked(panelDepartment);
 					panelSections.buttonNames.clear();
 					panelSections.listSecNames.clear();
@@ -168,7 +168,7 @@ public class MainMenu extends JFrame {
 		panel.add(panelDept);
 		
 		JLabel lblDepartment;
-		if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Teacher")) {
+		if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Teacher") || Login.pubOccupation.equals("Owner")) {
 			lblDepartment = new JLabel("Department");
 		} else {
 			lblDepartment = new JLabel("Section");
@@ -201,7 +201,7 @@ public class MainMenu extends JFrame {
 					panelAttendance.mainScreen.removeAll();
 				}
 				
-				if(Login.pubOccupation.equals("Admin")) {
+				if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 					menuClicked(AttendanceSelectDepartment);
 					AttendanceSelectDepartment.execute();
 				} else if(Login.pubOccupation.equals("Teacher")) {
@@ -372,7 +372,7 @@ public class MainMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				setTitle(title+" - Subject");
-				if(Login.pubOccupation.equals("Admin")) {
+				if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 					menuClicked(SubjectSelectDepartment);
 					SubjectSelectDepartment.execute();
 				} else if (Login.pubOccupation.equals("Teacher")){

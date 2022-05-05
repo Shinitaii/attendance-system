@@ -141,7 +141,7 @@ public class panelDepartment extends JPanel {
 		
 		
 		
-		if(!Login.pubOccupation.equals("Admin")) {
+		if(Login.pubOccupation.equals("Teacher")) {
 			buttonSelection.setVisible(false);
 			lblSelectToDelete.setText("Click on a department to select its sections.");
 			lblSelectToDelete.setBounds(10, 11, 425, 12);
@@ -270,7 +270,7 @@ public class panelDepartment extends JPanel {
 				whatDept = buttonNames.get(buttonNames.indexOf(source)).getName();
 				MainMenu.panelSectionMembers.obtainedDept = whatDept;
 				MainMenu.panelSections.currentDept.setText("Department: "+whatDept);
-				if(!Login.pubOccupation.equals("Admin")) {
+				if(Login.pubOccupation.equals("Teacher")) {
 					MainMenu.panelSections.executeForTeachers();
 				} else {
 					MainMenu.panelSections.execute();

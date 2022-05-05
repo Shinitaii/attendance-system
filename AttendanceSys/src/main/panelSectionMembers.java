@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class panelSectionMembers extends JPanel {
 	/**
@@ -203,10 +204,10 @@ public class panelSectionMembers extends JPanel {
 	
 	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			String azTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname asc";
-			String zaTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname desc";
-			String azStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname asc";
-			String zaStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname desc";
+			String azTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname asc";
+			String zaTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname desc";
+			String azStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname asc";
+			String zaStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname desc";
 			PreparedStatement puttingInTable;
 			if(cbName.getSelectedIndex() == 0 && cbOccup.getSelectedIndex() == 0) { // if a-z, teachers first -> default
 				puttingInTable = conn.prepareStatement(azTeachers);
@@ -235,13 +236,16 @@ public class panelSectionMembers extends JPanel {
 			if(!e.getValueIsAdjusting()){
 				if (table.getSelectedRow() > -1) {
 		    	   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
-		   		   try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-		   			   PreparedStatement getStatement = conn.prepareStatement("update userinfo set hasADept = false, departmentname=null, hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) = '"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
-		   			   getStatement.executeUpdate();
-		   			   model.setRowCount(0);
-		   			   checkList();
-		   		   } catch (SQLException sql) {
-		    		   sql.printStackTrace();
+		    	   int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove "+value+" in section "+obtainedSec+" from department "+obtainedDept+"?");
+		    	   if(result == JOptionPane.YES_OPTION) {
+		    		   try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+		    			   PreparedStatement getStatement = conn.prepareStatement("update userinfo set hasADept = false, departmentname=null, hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) = '"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+		    			   getStatement.executeUpdate();
+		    			   model.setRowCount(0);
+		    			   checkList();
+		    		   } catch (SQLException sql) {
+		    			   sql.printStackTrace();
+		    		   }
 		    	   }
 		   	   }
 	       }

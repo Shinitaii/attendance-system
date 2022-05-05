@@ -171,12 +171,12 @@ public class Records extends JPanel {
 			}
 		});
 		viewExcused.addMouseListener(new PropertiesListener(viewExcused));
-		viewExcused.setBounds(170, 11, 139, 50);
+		viewExcused.setBounds(170, 11, 149, 50);
 		add(viewExcused);
 		
 		if(Login.pubOccupation.equals("Teacher")) {
 			editButton.setVisible(false);
-			viewExcused.setBounds(90, 11, 70, 50);
+			viewExcused.setBounds(90, 11, 149, 50);
 		} else if(Login.pubOccupation.equals("Student")) {
 			editButton.setVisible(false);
 			statusButton.setVisible(false);

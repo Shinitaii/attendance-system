@@ -37,7 +37,6 @@ public class panelSections extends JPanel {
 	static int count = 0;
 	private static JButton existingButton;
 	private JButton newButton;
-	static boolean isDeletingSec = false;
 	boolean isAddingSec = false;
 	public String whatSec;
 	private boolean isDeletingSecs = false;
@@ -89,7 +88,7 @@ public class panelSections extends JPanel {
 		addSec.addMouseListener(new PropertiesListener(addSec));
 		addSec.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				isDeletingSec = false;
+				isDeletingSecs = false;
 				isAddingSec = true;
 				lblSelectSection.setText("Click on a Section to select its sections.");
 				String obtainedSec = JOptionPane.showInputDialog(null, "Input Section Name:");
@@ -176,7 +175,7 @@ public class panelSections extends JPanel {
 		scrollPane.setBounds(10,96,539,432);
 		add(scrollPane);
 
-		if(!Login.pubOccupation.equals("Admin")) {
+		if(Login.pubOccupation.equals("Teacher")) {
 			panel.remove(backToDept);
 			panel.remove(currentDept);
 			add(backToDept);
@@ -269,7 +268,7 @@ public class panelSections extends JPanel {
 	
 	private class AddAndDeleteListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			if(!isDeletingSec) {
+			if(!isDeletingSecs) {
 				MainMenu.menuClicked(MainMenu.panelSectionMembers);
 				JButton source = (JButton) e.getSource();
 				whatSec = buttonNames.get(buttonNames.indexOf(source)).getName();

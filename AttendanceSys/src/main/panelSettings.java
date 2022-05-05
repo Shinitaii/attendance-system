@@ -68,7 +68,7 @@ public class panelSettings extends JPanel {
 		buttonChangePass.setLayout(null);
 		panel.add(buttonChangePass);
 		
-		if(!Login.pubOccupation.equals("Student") && !(Login.pubOccupation.equals("Admin"))) {
+		if(Login.pubOccupation.equals("Teacher")) {
 		JButton changeSubjects = new JButton("Change Subjects");
 		changeSubjects.addActionListener(new TeacherAssignListener());
 		changeSubjects.addMouseListener(new PropertiesListener(changeSubjects));
@@ -87,21 +87,15 @@ public class panelSettings extends JPanel {
 							if(sqlResult.next()) {
 								int obtainedNum = sqlResult.getInt("count(*)");
 								if(obtainedNum > 1) {
-									PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
-									deleteExisting.setString(1, Login.pubFullName);
-									deleteExisting.executeUpdate();
-									PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='Student', schoolname=null, hasASchool=false, inviteCodeOfSchool=null , departmentname=null , hasADept=false , sectionname=null , hasASec=false where userid='"+Login.pubUID+"'");
-									int leaving = getStatement.executeUpdate();
-									if(leaving == 1) {
-										((Window) getRootPane().getParent()).dispose();
-										JOptionPane.showMessageDialog(null, "You successfully left "+Login.pubSchoolName+"!");
-										SelectSchool school = new SelectSchool();
-										school.setVisible(true);
-									}
+									executeLeave();
 								} else {
 									JOptionPane.showMessageDialog(null, "You have to give someone an Admin role first before you leave.\r\nYou're the only admin in this school.");
 								}
 							}
+						} else if(Login.pubOccupation.equals("Owner")){
+							JOptionPane.showMessageDialog(null, "You have to give someone the ownership to someone else first.");
+						} else {
+							executeLeave();
 						}
 						
 					} catch(SQLException sql) {
@@ -140,5 +134,24 @@ public class panelSettings extends JPanel {
 		panelChangePassSetting.setVisible(false);
 		
 		panel.setVisible(true);
+	}
+	
+	private void executeLeave() {
+		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+			PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
+			deleteExisting.setString(1, Login.pubFullName);
+			PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='Student', schoolname=null, hasASchool=false, inviteCodeOfSchool=null , departmentname=null , hasADept=false , sectionname=null , hasASec=false where userid='"+Login.pubUID+"'");
+			deleteExisting.executeUpdate();
+			int leaving = getStatement.executeUpdate();
+			if(leaving == 1) {
+				
+				((Window) getRootPane().getParent()).dispose();
+				JOptionPane.showMessageDialog(null, "You successfully left "+Login.pubSchoolName+"!");
+				SelectSchool school = new SelectSchool();
+				school.setVisible(true);
+			}
+		} catch(SQLException sql) {
+			sql.printStackTrace();
+		}
 	}
 }

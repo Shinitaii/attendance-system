@@ -242,7 +242,7 @@ public class panelSubjects extends JPanel {
 			String normal = "select sectionname from sectioninfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			String teacher = "select sectionname from subjectinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			PreparedStatement getStatement;
-			if(Login.pubOccupation.equals("Admin")) {
+			if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 				getStatement = conn.prepareStatement(normal);
 			} else {
 				getStatement = conn.prepareStatement(teacher);
@@ -263,7 +263,7 @@ public class panelSubjects extends JPanel {
 			String query;
 			if(Login.pubOccupation.equals("Teacher")) {
 				query = "select subjectname, sectionname, subjectdesc, teachername from subjectinfo where teachername='"+Login.pubFN+" "+Login.pubMN+" "+Login.pubLN+"' and departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
-			} else if (Login.pubOccupation.equals("Admin")) {
+			} else if (Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
 				query = "select subjectname, sectionname, subjectdesc, teachername from subjectinfo where departmentname='"+MainMenu.SubjectSelectDepartment.selectedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";
 			} else {
 				query = "select subjectname, subjectdesc, teachername from subjectinfo where sectionname='"+Login.pubSecName+"' and departmentname='"+Login.pubDeptName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'";

@@ -57,7 +57,6 @@ public class attendanceSettings extends JDialog {
 			e.printStackTrace();
 		}
 	}
-
 	/**
 	 * Create the dialog.
 	 */

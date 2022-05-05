@@ -200,7 +200,7 @@ public class panelAttendance extends JPanel {
 		lblSort.setBounds(385, 44, 39, 14);
 		add(lblSort);
 		
-		if(!Login.pubOccupation.equals("Admin") && !Login.pubOccupation.equals("Teacher")) {
+		if(Login.pubOccupation.equals("Student")) {
 			addAttendance.setVisible(false);
 			deleteAttendance.setVisible(false);
 		}

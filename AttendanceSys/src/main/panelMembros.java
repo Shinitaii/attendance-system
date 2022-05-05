@@ -5,6 +5,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,6 +21,7 @@ import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.ListSelectionModel;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -50,6 +52,7 @@ public class panelMembros extends JPanel {
 	public DefaultTableModel model;
 	private String selectedDept, selectedSec, nameAoD = "asc";
 	private JLabel lblTotalNum;
+	boolean transferred;
 	/**
 	 * Create the panel.
 	 */
@@ -231,7 +234,7 @@ public class panelMembros extends JPanel {
 		revalidate();
 		repaint();
 		
-		if(!Login.pubOccupation.equals("Admin")) {
+		if(Login.pubOccupation.equals("Student") || Login.pubOccupation.equals("Teacher")) {
 			editButton.setVisible(false);
 		}
 	}
@@ -294,14 +297,54 @@ public class panelMembros extends JPanel {
 			if(!e.getValueIsAdjusting()){
 				if (table.getSelectedRow() > -1) {
 		    	   String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
-		   		   try {
-		   			   memberSettings dialog = new memberSettings();
-		   			   dialog.obtainedUser = value;
-		   			   dialog.lblCurrentUserSelected.setText("User: "+dialog.obtainedUser);
-	    			   dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	    			   dialog.setVisible(true);
-	    		   } catch (Exception dialog) {
-		    		   dialog.printStackTrace();
+		    	   try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
+		    		   PreparedStatement checkIfSelf = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname from userinfo where concat(firstname, ' ', middlename, ' ', lastname)='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+						ResultSet sqlResult = checkIfSelf.executeQuery();
+						if(sqlResult.next()) {
+							String fn = sqlResult.getString("fullname");
+							if(fn.equals(Login.pubFullName)){
+								JOptionPane.showMessageDialog(null, "You can't edit yourself!");
+							} else {
+								PreparedStatement checkIfAdmin = conn.prepareStatement("select occupation from userinfo where concat(firstname, ' ', middlename, ' ', lastname)='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+								ResultSet sqlResult2 = checkIfAdmin.executeQuery();
+								if(sqlResult2.next()) {
+									String occ = sqlResult2.getString("occupation");
+									if(Login.pubOccupation.equals("Admin")) {
+										if(occ.equals("Admin")){
+											JOptionPane.showMessageDialog(null, "You can't edit other Admins!");
+										} else if (occ.equals("Owner")) {
+											JOptionPane.showMessageDialog(null, "You can't edit the Owner!");
+										} else {
+										 	memberSettings dialog = new memberSettings();
+										 	dialog.obtainedUser = value;
+										 	dialog.lblCurrentUserSelected.setText("User: "+dialog.obtainedUser);
+										 	dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+										 	dialog.setVisible(true);
+										 }
+									} else {
+										memberSettings dialog = new memberSettings();
+									 	dialog.obtainedUser = value;
+									 	dialog.lblCurrentUserSelected.setText("User: "+dialog.obtainedUser);
+									 	dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									 	dialog.setVisible(true);
+									 	
+									 	if(transferred) {
+									 		((Window) getRootPane().getParent()).dispose();
+									 		transferred = false;
+									 		try {
+												UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+												Login frame = new Login();
+												frame.setVisible(true);
+											} catch (Exception login) {
+												login.printStackTrace();
+											}
+									 	}
+									}
+								}
+							}
+						}
+	    		   } catch (SQLException sql) {
+		    		   sql.printStackTrace();
 		    	   }
 		   	   }
 	       	}
@@ -315,7 +358,8 @@ public class panelMembros extends JPanel {
 					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 						MainMenu.ViewOtherStudents.remove(MainMenu.ViewOtherStudents.backButton);
 						MainMenu.ViewOtherStudents.lblpfp.setIcon(null);
-						String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+						String value;
+						value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
 						String getDept = "", getSec = "", getOcc = "";
 						Blob photo = null;
 						PreparedStatement getStatement = conn.prepareStatement("select occupation, departmentname, sectionname, profilePicture from userinfo where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
@@ -342,17 +386,52 @@ public class panelMembros extends JPanel {
 						MainMenu.ViewOtherStudents.backButton.setBounds(10, 11, 89, 23);
 						MainMenu.ViewOtherStudents.add(MainMenu.ViewOtherStudents.backButton);
 					
-						if(Login.pubOccupation.equals("Admin"))
+						if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner"))
 							MainMenu.ViewOtherStudents.kickButton = new JButton("Kick");
 							MainMenu.ViewOtherStudents.kickButton.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									int sure = JOptionPane.showConfirmDialog(null, "Are you sure you want to kick "+value+"?");
+									String value = table.getModel().getValueAt(table.getSelectedRow(), 0).toString();
+									int sure = JOptionPane.showConfirmDialog(null, "Are you sure you want to kick "+value+"?", "Warning", JOptionPane.YES_NO_OPTION);
 									if(sure == JOptionPane.YES_OPTION) {
 										try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
-											PreparedStatement statement = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null, hasADept=false, departmentname=null, hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
-											int result = statement.executeUpdate();
-											if(result == 1) {
-												JOptionPane.showMessageDialog(null, "Successfully kicked "+value+"!");
+											PreparedStatement checkIfSelf = conn.prepareStatement("select concat(firstname, ' ', middlename, ' ', lastname) as fullname from userinfo where concat(firstname, ' ', middlename, ' ', lastname)='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+											ResultSet sqlResult = checkIfSelf.executeQuery();
+											if(sqlResult.next()) {
+												String fn = sqlResult.getString("fullname");
+												if(fn.equals(Login.pubFullName)){
+													JOptionPane.showMessageDialog(null, "You can't kick yourself!");
+												} else {
+													PreparedStatement checkIfAdmin = conn.prepareStatement("select occupation from userinfo where concat(firstname, ' ', middlename, ' ', lastname)='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+													ResultSet sqlResult2 = checkIfAdmin.executeQuery();
+													if(sqlResult2.next()) {
+														String occ = sqlResult2.getString("occupation");
+														if(Login.pubOccupation.equals("Admin")) {
+															if(occ.equals("Admin")){
+																JOptionPane.showMessageDialog(null, "You can't kick other Admins!");
+															} else if (occ.equals("Owner")) {
+																JOptionPane.showMessageDialog(null, "You can't kick the Owner!");
+															} else {
+																PreparedStatement statement = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null, hasADept=false, departmentname=null, hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+																int result = statement.executeUpdate();
+																if(result == 1) {
+																	JOptionPane.showMessageDialog(null, "Successfully kicked "+value+"!");
+																	MainMenu.menuClicked(MainMenu.panelMembros);
+																	model.setRowCount(0);
+																	checkList();
+																}
+															}
+														} else {
+															PreparedStatement statement = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null, hasADept=false, departmentname=null, hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+															int result = statement.executeUpdate();
+															if(result == 1) {
+																JOptionPane.showMessageDialog(null, "Successfully kicked "+value+"!");
+																MainMenu.menuClicked(MainMenu.panelMembros);
+																model.setRowCount(0);
+																checkList();
+															}
+														}
+													}
+												}
 											}
 										} catch(SQLException sql) {
 											sql.printStackTrace();
