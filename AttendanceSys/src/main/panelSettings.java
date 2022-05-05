@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.awt.Cursor;
 import java.awt.GridLayout;
@@ -81,23 +82,42 @@ public class panelSettings extends JPanel {
 				int result = JOptionPane.showConfirmDialog(null,"Are you sure you want to leave "+Login.pubSchoolName+"?","Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if(result == JOptionPane.YES_OPTION) {
 					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-						if(Login.pubOccupation.equals("Admin")) {
-							PreparedStatement checkAdminCount = conn.prepareStatement("select count(*) from userinfo where occupation='Admin' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
-							ResultSet sqlResult = checkAdminCount.executeQuery();
-							if(sqlResult.next()) {
-								int obtainedNum = sqlResult.getInt("count(*)");
-								if(obtainedNum > 1) {
-									executeLeave();
+						PreparedStatement checkMemberCount = conn.prepareStatement("select count(occupation) from userinfo where schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+						ResultSet count = checkMemberCount.executeQuery();
+						if(count.next()) {
+							int num = count.getInt("count(occupation)");
+							if(num == 1) {
+								int choose = JOptionPane.showConfirmDialog(null, "You're the only one left in the school, leaving will permanently delete the school.\r\nDo you proceed?", "Warning!", JOptionPane.YES_NO_OPTION);
+								if(choose == JOptionPane.YES_OPTION) {
+									PreparedStatement editMember = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null");
+									editMember.executeUpdate();
+									PreparedStatement deleteSchool = conn.prepareStatement("delete from schoolinfo where schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+									deleteSchool.executeUpdate();
+									JOptionPane.showMessageDialog(null, "You have left "+Login.pubSchoolName+"  and it is permanently removed!");
+									((Window) getRootPane().getParent()).dispose();
+									SelectSchool dialog = new SelectSchool();
+									dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									dialog.setVisible(true);
+								}
+							} else {
+								if(Login.pubOccupation.equals("Admin")) {
+									PreparedStatement checkAdminCount = conn.prepareStatement("select count(*) from userinfo where occupation='Admin' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+									ResultSet sqlResult = checkAdminCount.executeQuery();
+									if(sqlResult.next()) {
+										int obtainedNum = sqlResult.getInt("count(*)");
+										if(obtainedNum > 1) {
+											executeLeave();
+										} else {
+											JOptionPane.showMessageDialog(null, "You have to give someone an Admin role first before you leave.\r\nYou're the only admin in this school.");
+										}
+									}
+								} else if(Login.pubOccupation.equals("Owner")){
+									JOptionPane.showMessageDialog(null, "You have to give someone the ownership to someone else first.");
 								} else {
-									JOptionPane.showMessageDialog(null, "You have to give someone an Admin role first before you leave.\r\nYou're the only admin in this school.");
+									executeLeave();
 								}
 							}
-						} else if(Login.pubOccupation.equals("Owner")){
-							JOptionPane.showMessageDialog(null, "You have to give someone the ownership to someone else first.");
-						} else {
-							executeLeave();
-						}
-						
+						}			
 					} catch(SQLException sql) {
 						sql.printStackTrace();
 					}

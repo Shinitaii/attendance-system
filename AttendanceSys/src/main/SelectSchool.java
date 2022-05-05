@@ -91,13 +91,21 @@ public class SelectSchool extends JDialog {
 										int addedSchool = addSchool.executeUpdate();
 										if(addedSchool == 1) {
 											Login.pubSchoolName = obtainedSchool;
-											Login.pubOccupation = "Admin";
+											Login.pubOccupation = "Owner";
 											setVisible(false);
 											JOptionPane.showMessageDialog(null, "School added!");
 											JOptionPane.showMessageDialog(null, "Here is the invite code: "+obtainedInviteCode);
 											PreparedStatement inSchool = conn.prepareStatement("update userinfo set occupation='Owner', hasASchool = true, inviteCodeOfSchool ='"+obtainedInviteCode+"', schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
 											inSchool.executeUpdate();
 											Login.pubInviteCode = obtainedInviteCode;
+											PreparedStatement getSchoolID = conn.prepareStatement("select schoolid from schoolinfo where schoolname='"+obtainedSchool+" and inviteCode='"+obtainedInviteCode+"' and creator'"+Login.pubUID+"'");
+											ResultSet result = getSchoolID.executeQuery();
+											if(result.next()) {
+												String ID = result.getString("schoolid");
+												Login.pubInviteCode = ID;
+											}
+											getSchoolID.close();
+											result.close();
 											conn.close();
 											addSchool.close();
 											inSchool.close(); 
