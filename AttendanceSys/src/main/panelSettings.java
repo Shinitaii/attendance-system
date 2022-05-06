@@ -111,8 +111,8 @@ public class panelSettings extends JPanel {
 											JOptionPane.showMessageDialog(null, "You have to give someone an Admin role first before you leave.\r\nYou're the only admin in this school.");
 										}
 									}
-								} else if(Login.pubOccupation.equals("Owner")){
-									JOptionPane.showMessageDialog(null, "You have to give someone the ownership to someone else first.");
+								} else if(Login.pubOccupation.equals("Head Admin")){
+									JOptionPane.showMessageDialog(null, "You have to give your current role to someone else first.");
 								} else {
 									executeLeave();
 								}

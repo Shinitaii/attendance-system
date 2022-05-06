@@ -88,7 +88,7 @@ public class panelHome extends JPanel {
 		lblTime.setBounds(10, 368, 539, 60);
 		add(lblTime);
 		
-		DateFormat dateandtime = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+		DateFormat dateandtime = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
 		Timer time = new Timer(500, (ActionListener) new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {

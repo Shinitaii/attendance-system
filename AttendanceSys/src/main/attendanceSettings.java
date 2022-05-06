@@ -97,10 +97,10 @@ public class attendanceSettings extends JDialog {
 						Date date = new Date();
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(date);
-						month = cal.get(Calendar.MONTH);
+						month = cal.get(Calendar.MONTH) + 1;
 						day = cal.get(Calendar.DAY_OF_MONTH);
 						year = cal.get(Calendar.YEAR);
-						name = obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount;
+						name = obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+"/"+day+"/"+year;
 						attendanceName.setText("Attendance Name: " + name); 
 					}
 				}
@@ -152,14 +152,14 @@ public class attendanceSettings extends JDialog {
 								List<String> obtainedMN = new ArrayList<String>();
 								List<String> obtainedLN = new ArrayList<String>();
 								PreparedStatement getStatement = conn.prepareStatement("insert into attendancerecords (record_name, subjectname, sectionname, departmentname, schoolname, schoolid,timecreated, creator) values (?,?,?,?,?,?,CURRENT_TIMESTAMP, concat('"+Login.pubFN+"', ' ',  '"+Login.pubMN+"', ' ', '"+Login.pubLN+"'))");
-								getStatement.setString(1, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount);
+								getStatement.setString(1, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+"/"+day+"/"+year);
 								getStatement.setString(2, obtainedSub);
 								getStatement.setString(3, obtainedSec);
 								getStatement.setString(4, obtainedDept);
 								getStatement.setString(5, Login.pubSchoolName);
 								getStatement.setString(6, Login.pubSchoolID);
 								int result = getStatement.executeUpdate();
-								PreparedStatement getRecordID = conn.prepareStatement("select recordid from attendancerecords where record_name='"+obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+								PreparedStatement getRecordID = conn.prepareStatement("select recordid from attendancerecords where record_name='"+obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+"/"+day+"/"+year+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 								ResultSet resultID = getRecordID.executeQuery();
 								if(resultID.next()) {
 									obtainedRecordID = resultID.getString("recordid");
@@ -182,7 +182,7 @@ public class attendanceSettings extends JDialog {
 								for(int i = 0; i < totalMembers; i++) {
 									PreparedStatement getSecondStatement = conn.prepareStatement("insert into attendancestatus (recordid, record_name, firstname, middlename, lastname, subjectname, sectionname, departmentname, schoolname, schoolid) values (?,?,?,?,?,?,?,?,?,?)");
 									getSecondStatement.setString(1, obtainedRecordID);
-									getSecondStatement.setString(2, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+" "+day+", "+year + " - " + currentRecordCount);
+									getSecondStatement.setString(2, obtainedDept+"-"+obtainedSec+"-"+obtainedSub+" | "+month+"/"+day+"/"+year);
 									getSecondStatement.setString(3, obtainedFN.get(i));
 									getSecondStatement.setString(4, obtainedMN.get(i));
 									getSecondStatement.setString(5, obtainedLN.get(i));

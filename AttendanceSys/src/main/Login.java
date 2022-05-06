@@ -128,63 +128,68 @@ public class Login extends JFrame {
 					if(get.next()) {
 						obtainedSalt = get.getBytes("saltpass");
 					}
-					PreparedStatement checkAccount = conn.prepareStatement("select * from userinfo where username='"+username+"' and pass='"+HashedPassword.existingSalt(password, obtainedSalt)+"'");
-					ResultSet x = checkAccount.executeQuery();
-					if(x.next()) {
-						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec, inviteCodeOfSchool from userinfo where username='"+username+"'");
-						ResultSet whatInfo = checkInfo.executeQuery();
-						while (whatInfo.next()) {
-							pubUID = whatInfo.getString("userid");
-							pubFN = whatInfo.getString("firstname");
-							pubMN = whatInfo.getString("middlename");
-							pubLN = whatInfo.getString("lastname");
-							pubOccupation = whatInfo.getString("occupation");
-							pubHasASchool = whatInfo.getBoolean("hasASchool");
-							pubSchoolName = whatInfo.getString("schoolname");
-							pubDeptName = whatInfo.getString("departmentname");
-							pubHasADept = whatInfo.getBoolean("hasADept");
-							pubSecName = whatInfo.getString("sectionname");
-							pubHasASec = whatInfo.getBoolean("hasASec");
-							pubInviteCode = whatInfo.getString("inviteCodeOfSchool");
-						}	
-						PreparedStatement checkSchoolInfo = conn.prepareStatement("select schoolid from schoolinfo where schoolname='"+pubSchoolName+"' and inviteCode='"+pubInviteCode+"'");
-						ResultSet whatSchoolInfo = checkSchoolInfo.executeQuery();
-						if(whatSchoolInfo.next()) {
-						pubSchoolID = whatSchoolInfo.getString("schoolid");
-						}
-						pubFullName = pubFN+" "+pubMN+" "+pubLN;
-						if(!pubHasASchool) {
-							try {
-								SelectSchool dialog = new SelectSchool();
-								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-								dialog.setVisible(true);
+					if(obtainedSalt != null) {
+						PreparedStatement checkAccount = conn.prepareStatement("select * from userinfo where username='"+username+"' and pass='"+HashedPassword.existingSalt(password, obtainedSalt)+"'");
+						ResultSet x = checkAccount.executeQuery();
+						if(x.next()) {
+							PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec, inviteCodeOfSchool from userinfo where username='"+username+"'");
+							ResultSet whatInfo = checkInfo.executeQuery();
+							while (whatInfo.next()) {
+								pubUID = whatInfo.getString("userid");
+								pubFN = whatInfo.getString("firstname");
+								pubMN = whatInfo.getString("middlename");
+								pubLN = whatInfo.getString("lastname");
+								pubOccupation = whatInfo.getString("occupation");
+								pubHasASchool = whatInfo.getBoolean("hasASchool");
+								pubSchoolName = whatInfo.getString("schoolname");
+								pubDeptName = whatInfo.getString("departmentname");
+								pubHasADept = whatInfo.getBoolean("hasADept");
+								pubSecName = whatInfo.getString("sectionname");
+								pubHasASec = whatInfo.getBoolean("hasASec");
+								pubInviteCode = whatInfo.getString("inviteCodeOfSchool");
+							}	
+							PreparedStatement checkSchoolInfo = conn.prepareStatement("select schoolid from schoolinfo where schoolname='"+pubSchoolName+"' and inviteCode='"+pubInviteCode+"'");
+							ResultSet whatSchoolInfo = checkSchoolInfo.executeQuery();
+							if(whatSchoolInfo.next()) {
+								pubSchoolID = whatSchoolInfo.getString("schoolid");
+							}
+							pubFullName = pubFN+" "+pubMN+" "+pubLN;
+							if(!pubHasASchool) {
+								try {
+									SelectSchool dialog = new SelectSchool();
+									dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									dialog.setVisible(true);
 							} catch (Exception dialog) {
 								dialog.printStackTrace();
 							}
-						} else {
-							EventQueue.invokeLater(new Runnable() {
-								public void run() {
-									try {
-										MainMenu frame = new MainMenu();
-										frame.setVisible(true);
-									} catch (Exception e) {
-										e.printStackTrace();
+							} else {
+								EventQueue.invokeLater(new Runnable() {
+									public void run() {
+										try {
+											MainMenu frame = new MainMenu();
+											frame.setVisible(true);
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
 									}
-								}
-							});
-							
+								});
+							}
+							dispose();
+							whatInfo.close();
+							checkInfo.close();
+						} else {
+							lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
+							lblStatus.setText("Incorrect username or password!");
+							lblStatus.setForeground(Color.RED);
 						}
-						dispose();
-						whatInfo.close();
-						checkInfo.close();
+						x.close();
+						conn.close();
+						checkAccount.close();
 					} else {
 						lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 						lblStatus.setText("Incorrect username or password!");
 						lblStatus.setForeground(Color.RED);
 					}
-					x.close();
-					conn.close();
-					checkAccount.close();
 				} catch (SQLException sql) {
 					sql.printStackTrace();
 				}

@@ -83,7 +83,7 @@ public class TeacherAssignDept extends JPanel {
 				int result = 0;
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 					PreparedStatement deleteExisting = conn.prepareStatement("update subjectinfo set hasATeacher=false, teachername=null where hasATeacher=true and teachername=?");
-					if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
+					if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Head Admin")) {
 						deleteExisting.setString(1, obtainedTeacherName);
 					} else {
 						deleteExisting.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);
@@ -97,7 +97,7 @@ public class TeacherAssignDept extends JPanel {
 					if(selected) {
 						try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 							PreparedStatement getStatement = conn.prepareStatement("update subjectinfo set hasATeacher = true, teachername =? where subjectname=? and sectionname=? and departmentname=? and schoolname=? and schoolid=?");
-							if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner")) {
+							if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Head Admin")) {
 								getStatement.setString(1, obtainedTeacherName);
 							} else {
 								getStatement.setString(1, Login.pubFN+" "+Login.pubMN+" "+Login.pubLN);
@@ -183,7 +183,7 @@ public class TeacherAssignDept extends JPanel {
 	private void addCheckBoxes() {
 		int height = 0;
 		for(int i = 0; i < obtainedSubNames.size(); i++) {
-			JCheckBox cb = new JCheckBox("Subject: "+ obtainedSubNames.get(i)+" - Department: "+obtainedDeptNames.get(i)+" - Section: "+obtainedSecNames.get(i));
+			JCheckBox cb = new JCheckBox(obtainedSubNames.get(i)+" - "+obtainedDeptNames.get(i)+" - "+obtainedSecNames.get(i));
 			cb.setName(obtainedSubNames.get(i)+"-"+obtainedDeptNames.get(i)+":"+obtainedSecNames.get(i));
 			cb.setBackground(Color.WHITE);
 			listCB.add(cb);

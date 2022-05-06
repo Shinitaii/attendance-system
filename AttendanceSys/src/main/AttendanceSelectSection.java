@@ -42,7 +42,7 @@ public class AttendanceSelectSection extends JPanel {
 		selectionScreen.setBackground(new Color(255, 255, 255));
 		selectionScreen.setBounds(10, 69, 539, 459);
 		add(selectionScreen);
-		selectionScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		selectionScreen.setLayout(new GridLayout(0, 2, 2, 2));
 		
 		JLabel noteLabel = new JLabel("Select a section.");
 		noteLabel.setBounds(93, 44, 97, 14);
@@ -134,10 +134,10 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkCountForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(sectionname) from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(distinct sectionname) from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
-				count = checking.getInt("count(sectionname)");
+				count = checking.getInt("count(distinct sectionname)");
 			}
 		} catch (SQLException sql) {
 			sql.printStackTrace();
@@ -146,7 +146,7 @@ public class AttendanceSelectSection extends JPanel {
 	
 	private void checkNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select sectionname from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkName = conn.prepareStatement("select distinct sectionname from subjectinfo where teachername='"+Login.pubFullName+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String deptName = checking.getString("sectionname");

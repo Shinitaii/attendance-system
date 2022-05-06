@@ -52,7 +52,7 @@ public class AttendanceSelectSubject extends JPanel {
 		subjectScreen.setBackground(new Color(255, 255, 255));
 		subjectScreen.setBounds(10, 72, 539, 456);
 		add(subjectScreen);
-		subjectScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		subjectScreen.setLayout(new GridLayout(0, 2, 2, 2));
 		
 		JLabel lblNewLabel = new JLabel("Select a subject:");
 		lblNewLabel.setBounds(84, 47, 178, 14);

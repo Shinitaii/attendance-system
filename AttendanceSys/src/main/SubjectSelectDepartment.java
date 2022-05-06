@@ -44,7 +44,7 @@ public class SubjectSelectDepartment extends JPanel {
 		selectionScreen.setBackground(new Color(255, 255, 255));
 		selectionScreen.setBounds(10, 36, 539, 492);
 		add(selectionScreen);
-		selectionScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		selectionScreen.setLayout(new GridLayout(0, 2, 2, 2));
 		
 		noteLabel = new JLabel("Select a department");
 		noteLabel.setBounds(10, 11, 97, 14);
@@ -124,10 +124,10 @@ public class SubjectSelectDepartment extends JPanel {
 	
 	private void checkCountForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {
-			PreparedStatement checkCount = conn.prepareStatement("select count(departmentname) from subjectinfo where teachername='"+Login.pubFullName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkCount = conn.prepareStatement("select count(distinct departmentname) from subjectinfo where teachername='"+Login.pubFullName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkCount.executeQuery();
 			if(checking.next()) {
-				count = checking.getInt("count(departmentname)");
+				count = checking.getInt("count(distinct departmentname)");
 			}
 			if(count == 0) {
 				JButton button = new JButton("Get assigned");
@@ -143,7 +143,7 @@ public class SubjectSelectDepartment extends JPanel {
 	
 	private void checkNameForTeachers() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)) {	
-			PreparedStatement checkName = conn.prepareStatement("select departmentname from subjectinfo where teachername='"+Login.pubFullName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement checkName = conn.prepareStatement("select distinct departmentname from subjectinfo where teachername='"+Login.pubFullName+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 			ResultSet checking = checkName.executeQuery();
 			while(checking.next()) {
 				String deptName = checking.getString("departmentname");

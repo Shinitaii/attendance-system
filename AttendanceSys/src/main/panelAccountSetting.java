@@ -167,17 +167,20 @@ public class panelAccountSetting extends JPanel {
 					JPasswordField passField = new JPasswordField(20);
 					panel.add(label);
 					panel.add(passField);
-					String databasePass = "", username = txtUser.getText(), firstname = txtFN.getText(), middlename = txtMN.getText(), lastname = txtLN.getText();
+					String username = txtUser.getText(), firstname = txtFN.getText(), middlename = txtMN.getText(), lastname = txtLN.getText();
 					int button = JOptionPane.showConfirmDialog(null, panel, "Input pass",JOptionPane.OK_CANCEL_OPTION);
 					if(button == JOptionPane.OK_OPTION) {
 						char[] getPass = passField.getPassword();
 						String obtainedPass = String.valueOf(getPass);
-						PreparedStatement checkPass = conn.prepareStatement("select pass from userinfo where  userid='"+Login.pubUID+"'");
+						byte[] obtainedSalt = null;
+						PreparedStatement checkSalt = conn.prepareStatement("select saltpass from userinfo where userid='"+Login.pubUID+"'");
+						ResultSet checkingSalt = checkSalt.executeQuery();
+						if(checkingSalt.next()) {
+							obtainedSalt = checkingSalt.getBytes("saltpass");
+						}
+						PreparedStatement checkPass = conn.prepareStatement("select pass from userinfo where pass='"+HashedPassword.existingSalt(obtainedPass, obtainedSalt)+"' and userid='"+Login.pubUID+"'");
 						ResultSet checkingPass = checkPass.executeQuery();
 						if(checkingPass.next()) {
-							databasePass = checkingPass.getString("pass");
-						}
-						if(databasePass.equals(obtainedPass)) {
 							FileInputStream isPhoto = null;
 							try {
 								String photo = browseAction.pubPath;
@@ -207,7 +210,7 @@ public class panelAccountSetting extends JPanel {
 							saveCredentials.close();
 						} else {
 							JOptionPane.showMessageDialog(null, "Incorrect password!");
-						}
+						}	
 					}
 					conn.close();
 				} catch (SQLException sql) {

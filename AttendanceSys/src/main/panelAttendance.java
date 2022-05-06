@@ -88,7 +88,7 @@ public class panelAttendance extends JPanel {
 					
 					if(!dialog.isCancelled) {
 						checkName();
-						panel = new JPanel(new GridLayout(0,1,2,2));
+						panel = new JPanel(new GridLayout(0,1,0,0));
 						JLabel label = new JLabel(dialog.obtainedDept+"-"+dialog.obtainedSec+"-"+dialog.obtainedSub);
 						label.setForeground(Color.white);
 						label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
@@ -167,7 +167,7 @@ public class panelAttendance extends JPanel {
 		mainScreen.setBorder(new LineBorder(new Color(65, 105, 225)));
 		mainScreen.setBounds(10, 71, 539, 457);
 		add(mainScreen);
-		mainScreen.setLayout(new GridLayout(0, 2, 0, 0));
+		mainScreen.setLayout(new GridLayout(0, 2, 2, 2));
 		
 		cbDate = new JComboBox<String>();
 		cbDate.setBounds(414, 39, 135, 22);

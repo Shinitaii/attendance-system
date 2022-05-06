@@ -120,7 +120,14 @@ public class recordsSettings extends JDialog {
 						int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to set "+obtainedStatus+" to "+obtainedUser+"?", "Note!", JOptionPane.YES_NO_OPTION);
 						if(confirm == JOptionPane.YES_OPTION) {
 							try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-								PreparedStatement getStatement = conn.prepareStatement("update attendancestatus set studentstatus='"+obtainedStatus+"' where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'");
+								PreparedStatement getStatement;
+								String ifNotPresent = "update attendancestatus set studentstatus='"+obtainedStatus+"', timeAttended=null where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'";
+								String ifPresent = "update attendancestatus set studentstatus='"+obtainedStatus+"', timeAttended=current_timestamp where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'";
+								if(obtainedStatus == "Present") {
+									getStatement = conn.prepareStatement(ifPresent);
+								} else {
+									getStatement = conn.prepareStatement(ifNotPresent);
+								}
 								int result = getStatement.executeUpdate();
 								if(result == 1) {
 									JOptionPane.showMessageDialog(null, "Successfully set "+obtainedStatus+" to "+obtainedUser+"!");

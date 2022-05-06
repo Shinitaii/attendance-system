@@ -312,8 +312,8 @@ public class panelMembros extends JPanel {
 									if(Login.pubOccupation.equals("Admin")) {
 										if(occ.equals("Admin")){
 											JOptionPane.showMessageDialog(null, "You can't edit other Admins!");
-										} else if (occ.equals("Owner")) {
-											JOptionPane.showMessageDialog(null, "You can't edit the Owner!");
+										} else if (occ.equals("Head Admin")) {
+											JOptionPane.showMessageDialog(null, "You can't edit the Head Admin!");
 										} else {
 										 	memberSettings dialog = new memberSettings();
 										 	dialog.obtainedUser = value;
@@ -386,7 +386,7 @@ public class panelMembros extends JPanel {
 						MainMenu.ViewOtherStudents.backButton.setBounds(10, 11, 89, 23);
 						MainMenu.ViewOtherStudents.add(MainMenu.ViewOtherStudents.backButton);
 					
-						if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Owner"))
+						if(Login.pubOccupation.equals("Admin") || Login.pubOccupation.equals("Head Admin")) {
 							MainMenu.ViewOtherStudents.kickButton = new JButton("Kick");
 							MainMenu.ViewOtherStudents.kickButton.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
@@ -408,8 +408,8 @@ public class panelMembros extends JPanel {
 														if(Login.pubOccupation.equals("Admin")) {
 															if(occ.equals("Admin")){
 																JOptionPane.showMessageDialog(null, "You can't kick other Admins!");
-															} else if (occ.equals("Owner")) {
-																JOptionPane.showMessageDialog(null, "You can't kick the Owner!");
+															} else if (occ.equals("Head Admin")) {
+																JOptionPane.showMessageDialog(null, "You can't kick the Head Admin!");
 															} else {
 																PreparedStatement statement = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null, hasADept=false, departmentname=null, hasASec=false, sectionname=null where concat(firstname, ' ', middlename, ' ', lastname) ='"+value+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
 																int result = statement.executeUpdate();
@@ -438,10 +438,12 @@ public class panelMembros extends JPanel {
 										}
 									}
 								}
+								
 							});
 							MainMenu.ViewOtherStudents.kickButton.addMouseListener(new PropertiesListener(MainMenu.ViewOtherStudents.kickButton));
 							MainMenu.ViewOtherStudents.kickButton.setBounds(441, 11, 89, 23);
 							MainMenu.ViewOtherStudents.add(MainMenu.ViewOtherStudents.kickButton);
+						}	
 					} catch(SQLException sql) {
 						sql.printStackTrace();
 					}

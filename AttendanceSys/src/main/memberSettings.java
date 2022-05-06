@@ -61,7 +61,7 @@ public class memberSettings extends JDialog {
 		if(Login.pubOccupation.equals("Admin")) {
 			roles = new String[]{"Student", "Teacher", "Admin"};
 		} else {
-			roles = new String[]{"Student", "Teacher", "Admin", "Owner"};
+			roles = new String[]{"Student", "Teacher", "Admin", "Head Admin"};
 		}
 		
 		lblCurrentUserSelected = new JLabel();
@@ -92,7 +92,7 @@ public class memberSettings extends JDialog {
 				} else if (cbRoles.getSelectedIndex() == 2) {
 					roleDesc.setText("Admins are responsible for managing all of the things in the school. They can create departments, sections, subjects, attendance records, edit roles of an user and can remove/kick an user.");
 				} else {
-					roleDesc.setText("Owners are more powerful than Admins along side having the same power as Admins.");
+					roleDesc.setText("Head Admins are more powerful than Admins along side having the same power as Admins.");
 				}
 				revalidate();
 				repaint();
@@ -114,7 +114,7 @@ public class memberSettings extends JDialog {
 						if(result == JOptionPane.YES_OPTION) {
 							try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 								PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='"+cbRoles.getSelectedItem()+"' where concat(firstname, ' ', middlename, ' ', lastname)='"+obtainedUser+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
-								if(cbRoles.getSelectedItem() == "Owner") {
+								if(cbRoles.getSelectedItem() == "Head Admin") {
 									setVisible(false);
 									int r = JOptionPane.showConfirmDialog(null, "Do you really want to transfer your ownership to "+obtainedUser+"?", "Last Warning!", JOptionPane.YES_NO_OPTION);
 									if(r == JOptionPane.YES_OPTION) {
