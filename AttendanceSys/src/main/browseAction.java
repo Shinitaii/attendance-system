@@ -40,7 +40,7 @@ public class browseAction implements ActionListener {
 				Path photoLocation = Paths.get(path);
 				try {
 					long bytes = Files.size(photoLocation);
-					if(bytes < 160000) {
+					if(bytes < 500000) {
 						photoSizeCheck = true;
 					} else {
 						photoSizeCheck = false;
@@ -52,7 +52,7 @@ public class browseAction implements ActionListener {
 					Image profile = new ImageIcon(path).getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
 					label.setIcon(new ImageIcon(profile));
 				} else {
-					JOptionPane.showMessageDialog(null, "The photo you selected is higher than 16 MB!");
+					JOptionPane.showMessageDialog(null, "The photo you selected is higher than 50 MB!");
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "This is not a photo!");

@@ -122,7 +122,13 @@ public class Login extends JFrame {
 					char[] getPassword = pwdPassword.getPassword();
 					String username = txtUsername.getText(), password = String.valueOf(getPassword);
 					pubUsername = username;
-					PreparedStatement checkAccount = conn.prepareStatement("select * from userinfo where username='"+username+"' and pass='"+password+"'");
+					byte[] obtainedSalt = null;
+					PreparedStatement getSalt = conn.prepareStatement("select saltpass from userinfo where username='"+username+"'");
+					ResultSet get = getSalt.executeQuery();
+					if(get.next()) {
+						obtainedSalt = get.getBytes("saltpass");
+					}
+					PreparedStatement checkAccount = conn.prepareStatement("select * from userinfo where username='"+username+"' and pass='"+HashedPassword.existingSalt(password, obtainedSalt)+"'");
 					ResultSet x = checkAccount.executeQuery();
 					if(x.next()) {
 						PreparedStatement checkInfo = conn.prepareStatement("select userid, firstname, middlename, lastname, occupation, hasASchool, schoolname, departmentname, hasADept, sectionname, hasASec, inviteCodeOfSchool from userinfo where username='"+username+"'");

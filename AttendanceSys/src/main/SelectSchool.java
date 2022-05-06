@@ -98,11 +98,11 @@ public class SelectSchool extends JDialog {
 											PreparedStatement inSchool = conn.prepareStatement("update userinfo set occupation='Owner', hasASchool = true, inviteCodeOfSchool ='"+obtainedInviteCode+"', schoolname ='"+obtainedSchool+"' where userid ='"+Login.pubUID+"'");
 											inSchool.executeUpdate();
 											Login.pubInviteCode = obtainedInviteCode;
-											PreparedStatement getSchoolID = conn.prepareStatement("select schoolid from schoolinfo where schoolname='"+obtainedSchool+" and inviteCode='"+obtainedInviteCode+"' and creator'"+Login.pubUID+"'");
+											PreparedStatement getSchoolID = conn.prepareStatement("select schoolid from schoolinfo where schoolname='"+obtainedSchool+"' and inviteCode='"+obtainedInviteCode+"' and creator='"+Login.pubUID+"'");
 											ResultSet result = getSchoolID.executeQuery();
 											if(result.next()) {
 												String ID = result.getString("schoolid");
-												Login.pubInviteCode = ID;
+												Login.pubSchoolID = ID;
 											}
 											getSchoolID.close();
 											result.close();
@@ -178,7 +178,9 @@ public class SelectSchool extends JDialog {
 										}
 										if(inviteCode.equals(obtainedInviteCode)) {
 											Login.pubSchoolName = obtainedSchool;
-											PreparedStatement joined = conn.prepareStatement("update userinfo set schoolname ='"+obtainedSchool+"', hasASchool = 1 where userid="+Login.pubUID);
+											Login.pubInviteCode = obtainedInviteCode;
+											Login.pubOccupation = "Student";
+											PreparedStatement joined = conn.prepareStatement("update userinfo set occupation='Student', schoolname ='"+obtainedSchool+"', hasASchool = 1, inviteCodeOfSchool='"+obtainedInviteCode+"' where userid="+Login.pubUID);
 											int joinedResult = joined.executeUpdate();
 											if(joinedResult == 1) {
 												setVisible(false);

@@ -44,7 +44,7 @@ public class ResetPassword extends JFrame {
 		JPanel panelPass = new JPanel();
 		panelPass.setBackground(Color.WHITE);
 		panelPass.setBorder(new LineBorder(new Color(65, 105, 225)));
-		panelPass.setBounds(115, 60, 255, 45);
+		panelPass.setBounds(115, 31, 255, 45);
 		contentPane.add(panelPass);
 		panelPass.setLayout(null);
 		
@@ -76,7 +76,7 @@ public class ResetPassword extends JFrame {
 		JPanel panelCPass = new JPanel();
 		panelCPass.setBorder(new LineBorder(new Color(65, 105, 225)));
 		panelCPass.setBackground(new Color(255, 255, 255));
-		panelCPass.setBounds(115, 120, 255, 45);
+		panelCPass.setBounds(115, 91, 255, 45);
 		contentPane.add(panelCPass);
 		panelCPass.setLayout(null);
 		
@@ -114,15 +114,9 @@ public class ResetPassword extends JFrame {
 				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 					char[] getPassword = pwdPassword.getPassword(), getCPassword = pwdCPassword.getPassword();
 					String password = String.valueOf(getPassword), cPassword = String.valueOf(getCPassword);
-					int delay = 3000;
-					ActionListener lblStatusClearer = new ActionListener(){
-						public void actionPerformed(ActionEvent e) {
-							lblStatus.setText("");
-						}
-					};
-					Timer tick = new Timer(delay, lblStatusClearer);
+					Timer tick = new Timer(3000, lblStatusClearer);
 					tick.setRepeats(false);
-					PreparedStatement changePassword = conn.prepareStatement("update userinfo set pass='"+password+"' where userid ='"+uid+"';");
+					PreparedStatement changePassword = conn.prepareStatement("update userinfo set pass='"+HashedPassword.generateHash(password)+"', saltpass='"+HashedPassword.salt+"' where userid ='"+uid+"';");
 					if(password.isEmpty() || cPassword.isEmpty()) {
 						lblStatus.setText("Enter all of the credentials!");
 					} else {
@@ -207,17 +201,23 @@ public class ResetPassword extends JFrame {
 		lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblStatus.setForeground(Color.RED);
-		lblStatus.setBounds(115, 176, 255, 45);
+		lblStatus.setBounds(115, 147, 255, 74);
 		contentPane.add(lblStatus);
 		
 		JLabel logoPasswordPolicy = new JLabel("");
 		logoPasswordPolicy.setToolTipText("<html>The password must have at least: <br/>- Contains 8 characters or more. <br/>- Contains atleast 1 lowercase and 1 uppercase letter.<br/>- Contains 1 special character. <br/>- Does not contain spaces. </html>");
 		logoPasswordPolicy.setIcon(new ImageIcon(Images.question));
-		logoPasswordPolicy.setBounds(371, 60, 16, 16);
+		logoPasswordPolicy.setBounds(371, 31, 16, 16);
 		contentPane.add(logoPasswordPolicy);
 		
 		getRootPane().setDefaultButton(CheckA);
 		setResizable(false);
 		setLocationRelativeTo(null);
 	}
+	
+	ActionListener lblStatusClearer = new ActionListener(){
+		public void actionPerformed(ActionEvent e) {
+			lblStatus.setText("");
+		}
+	};
 }

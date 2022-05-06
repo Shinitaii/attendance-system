@@ -1,14 +1,19 @@
 package main;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.EventQueue;
+
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -25,7 +30,6 @@ public class panelChangePassSetting extends JPanel {
 	private JPasswordField pwdNewPass;
 	private JPasswordField pwdConfirmNewPass;
 	JLabel lblStatus;
-	private int delay = 5000;
 
 	public panelChangePassSetting() {
 		setBounds(0,0, 539, 450);
@@ -100,14 +104,7 @@ public class panelChangePassSetting extends JPanel {
 		logoShowConfirmNewPass.addMouseListener(new PasswordIcon(logoShowConfirmNewPass, pwdConfirmNewPass));
 		panelConfirmNewPass.add(logoShowConfirmNewPass);
 		
-		ActionListener lblStatusClearer = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					lblStatus.setForeground(Color.RED);
-					lblStatus.setText("");
-				}
-		};
-		
-		Timer tick = new Timer(delay, lblStatusClearer);
+		Timer tick = new Timer(5000, lblStatusClearer);
 		tick.setRepeats(false);
 		
 		JButton changePassButton = new JButton("Change Password");
@@ -122,9 +119,14 @@ public class panelChangePassSetting extends JPanel {
 				char[] getCurrentPass = pwdCurrentPass.getPassword(), getNewPass = pwdNewPass.getPassword(), getConfirmNewPass = pwdConfirmNewPass.getPassword();
 				String currentPass = String.valueOf(getCurrentPass), newPass = String.valueOf(getNewPass), confirmNewPass = String.valueOf(getConfirmNewPass);
 				boolean passwordChecker = false;
-				try {
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
-					PreparedStatement checkCurrentPass = conn.prepareStatement("select pass from userInfo where pass='"+currentPass+"'");
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){		
+					byte[] obtainedSalt = null;
+					PreparedStatement checkCurrentSalt = conn.prepareStatement("select saltpass from userinfo where username='"+Login.pubUsername+"' and userid='"+Login.pubUID+"'");
+					ResultSet getSalt = checkCurrentSalt.executeQuery();
+					if(getSalt.next()) {
+						obtainedSalt = getSalt.getBytes("saltpass");
+					}
+					PreparedStatement checkCurrentPass = conn.prepareStatement("select pass from userinfo where pass='"+HashedPassword.existingSalt(currentPass, obtainedSalt)+"'");
 					ResultSet executeCheckCurrentPass = checkCurrentPass.executeQuery();
 					if(executeCheckCurrentPass.next()) {
 						if(newPass.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\\p{Punct}])(?=\\S+$).{8,}")){
@@ -135,23 +137,33 @@ public class panelChangePassSetting extends JPanel {
 							tick.start();
 						} else {
 							if(newPass.equals(confirmNewPass)) {
-								PreparedStatement changePass = conn.prepareStatement("update userInfo set pass='"+newPass+"' where userID ='"+uid+"'");	
-								ResultSet executeChangePass = changePass.executeQuery();
-								if(executeChangePass.next()) {
-									lblStatus.setForeground(Color.GREEN);
-									lblStatus.setText("Changed password successfully!");
-									tick.start();
+								PreparedStatement changePass = conn.prepareStatement("update userinfo set pass='"+HashedPassword.generateHash(newPass)+"', saltpass='"+HashedPassword.salt+"' where userID ='"+uid+"'");	
+								int executeChangePass = changePass.executeUpdate();
+								if(executeChangePass == 1) {
+									JOptionPane.showMessageDialog(null, "Successfully changed password! You will be directed back to the login page!");
+									((Window) getRootPane().getParent()).dispose();
+									EventQueue.invokeLater(new Runnable() {
+										public void run() {
+											try {
+												UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+												Login frame = new Login();
+												frame.setVisible(true);
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+										}
+									});
 								} else {
 									lblStatus.setText("Failed to change password!");
 									tick.start();
 								}
 							} else {
-								lblStatus.setText("Password does not match!");
+								lblStatus.setText("New password and confirm password does not match!");
 								tick.start();
 							}
 						}
 					} else {
-						lblStatus.setText("Incorrect password!");
+						lblStatus.setText("Incorrect current password!");
 						tick.start();
 					}
 				} catch (SQLException sql) {
@@ -190,6 +202,15 @@ public class panelChangePassSetting extends JPanel {
 		logoPasswordPolicy.setBounds(195, 128, 24, 24);
 		panel.add(logoPasswordPolicy);
 		logoPasswordPolicy.setIcon(new ImageIcon(Images.question));
+		logoPasswordPolicy.setToolTipText("<html>The password must have at least: <br/>- Contains 8 characters or more. <br/>- Contains atleast 1 lowercase and 1 uppercase letter."
+				+ "<br/>- Contains 1 special character. <br/>- Does not contain spaces. </html>");
 
 	}
+	
+	private ActionListener lblStatusClearer = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			lblStatus.setForeground(Color.RED);
+			lblStatus.setText("");
+		}
+	};
 }

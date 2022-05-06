@@ -2,12 +2,8 @@ package main;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
-
 import java.awt.Color;
-
-import javax.swing.Box;
 import javax.swing.JButton;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -20,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
-
 import javax.swing.JTextField;
 
 public class panelAccountSetting extends JPanel {
@@ -62,7 +57,7 @@ public class panelAccountSetting extends JPanel {
 		browseButton.setBounds(344, 232, 131, 30);
 		add(browseButton);
 		
-		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 30KB");
+		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 50MB");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(new Color(0, 255, 255));
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
@@ -157,20 +152,6 @@ public class panelAccountSetting extends JPanel {
 		lblUsername.setBounds(10, 39, 224, 29);
 		add(lblUsername);
 		
-		JButton btnReset = new JButton("Reset");
-		btnReset.setForeground(Color.WHITE);
-		btnReset.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
-		btnReset.setBorder(null);
-		btnReset.setBackground(new Color(65, 105, 225));
-		btnReset.setBounds(310, 11, 90, 30);
-		btnReset.addMouseListener(new PropertiesListener(btnReset));
-		btnReset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				lblpfp.setIcon(null);
-			}
-		});
-		add(btnReset);
-		
 		JButton btnSave = new JButton("Save");
 		btnSave.setForeground(new Color(255, 255, 255));
 		btnSave.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
@@ -180,32 +161,41 @@ public class panelAccountSetting extends JPanel {
 		btnSave.addMouseListener(new PropertiesListener(btnSave));
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+					JPanel panel = new JPanel();
+					JLabel label = new JLabel("Input your password: ");
 					JPasswordField passField = new JPasswordField(20);
-					char[] pass = passField.getPassword();
-					String databasePass = "", obtainedPass = String.valueOf(pass), username = txtUser.getText(), firstname = txtFN.getText(), middlename = txtMN.getText(), lastname = txtLN.getText();
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/attendancesystem","root","Keqingisbestgirl");
-					Box box = Box.createHorizontalBox();
-					box.add(passField);
-					int button = JOptionPane.showConfirmDialog(null, box, "Input your password.", JOptionPane.OK_CANCEL_OPTION);
+					panel.add(label);
+					panel.add(passField);
+					String databasePass = "", username = txtUser.getText(), firstname = txtFN.getText(), middlename = txtMN.getText(), lastname = txtLN.getText();
+					int button = JOptionPane.showConfirmDialog(null, panel, "Input pass",JOptionPane.OK_CANCEL_OPTION);
 					if(button == JOptionPane.OK_OPTION) {
-						obtainedPass = String.valueOf(pass);
-						PreparedStatement checkPass = conn.prepareStatement("select pass from userInfo where pass='"+obtainedPass+"'");
+						char[] getPass = passField.getPassword();
+						String obtainedPass = String.valueOf(getPass);
+						PreparedStatement checkPass = conn.prepareStatement("select pass from userinfo where  userid='"+Login.pubUID+"'");
 						ResultSet checkingPass = checkPass.executeQuery();
-						while(checkingPass.next()) {
+						if(checkingPass.next()) {
 							databasePass = checkingPass.getString("pass");
 						}
 						if(databasePass.equals(obtainedPass)) {
 							FileInputStream isPhoto = null;
 							try {
 								String photo = browseAction.pubPath;
-								isPhoto = new FileInputStream(photo);
+								if(photo != null) {
+									isPhoto = new FileInputStream(photo);
+								}
 							} catch (Exception photo) {
 								photo.printStackTrace();
 							}
-							
-							PreparedStatement saveCredentials = conn.prepareStatement("update userInfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"', profilepicture=? where userid ='"+uid+"'");
-							saveCredentials.setBinaryStream(1, isPhoto);
+							PreparedStatement saveCredentials;
+							String withPhoto = "update userinfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"', profilepicture=? where userid ='"+uid+"'";
+							String withoutPhoto = "update userinfo set username='"+username+"', firstname='"+firstname+"', middlename='"+middlename+"', lastname='"+lastname+"' where userid ='"+uid+"'";
+							if(isPhoto == null) {
+								saveCredentials = conn.prepareStatement(withoutPhoto);
+							} else {
+								saveCredentials = conn.prepareStatement(withPhoto);
+								saveCredentials.setBinaryStream(1, isPhoto);
+							}
 							int saving = saveCredentials.executeUpdate();
 							if(saving == 1) {
 								JOptionPane.showMessageDialog(null, "Credentials are now updated and saved!");

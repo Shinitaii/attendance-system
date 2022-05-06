@@ -250,19 +250,39 @@ public class Register extends JFrame {
 										FileInputStream inputPhoto = null;
 										try {
 										String path = browseAction.pubPath;
-										inputPhoto = new FileInputStream(path);
+											if(path != null) {
+												inputPhoto = new FileInputStream(path);
+											}
 										} catch (IOException photo) {
 											JOptionPane.showMessageDialog(null, "No photo!");
 										}
-										PreparedStatement register = conn.prepareStatement("INSERT INTO userinfo (firstName, middlename, lastname, username, pass, gender, occupation, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)");
-										register.setString(1, firstName);
-										register.setString(2, middleName);
-										register.setString(3, lastName);
-										register.setString(4, username);
-										register.setString(5, password);
-										register.setString(6, obtainedGender);
-										register.setString(7, "Student");
-										register.setBinaryStream(8, inputPhoto);
+										PreparedStatement register;
+										String withPhoto = "INSERT INTO userinfo (firstName, middlename, lastname, username, pass, saltpass, gender, occupation, profilePicture, datecreated) VALUES (?,?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)";
+										String withoutPhoto = "INSERT INTO userinfo (firstName, middlename, lastname, username, pass, saltpass, gender, occupation, datecreated) VALUES (?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)";
+										
+										if(inputPhoto == null) {
+											register = conn.prepareStatement(withoutPhoto);
+											register.setString(1, firstName);
+											register.setString(2, middleName);
+											register.setString(3, lastName);
+											register.setString(4, username);
+											register.setString(5, HashedPassword.generateHash(password));
+											register.setBytes(6, HashedPassword.salt);
+											register.setString(7, obtainedGender);
+											register.setString(8, "Student");
+										} else {
+											register = conn.prepareStatement(withPhoto);
+											register.setString(1, firstName);
+											register.setString(2, middleName);
+											register.setString(3, lastName);
+											register.setString(4, username);
+											register.setString(5, HashedPassword.generateHash(password));
+											register.setBytes(6, HashedPassword.salt);
+											register.setString(7, obtainedGender);
+											register.setString(8, "Student");
+											register.setBinaryStream(9, inputPhoto);
+										}
+										
 										int creation = register.executeUpdate();
 											if(creation == 1) {
 												String userID = "";
@@ -409,7 +429,7 @@ public class Register extends JFrame {
 		browseButton.addActionListener(new browseAction(lblpfp));
 		contentPane.add(browseButton);
 		
-		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 16MB");
+		JLabel lblNewLabel_1 = new JLabel("Allowed JPG or PNG, Max size of 50MB");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(Color.CYAN);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));

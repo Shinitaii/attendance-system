@@ -82,18 +82,18 @@ public class panelSettings extends JPanel {
 				int result = JOptionPane.showConfirmDialog(null,"Are you sure you want to leave "+Login.pubSchoolName+"?","Warning!",JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if(result == JOptionPane.YES_OPTION) {
 					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-						PreparedStatement checkMemberCount = conn.prepareStatement("select count(occupation) from userinfo where schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+						PreparedStatement checkMemberCount = conn.prepareStatement("select count(*) from userinfo where schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
 						ResultSet count = checkMemberCount.executeQuery();
 						if(count.next()) {
-							int num = count.getInt("count(occupation)");
-							if(num == 1) {
+							int num = count.getInt("count(*)");
+							if(num <= 1) {
 								int choose = JOptionPane.showConfirmDialog(null, "You're the only one left in the school, leaving will permanently delete the school.\r\nDo you proceed?", "Warning!", JOptionPane.YES_NO_OPTION);
 								if(choose == JOptionPane.YES_OPTION) {
-									PreparedStatement editMember = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null");
+									PreparedStatement editMember = conn.prepareStatement("update userinfo set hasASchool=false, schoolname=null, inviteCodeOfSchool=null, occupation='Student' where schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
 									editMember.executeUpdate();
-									PreparedStatement deleteSchool = conn.prepareStatement("delete from schoolinfo where schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'");
+									PreparedStatement deleteSchool = conn.prepareStatement("delete from schoolinfo where schoolname='"+Login.pubSchoolName+"' and inviteCode='"+Login.pubInviteCode+"'");
 									deleteSchool.executeUpdate();
-									JOptionPane.showMessageDialog(null, "You have left "+Login.pubSchoolName+"  and it is permanently removed!");
+									JOptionPane.showMessageDialog(null, "You have left "+Login.pubSchoolName+" and it is permanently removed!");
 									((Window) getRootPane().getParent()).dispose();
 									SelectSchool dialog = new SelectSchool();
 									dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -158,10 +158,7 @@ public class panelSettings extends JPanel {
 	
 	private void executeLeave() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			PreparedStatement deleteExisting = conn.prepareStatement("delete from teacherassignedinfo where teachername=?");
-			deleteExisting.setString(1, Login.pubFullName);
 			PreparedStatement getStatement = conn.prepareStatement("update userinfo set occupation='Student', schoolname=null, hasASchool=false, inviteCodeOfSchool=null , departmentname=null , hasADept=false , sectionname=null , hasASec=false where userid='"+Login.pubUID+"'");
-			deleteExisting.executeUpdate();
 			int leaving = getStatement.executeUpdate();
 			if(leaving == 1) {
 				
