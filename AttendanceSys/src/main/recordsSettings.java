@@ -121,10 +121,14 @@ public class recordsSettings extends JDialog {
 						if(confirm == JOptionPane.YES_OPTION) {
 							try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
 								PreparedStatement getStatement;
-								String ifNotPresent = "update attendancestatus set studentstatus='"+obtainedStatus+"', timeAttended=null where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'";
-								String ifPresent = "update attendancestatus set studentstatus='"+obtainedStatus+"', timeAttended=current_timestamp where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'";
+								String ifNotPresent = "update attendancestatus set studentstatus='"+obtainedStatus+"', hasAttended=false, timeAttended=null where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'";
+								String ifPresentOrLate = "update attendancestatus set studentstatus='"+obtainedStatus+"', hasAttended=true,timeAttended=current_timestamp where concat(firstname, ' ', middlename, ' ', lastname) = '"+obtainedUser+"'";
 								if(obtainedStatus == "Present") {
-									getStatement = conn.prepareStatement(ifPresent);
+									getStatement = conn.prepareStatement(ifPresentOrLate);
+								} else if (obtainedStatus == "Late") {
+									getStatement = conn.prepareStatement(ifPresentOrLate);
+								} else if (obtainedStatus == "Excused"){
+									getStatement = conn.prepareStatement(ifPresentOrLate);
 								} else {
 									getStatement = conn.prepareStatement(ifNotPresent);
 								}
