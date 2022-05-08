@@ -1,7 +1,10 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -103,19 +106,27 @@ public class ViewExcuseRequest extends JPanel {
 	private void isApprovedOrNot(boolean bool, JLabel label) {
 		if(bool) {
 			label.setText("Status: Approved");
-		} else if(!bool){
-			label.setText("Status: Disapproved");
 		} else {
-			label.setText("Status: To be reviewed");
+			label.setText("Status: Disapproved");
 		}
 	}
 	
 	private void addExistingPanels() {
 		for(int i = 0; i < count; i++) {
+			final int index = i;
 			JPanel panel = new JPanel(new GridLayout(0,1,2,2));
 			JLabel label = new JLabel(titleNames.get(i));
+			label.setForeground(Color.white);
+			label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+			label.setHorizontalAlignment(SwingConstants.CENTER);
 			JLabel label2 = new JLabel(fullNames.get(i));
+			label2.setForeground(Color.white);
+			label2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+			label2.setHorizontalAlignment(SwingConstants.CENTER);
 			JLabel label3 = new JLabel();
+			label3.setForeground(Color.white);
+			label3.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+			label3.setHorizontalAlignment(SwingConstants.CENTER);
 			isApprovedOrNot(approveList.get(i),label3);
 			panel.add(label);
 			panel.add(label2);
@@ -127,6 +138,8 @@ public class ViewExcuseRequest extends JPanel {
 					MainMenu.ViewExcuseLetter.obtainedDept = obtainedDept;
 					MainMenu.ViewExcuseLetter.obtainedSec = obtainedSec;
 					MainMenu.ViewExcuseLetter.obtainedSub = obtainedSub;
+					MainMenu.ViewExcuseLetter.obtainedName = fullNames.get(index);
+					MainMenu.ViewExcuseLetter.obtainedTitle = titleNames.get(index);
 					MainMenu.ViewExcuseLetter.getLetter();
 					MainMenu.menuClicked(MainMenu.ViewExcuseLetter);
 				}

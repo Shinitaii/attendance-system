@@ -128,7 +128,7 @@ public class recordsSettings extends JDialog {
 								} else if (obtainedStatus == "Late") {
 									getStatement = conn.prepareStatement(ifPresentOrLate);
 								} else if (obtainedStatus == "Excused"){
-									getStatement = conn.prepareStatement(ifPresentOrLate);
+									getStatement = conn.prepareStatement(ifNotPresent);
 								} else {
 									getStatement = conn.prepareStatement(ifNotPresent);
 								}

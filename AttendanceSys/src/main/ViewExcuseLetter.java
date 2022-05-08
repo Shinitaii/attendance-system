@@ -26,7 +26,7 @@ public class ViewExcuseLetter extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public String obtainedRecord, obtainedDept, obtainedSec, obtainedSub;
+	public String obtainedRecord, obtainedDept, obtainedSec, obtainedSub, obtainedName, obtainedTitle;
 	JLabel title;
 	JTextPane desc;
 	/**
@@ -97,10 +97,8 @@ public class ViewExcuseLetter extends JPanel {
 					int result = statement.executeUpdate();
 					if(result == 1) {
 						PreparedStatement attend = conn.prepareStatement("update attendancestatus set hasAttended=true, studentstatus='Excused', timeattended=current_timestamp where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+MainMenu.records.obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
-						int attendResult = attend.executeUpdate();
-						if(attendResult == 1) {
-							JOptionPane.showMessageDialog(null, "You've approved the letter!");
-						}
+						attend.executeUpdate();
+						JOptionPane.showMessageDialog(null, "You've approved the letter!");
 					}
 				} catch (SQLException sql) {
 					sql.printStackTrace();
@@ -115,7 +113,7 @@ public class ViewExcuseLetter extends JPanel {
 	
 	public void getLetter() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user, MySQLConnectivity.pass)) {
-			PreparedStatement statement = conn.prepareStatement("select requesttitle, requestdesc from excuserequests where record_name='"+obtainedRecord+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and subjectname='"+obtainedSub+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+			PreparedStatement statement = conn.prepareStatement("select requesttitle, requestdesc from excuserequests where record_name='"+obtainedRecord+"' and departmentname='"+obtainedDept+"' and sectionname='"+obtainedSec+"' and subjectname='"+obtainedSub+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"' and fullname='"+obtainedName+"' and requesttitle='"+obtainedTitle+"'");
 			ResultSet result = statement.executeQuery();
 			if(result.next()) {
 				String titleLetter = result.getString("requesttitle");
@@ -123,6 +121,8 @@ public class ViewExcuseLetter extends JPanel {
 				title.setText("Title: "+titleLetter);
 				desc.setText(descLetter);
 			}
+			revalidate();
+			repaint();
 		} catch(SQLException sql) {
 			sql.printStackTrace();
 		}

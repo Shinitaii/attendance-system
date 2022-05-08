@@ -190,9 +190,30 @@ public class Records extends JPanel {
 			JButton excusedButton = new JButton("Request Excuse");
 			excusedButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					MakeExcuse dialog = new MakeExcuse();
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
+					try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
+						PreparedStatement checkStatement = conn.prepareStatement("select hasAttended from attendancestatus where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+						ResultSet ifAttended = checkStatement.executeQuery();
+						if(ifAttended.next()) {
+							boolean present = ifAttended.getBoolean("hasAttended");
+							if(present) {
+								JOptionPane.showMessageDialog(null, "You've attended, if you're excused midway in your class, ask your teacher to manually set your status to \"Excused\".");
+							} else {
+								PreparedStatement getStatement = conn.prepareStatement("select count(*) from excuserequests where fullname='"+Login.pubFullName+"'");
+								ResultSet result = getStatement.executeQuery();
+								if(result.next()) {
+									int count = result.getInt("count(*)");
+									if(count == 1) {
+										JOptionPane.showMessageDialog(null, "You've already created an excuse letter!");
+									} else {
+										MakeExcuse dialog = new MakeExcuse();
+										dialog.setVisible(true);
+									}
+								}
+							}
+						}
+					} catch(SQLException sql) {
+						sql.printStackTrace();
+					}
 				}
 			});
 			excusedButton.addMouseListener(new PropertiesListener(excusedButton));
@@ -347,21 +368,27 @@ public class Records extends JPanel {
 						status = "Present";
 					}
 					boolean ifAttended = false;
-					PreparedStatement checkIfAttended = conn.prepareStatement("select hasAttended from attendancestatus where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+					String obtainedStatus = "";
+					PreparedStatement checkIfAttended = conn.prepareStatement("select hasAttended, studentstatus from attendancestatus where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
 					ResultSet resultSet = checkIfAttended.executeQuery();
 					if(resultSet.next()) {
 						ifAttended = resultSet.getBoolean("hasAttended");
+						obtainedStatus = resultSet.getString("studentstatus");
 					}
 					if(ifAttended) {
 						JOptionPane.showMessageDialog(null,"You already attended! You cannot attend more than once!");
 					} else {
-						PreparedStatement attend = conn.prepareStatement("update attendancestatus set hasAttended=true, studentstatus='"+status+"', timeattended=current_timestamp where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
-						int attendResult = attend.executeUpdate();
-						if(attendResult == 1) {
-							if(ifRecordCompleted) {
-								JOptionPane.showMessageDialog(null, "You have attended but you are labelled as \"Late\"!");
-							} else {
-								JOptionPane.showMessageDialog(null, "You have successfully attended!");
+						if(obtainedStatus == "Excused") {
+							JOptionPane.showMessageDialog(null, "You are excused! You cannot attend however, you are noted by the teacher!");
+						} else {
+							PreparedStatement attend = conn.prepareStatement("update attendancestatus set hasAttended=true, studentstatus='"+status+"', timeattended=current_timestamp where firstname='"+Login.pubFN+"' and middlename='"+Login.pubMN+"' and lastname='"+Login.pubLN+"' and recordid='"+obtainedID+"' and record_name='"+obtainedRecord+"' and subjectname='"+obtainedSub+"' and sectionname='"+obtainedSec+"' and departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and schoolid='"+Login.pubSchoolID+"'");
+							int attendResult = attend.executeUpdate();
+							if(attendResult == 1) {
+								if(ifRecordCompleted) {
+									JOptionPane.showMessageDialog(null, "You have attended but you are labelled as \"Late\"!");
+								} else {
+									JOptionPane.showMessageDialog(null, "You have successfully attended!");
+								}
 							}
 						}
 					}

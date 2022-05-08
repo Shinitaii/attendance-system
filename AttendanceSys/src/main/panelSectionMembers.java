@@ -193,8 +193,10 @@ public class panelSectionMembers extends JPanel {
 			lblDeleteTime.setVisible(false);
 			btnDelete.setVisible(false);
 			btnDelete.setBounds(10, 11, 55, 60);
-			cbName.setBounds(300, 36, 120, 22);
-			cbOccup.setBounds(430, 36, 119, 22);
+			cbOccup.setVisible(false);
+			lblSortOccupation.setVisible(false);
+			lblSortName.setBounds(430, 11, 120, 14);
+			cbName.setBounds(430, 36, 119, 22);
 		}
 		
 		revalidate();
