@@ -206,19 +206,24 @@ public class panelSectionMembers extends JPanel {
 	
 	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			String azTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname asc";
-			String zaTeachers = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Teacher' desc, occupation = 'Student' desc, fullname desc";
-			String azStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname asc";
-			String zaStudents = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' order by occupation = 'Student' desc, occupation = 'Teacher' desc, fullname desc";
+			String normal = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'";
+			String teachers = "order by occupation = 'Teacher' desc, occupation = 'Student' desc";
+			String students = "order by occupation = 'Student' desc, occupation = 'Teacher' desc";
+			String fullnameasc = "fullname asc";
+			String fullnamedesc = "fullname desc";
 			PreparedStatement puttingInTable;
-			if(cbName.getSelectedIndex() == 0 && cbOccup.getSelectedIndex() == 0) { // if a-z, teachers first -> default
-				puttingInTable = conn.prepareStatement(azTeachers);
-			} else if (cbName.getSelectedIndex() == 1 && cbOccup.getSelectedIndex() == 0) { // if z-a, teachers first
-				puttingInTable = conn.prepareStatement(zaTeachers);
-			} else if (cbName.getSelectedIndex() == 0 && cbOccup.getSelectedIndex() == 1){ // if a-z, student first
-				puttingInTable = conn.prepareStatement(azStudents);
-			} else { // if z-a, student first
-				puttingInTable = conn.prepareStatement(zaStudents);
+			if(cbName.getSelectedIndex() == 0) {
+				if(cbOccup.getSelectedIndex() == 0) {
+					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnamedesc);
+				} else {
+					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnameasc);
+				}
+			} else {
+				if(cbOccup.getSelectedIndex() == 0) {
+					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnamedesc);
+				} else {
+					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnameasc);
+				}
 			}
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {
