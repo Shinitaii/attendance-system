@@ -214,15 +214,15 @@ public class panelSectionMembers extends JPanel {
 			PreparedStatement puttingInTable;
 			if(cbName.getSelectedIndex() == 0) {
 				if(cbOccup.getSelectedIndex() == 0) {
-					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnamedesc);
-				} else {
 					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnameasc);
+				} else {
+					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnamedesc);
 				}
 			} else {
 				if(cbOccup.getSelectedIndex() == 0) {
-					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnamedesc);
-				} else {
 					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnameasc);
+				} else {
+					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnamedesc);
 				}
 			}
 			ResultSet result = puttingInTable.executeQuery();
