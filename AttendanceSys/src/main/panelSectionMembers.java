@@ -37,7 +37,7 @@ public class panelSectionMembers extends JPanel {
       	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JComboBox<String> cbName, cbOccup;
+	JComboBox<String> cbName;
 	private JTable table;
 	private boolean isDeletingMembers = false;
 	DefaultTableModel model;
@@ -150,30 +150,12 @@ public class panelSectionMembers extends JPanel {
 		});
 		cbName.setBorder(new LineBorder(new Color(65, 105, 225)));
 		cbName.setBackground(Color.WHITE);
-		cbName.setBounds(300, 30, 120, 22);
+		cbName.setBounds(429, 30, 120, 22);
 		add(cbName);
-		
-		cbOccup = new JComboBox<String>();
-		cbOccup.addItem("Teachers first");
-		cbOccup.addItem("Students first");
-		cbOccup.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				cbName.setSelectedIndex(0);
-				model.setRowCount(0);
-				checkList();
-			}
-		});
-		cbOccup.setBorder(new LineBorder(new Color(65, 105, 225)));
-		cbOccup.setBounds(430, 30, 119, 22);
-		add(cbOccup);
-		
+
 		JLabel lblSortName = new JLabel("Sort Name:");
-		lblSortName.setBounds(300, 11, 120, 14);
+		lblSortName.setBounds(429, 11, 120, 14);
 		add(lblSortName);
-		
-		JLabel lblSortOccupation = new JLabel("Sort Occupation:");
-		lblSortOccupation.setBounds(430, 11, 120, 14);
-		add(lblSortOccupation);
 		
 		table.getColumnModel().getColumn(0).setPreferredWidth(150);
 		table.getColumnModel().getColumn(0).setMinWidth(150);
@@ -185,18 +167,12 @@ public class panelSectionMembers extends JPanel {
 			deleteMember.setVisible(false);
 			lblDeleteTime.setVisible(false);
 			btnDelete.setBounds(10, 11, 55, 60);
-			cbName.setBounds(300, 36, 120, 22);
-			cbOccup.setBounds(430, 36, 119, 22);
 		} else if(Login.pubOccupation.equals("Student")) {
 			addMember.setVisible(false);
 			deleteMember.setVisible(false);
 			lblDeleteTime.setVisible(false);
 			btnDelete.setVisible(false);
 			btnDelete.setBounds(10, 11, 55, 60);
-			cbOccup.setVisible(false);
-			lblSortOccupation.setVisible(false);
-			lblSortName.setBounds(430, 11, 120, 14);
-			cbName.setBounds(430, 36, 119, 22);
 		}
 		
 		revalidate();
@@ -206,24 +182,15 @@ public class panelSectionMembers extends JPanel {
 	
 	public void checkList() {
 		try (Connection conn = DriverManager.getConnection(MySQLConnectivity.URL, MySQLConnectivity.user ,MySQLConnectivity.pass)){
-			String normal = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation != 'Admin' and occupation != 'Owner' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'";
-			String teachers = "order by occupation = 'Teacher' desc, occupation = 'Student' desc";
-			String students = "order by occupation = 'Student' desc, occupation = 'Teacher' desc";
+			String normal = "select concat(firstname, ' ', middlename, ' ', lastname) as fullname, occupation from userinfo where occupation ='Student' and sectionname='"+obtainedSec+"' and  departmentname='"+obtainedDept+"' and schoolname='"+Login.pubSchoolName+"' and inviteCodeOfSchool='"+Login.pubInviteCode+"'";
+			String order = "order by";
 			String fullnameasc = "fullname asc";
 			String fullnamedesc = "fullname desc";
 			PreparedStatement puttingInTable;
 			if(cbName.getSelectedIndex() == 0) {
-				if(cbOccup.getSelectedIndex() == 0) {
-					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnameasc);
-				} else {
-					puttingInTable = conn.prepareStatement(normal + " " + teachers + " " + fullnamedesc);
-				}
+				puttingInTable = conn.prepareStatement(normal + " " + order + " " + fullnameasc);
 			} else {
-				if(cbOccup.getSelectedIndex() == 0) {
-					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnameasc);
-				} else {
-					puttingInTable = conn.prepareStatement(normal + " " + students + " " + fullnamedesc);
-				}
+				puttingInTable = conn.prepareStatement(normal + " " + order + " " + fullnamedesc);
 			}
 			ResultSet result = puttingInTable.executeQuery();
 			while(result.next()) {

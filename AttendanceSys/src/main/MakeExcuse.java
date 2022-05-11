@@ -104,9 +104,8 @@ public class MakeExcuse extends JDialog {
 							getStatement.setString(9, Login.pubSchoolID);
 							int result = getStatement.executeUpdate();
 							if(result == 1) {
-								setVisible(false);
+								dispose();
 								JOptionPane.showMessageDialog(null, "Successfully created a letter!");
-								setVisible(true);
 							} else {
 								setVisible(false);
 								JOptionPane.showMessageDialog(null, "Error!");
